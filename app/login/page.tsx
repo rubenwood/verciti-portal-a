@@ -1,8 +1,10 @@
 "use client"
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase'
 
 export default function Login(){
+    const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -22,6 +24,7 @@ export default function Login(){
             console.error('Login error:', error.message);
         } else {
             console.log('Login successful:', data);
+            router.push('/lms');
         }
     };
 
