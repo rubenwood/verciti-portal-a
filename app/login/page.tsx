@@ -10,6 +10,7 @@ export default function Login(){
     const [error, setError] = useState('');
 
     useEffect(() => {
+        // TODO: change this
         supabase.auth.signOut();
     });
 
