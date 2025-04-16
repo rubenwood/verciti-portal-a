@@ -51,6 +51,7 @@ export default function ActivitiesTable(){
                         <th className="px-4 py-2 text-left">Internal Title</th>
                         <th className="px-4 py-2 text-left">External Title</th>
                         <th className="px-4 py-2 text-left">Time Estimate</th>
+                        <th className="px-4 py-2 text-left">Time Estimate (seconds)</th>
                         <th className="px-4 py-2 text-left">About</th>
                         <th className="px-4 py-2 text-left">Learning Objectives</th>
                     </tr>
@@ -61,6 +62,7 @@ export default function ActivitiesTable(){
                         <td className="px-4 py-2">{activity.internal_title}</td>
                         <td className="px-4 py-2">{activity.external_title}</td>
                         <td className="px-4 py-2">{activity.time_est}</td>
+                        <td className="px-4 py-2">{activity.time_est_num}</td>
                         <td className="px-4 py-2">{activity.about_text?.slice(0, 80)}...</td>
                         <td className="px-4 py-2">{activity.learning_objectives?.slice(0, 80)}...</td>
                         </tr>
