@@ -1,6 +1,7 @@
 import Image from "next/image";
+import Link from "next/link";
 import LoginButton from "./login/login-button-component";
-import LMSDashboard from "./lms/lms-dashboard-component";
+
 
 export default function Home() {
   return (
@@ -8,13 +9,15 @@ export default function Home() {
         <Image
           className="dark:invert"
           src="https://cdn.prod.website-files.com/66fc1efd047a029224c72fb0/66fc28b252d9d3641f6b168b_Verciti_Logo_Dark_Background.svg"
-          alt="Next.js logo"
+          alt="Verciti logo"
           width={180}
           height={38}
           priority
         />
         <LoginButton />
-        <LMSDashboard />
+        <Link href="/lms" className="text-lg text-blue-500 hover:underline">
+          Go to LMS Dashboard
+        </Link>
     </div>
   );
 }
