@@ -9,27 +9,27 @@ export default function ResetPassword() {
   const router = useRouter();
 
   useEffect(() => {
-    const handleRecovery = async () => {
-      // Wait for Supabase to handle the access_token from URL fragment
-      const { data, error } = await supabase.auth.getSession();
-
-      if (error || !data.session) {
-        setError("Could not retrieve session. Please use the link from your email.");
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event === "PASSWORD_RECOVERY" && session) {
+          router.push("/update-password");
+        } else if (event === "SIGNED_IN" && session) {
+          // fallback in case Supabase treats recovery as signed in
+          router.push("/update-password");
+        } else {
+          setError("Could not retrieve session. Please use the link from your email.");
+        }
         setLoading(false);
-        return;
       }
+    );
 
-      // User is now signed in via recovery token — show reset form or redirect
-      setLoading(false);
-      router.push("/update-password"); // or show reset password form here
+    return () => {
+      authListener.subscription.unsubscribe();
     };
-
-    handleRecovery();
-  }, [supabase, router]);
+  }, [router]);
 
   if (loading) return <p>Processing password reset...</p>;
   if (error) return <p className="text-red-600">{error}</p>;
 
   return null;
 }
-
