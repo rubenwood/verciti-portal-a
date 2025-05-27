@@ -15,7 +15,6 @@ export default function UpdatePasswordPage() {
       setStatus("Error updating password.");
     } else {
       setStatus("Password updated!");
-      router.push("/login");
     }
   };
 
