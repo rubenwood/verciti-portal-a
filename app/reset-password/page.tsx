@@ -20,6 +20,7 @@ export default function ResetPassword() {
 
       // Extract the access_token from the hash
       const params = new URLSearchParams(hash.replace(/^#/, ''));
+      console.log("Params:", params.toString());
       const access_token = params.get("access_token");
       const refresh_token = params.get("refresh_token");
 
