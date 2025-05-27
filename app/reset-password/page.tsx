@@ -9,23 +9,50 @@ export default function ResetPassword() {
   const router = useRouter();
 
   useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === "PASSWORD_RECOVERY" && session) {
-          router.push("/update-password");
-        } else if (event === "SIGNED_IN" && session) {
-          // fallback in case Supabase treats recovery as signed in
-          router.push("/update-password");
-        } else {
-          setError("Could not retrieve session. Please use the link from your email.");
-        }
-        setLoading(false);
-      }
-    );
+    const handleRecovery = async () => {
+      const hash = window.location.hash;
 
-    return () => {
-      authListener.subscription.unsubscribe();
+      if (!hash.includes("access_token")) {
+        setError("No access token found in URL.");
+        setLoading(false);
+        return;
+      }
+
+      // Extract the access_token from the hash
+      const params = new URLSearchParams(hash.replace(/^#/, ''));
+      const access_token = params.get("access_token");
+      const refresh_token = params.get("refresh_token");
+
+      if (!access_token || !refresh_token) {
+        setError("Invalid or missing tokens in URL.");
+        setLoading(false);
+        return;
+      }
+
+      const { error: recoveryError } = await supabase.auth.setSession({
+        access_token,
+        refresh_token,
+      });
+
+      if (recoveryError) {
+        setError("Could not recover session. Please use the link from your email.");
+        setLoading(false);
+        return;
+      }
+
+      const { data, error: sessionError } = await supabase.auth.getSession();
+
+      if (sessionError || !data.session) {
+        setError("Session not found after recovery.");
+        setLoading(false);
+        return;
+      }
+
+      // Success — redirect to update-password
+      router.push("/update-password");
     };
+
+    handleRecovery();
   }, [router]);
 
   if (loading) return <p>Processing password reset...</p>;
