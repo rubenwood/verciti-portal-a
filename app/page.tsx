@@ -1,7 +1,19 @@
+"use client"
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash.includes("type=recovery")) {
+      router.replace(`/reset-password${hash}`);
+    }
+  }, [router]);
+
   return (
     <div className="grid items-center justify-items-center min-h-screen p-8 pb-20">
       <div>
