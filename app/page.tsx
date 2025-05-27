@@ -9,7 +9,6 @@ export default function Home() {
 
   useEffect(() => {
     const hash = window.location.hash;
-    console.log("Hash:", hash);
     if (hash.includes("type=recovery")) {
       window.location.href = `/reset-password${hash}`;
     }

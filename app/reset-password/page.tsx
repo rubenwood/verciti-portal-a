@@ -20,11 +20,8 @@ export default function ResetPassword() {
 
       // Extract the access_token from the hash
       const params = new URLSearchParams(hash.replace(/^#/, ''));
-      console.log("Params:", params.toString());
       const access_token = params.get("access_token");
-      console.log("Access Token:", access_token);
       const refresh_token = params.get("refresh_token");
-      console.log("Refresh Token:", refresh_token);
 
       if (!access_token || !refresh_token) {
         setError("Invalid or missing tokens in URL.");
@@ -38,7 +35,6 @@ export default function ResetPassword() {
       });
 
       if (recoveryError) {
-        console.error("Recovery error:", recoveryError);
         setError("Could not recover session. Please use the link from your email.");
         setLoading(false);
         return;
