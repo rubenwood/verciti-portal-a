@@ -32,3 +32,12 @@ body {
 .header {
   @apply text-2xl font-bold text-center mb-4;
 }
+
+.three-main-div{
+  width:100vw;
+  height:100vh;
+}
+
+.three-canvas{
+  background: #000;
+}
