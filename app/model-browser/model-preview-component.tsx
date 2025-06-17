@@ -1,8 +1,7 @@
 'use client'
 import { Canvas } from '@react-three/fiber'
-import { Gltf, OrbitControls, Bounds, Stage } from '@react-three/drei'
+import { Gltf, OrbitControls, Bounds, useBounds, Stage } from '@react-three/drei'
 import { Suspense, useRef, useEffect } from 'react'
-import { useBounds } from '@react-three/drei'
 import { Group } from 'three'
 import { ModelLoading } from './model-loading-component'
 
