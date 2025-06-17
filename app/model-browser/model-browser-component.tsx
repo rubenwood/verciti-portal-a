@@ -1,6 +1,6 @@
 import { createContext, Suspense, useState, useEffect } from 'react'
 import { Canvas } from "@react-three/fiber"
-import { GizmoHelper, GizmoViewport, Gltf, OrbitControls, PivotControls, Stage } from '@react-three/drei'
+import { GizmoHelper, GizmoViewport, Gltf, Html, OrbitControls, PivotControls, Stage } from '@react-three/drei'
 import { ModelEntry, ModelList } from './model-button-list-component'
 
 export const SelectedModelContext = createContext<any>(null) 
@@ -44,7 +44,10 @@ export function InteractiveScene(props: any){
               position={[0, -0.5, 0]} 
               src={props.model}
               onClick={modelClicked}
-            /> 
+            />
+            <Html distanceFactor={10}>
+              <b style={{ color: 'black', fontSize: '1.2em', textAlign: 'center' }}>Hello</b>
+            </Html>
         </PivotControls>
     </>
   )

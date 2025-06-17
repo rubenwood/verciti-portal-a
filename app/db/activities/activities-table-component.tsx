@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
+import { checkUser } from '../general/get-user'
 
 type Activity = {
     id: number
@@ -78,22 +79,16 @@ export default function ActivitiesTable(){
           )
           setEditingId(null)
           setEditForm({})
+          }
         }
-      }
 
     useEffect(() => {
-        const checkUser = async () => {
-            const {
-                data: { user },
-            } = await supabase.auth.getUser();
-
-            if (user) {
-                setUser(user);
-            }
+        const init = async () => {
+            const user = await checkUser();
+            if (user) { setUser(user); }
             setLoading(false);
         };
-
-        checkUser();
+        init();
 
         const fetchActivities = async () => {
             setLoading(true);
