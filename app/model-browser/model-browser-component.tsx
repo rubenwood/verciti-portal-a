@@ -45,9 +45,6 @@ export function InteractiveScene(props: any){
               src={props.model}
               onClick={modelClicked}
             />
-            <Html distanceFactor={10}>
-              <b style={{ color: 'black', fontSize: '1.2em', textAlign: 'center' }}>Hello</b>
-            </Html>
         </PivotControls>
     </>
   )
