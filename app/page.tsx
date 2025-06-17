@@ -30,10 +30,6 @@ export default function Home() {
             Login
           </Link>
           <br/>
-          <br/>
-          <Link href="/lms" className="button">
-            Go to LMS Dashboard
-          </Link>
         </div>
     </div>
   );
