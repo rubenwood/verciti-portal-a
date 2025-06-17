@@ -1,8 +1,9 @@
 "use client"
 import { useEffect, useState } from "react"
 import { Menu } from "lucide-react"
+import { ModelPreview} from "./model-preview-component"
 
-type ModelEntry = {
+export type ModelEntry = {
   path: string
   url: string
 }
@@ -22,24 +23,28 @@ export function ModelList({ onSelect }: { onSelect: (url: string) => void }) {
 
   return (
     <div className="model-list-container">
-      {/* Menu icon */}
       <button onClick={() => setIsOpen(!isOpen)} className="menu-toggle-button">
         <Menu size={28} />
       </button>
-
-      {/* Model buttons shown when menu is open */}
+      
       {isOpen && (
+        <>
+        <p>Select a model</p>
         <div className="model-list">
           {models.map((model) => (
             <button
-              className="button"
+              className="model-button"
               key={model.url}
               onClick={() => onSelect(model.url)}
             >
-              {model.path}
+              <ModelPreview model={model} />
+              <p className="text-xs mt-2 px-2 text-center break-words whitespace-normal">
+                {model.path}
+              </p>
             </button>
           ))}
         </div>
+        </>
       )}
     </div>
   )
