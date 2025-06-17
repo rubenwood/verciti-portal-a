@@ -30,12 +30,17 @@ body {
 }
 
 .header {
-  @apply text-2xl font-bold text-center mb-4;
+  @apply text-2xl font-bold text-center p-4;
 }
 
 .top-left-div {
   display: flex;
   flex-direction: column;
+}
+.top-left-text {
+  display: flex;
+  flex-direction: column;
+  margin-left: 4.5rem;
 }
 .top-left-div > * + * {
   margin-top: 2.5rem;

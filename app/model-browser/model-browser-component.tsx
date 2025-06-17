@@ -60,7 +60,9 @@ export function ModelBrowser(){
     return(
         <>
             <div className='top-left-div'>
-              <p>{ selectedModel ? ( <>Selected model: <b>{selectedModel.path}</b></> ) : `Select a model to view` }</p>
+              <div className='top-left-text'>
+                <p>{ selectedModel ? ( <>Selected model: <b>{selectedModel.path}</b></> ) : `Select a model to view` }</p>
+              </div>
               <ModelList onSelect={setSelectedModel} />
             </div>
             <div className='three-main-div'>
