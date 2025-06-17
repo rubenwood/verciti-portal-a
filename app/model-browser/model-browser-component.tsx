@@ -42,10 +42,10 @@ export function InteractiveScene(props: any){
         <OrbitControls enabled={orbitEnabled} />
         <PivotControls enabled={pivotControlsEnabled} onDragStart={pivotDragStart} onDragEnd={pivotDragEnd}>
             <Gltf 
-            castShadow
-            position={[0, -0.5, 0]} 
-            src={props.model}
-            onClick={modelClicked}
+              castShadow
+              position={[0, -0.5, 0]} 
+              src={props.model}
+              onClick={modelClicked}
             /> 
         </PivotControls>
     </>
@@ -65,7 +65,7 @@ export function ModelBrowser(){
               <ModelList onSelect={setSelectedModel} />
             </div>
             <div className='three-main-div'>
-                <Canvas shadows camera={{ position: [0, 0, 5], fov: 90 }} frameloop="demand">
+                <Canvas shadows gl={{ preserveDrawingBuffer: true }} camera={{ position: [0, 0, 5], fov: 90 }} frameloop="demand">
                     {/* suspense allows us to render the empty scene until the selected model is present
                     Then we re-render the scene with the gltf model attached :)
                     */}          
