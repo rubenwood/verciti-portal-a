@@ -1,9 +1,7 @@
-// this will list the models from the S3 bucket
-// clicking one will display it in a 3D scene
 import { createContext, Suspense, useState, useEffect } from 'react'
 import { Canvas } from "@react-three/fiber"
 import { GizmoHelper, GizmoViewport, Gltf, OrbitControls, PivotControls, Stage } from '@react-three/drei'
-import { ModelList } from './model-button-list-component'
+import { ModelEntry, ModelList } from './model-button-list-component'
 
 export const SelectedModelContext = createContext<any>(null) 
 
@@ -53,7 +51,7 @@ export function InteractiveScene(props: any){
 }
 
 export function ModelBrowser(){
-    const [selectedModel, setSelectedModel] = useState<string>();
+    const [selectedModel, setSelectedModel] = useState<ModelEntry>();
 
     useEffect(() => {
       
@@ -62,22 +60,25 @@ export function ModelBrowser(){
     return(
         <>
             <div className='top-left-div'>
+              <p>{ selectedModel ? ( <>Selected model: <b>{selectedModel.path}</b></> ) : `Select a model to view` }</p>
               <ModelList onSelect={setSelectedModel} />
             </div>
             <div className='three-main-div'>
+              {selectedModel ? (
                 <Canvas shadows gl={{ preserveDrawingBuffer: true }} camera={{ position: [0, 0, 5], fov: 90 }} frameloop="demand">
                     {/* suspense allows us to render the empty scene until the selected model is present
                     Then we re-render the scene with the gltf model attached :)
                     */}          
                     <Suspense fallback={<DefaultStage />}>
                       <DefaultStage>
-                      {selectedModel ? <InteractiveScene model={selectedModel} /> : null }
+                      {selectedModel ? <InteractiveScene model={selectedModel.url} /> : null }
                       </DefaultStage>
                     </Suspense>          
                     <GizmoHelper alignment="bottom-right" margin={[90, 90]}>
                       <GizmoViewport axisColors={['#ff4747', '#7fff47', '#4774ff']} labelColor="white" />
                     </GizmoHelper>
-                </Canvas>        
+                </Canvas> 
+              ) : null}    
             </div>
         </>
     )
