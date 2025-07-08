@@ -10,6 +10,7 @@ export default function ActivitiesTable(){
     const [editingId, setEditingId] = useState<number | null>(null);
     const [editForm, setEditForm] = useState<Partial<Activity>>({});
     const [user, setUser] = useState<User | null>(null);
+    const [paramsInput, setParamsInput] = useState<string>('');
 
     const addActivity = async () => {
         const { data, error } = await supabase.from('activities').insert([
@@ -34,9 +35,10 @@ export default function ActivitiesTable(){
     }
 
     const handleEditClick = (activity: Activity) => {
-        setEditingId(activity.id)
-        setEditForm(activity)
-      }
+      setEditingId(activity.id);
+      setEditForm(activity);
+      setParamsInput(JSON.stringify(activity.params, null, 2));
+    }
     
       const handleCancel = () => {
         setEditingId(null)
@@ -48,22 +50,39 @@ export default function ActivitiesTable(){
       }
     
       const handleSave = async () => {
-        if (!editingId) return
+        if (!editingId) return;
+
+        let parsedParams;
+
+        try {
+          parsedParams = JSON.parse(paramsInput);
+        } catch (err) {
+          alert('Invalid JSON in params');
+          return;
+        }
+
+        const updatedData = {
+          ...editForm,
+          params: parsedParams,
+        };
+
         const { error } = await supabase
           .from('activities')
-          .update(editForm)
-          .eq('id', editingId)
-    
+          .update(updatedData)
+          .eq('id', editingId);
+
         if (error) {
-          console.error('Error updating activity:', error)
+          console.error('Error updating activity:', error);
         } else {
           setActivities((prev) =>
-            prev.map((a) => (a.id === editingId ? { ...a, ...editForm } : a))
-          )
-          setEditingId(null)
-          setEditForm({})
-          }
+            prev.map((a) => (a.id === editingId ? { ...a, ...updatedData } : a))
+          );
+          setEditingId(null);
+          setEditForm({});
+          setParamsInput('');
         }
+      };
+
 
     useEffect(() => {
         const init = async () => {
@@ -110,6 +129,7 @@ export default function ActivitiesTable(){
                     <th className="px-4 py-2 text-left">Time Estimate (Sec)</th>
                     <th className="px-4 py-2 text-left">About</th>
                     <th className="px-4 py-2 text-left">Learning Objectives</th>
+                    <th className="px-4 py-2 text-left">Params</th>
                     <th className="px-4 py-2 text-left">Actions</th>
                   </tr>
                 </thead>
@@ -172,6 +192,13 @@ export default function ActivitiesTable(){
                               }
                             />
                           </td>
+                          <td className="px-4 py-2">
+                            <textarea
+                              className="w-full border rounded px-2 py-1"
+                              value={paramsInput}
+                              onChange={(e) => setParamsInput(e.target.value)}
+                            />
+                          </td>
                           <td className="px-4 py-2 space-x-2">
                             <button
                               className="button"
@@ -193,18 +220,14 @@ export default function ActivitiesTable(){
                           <td className="px-4 py-2">{activity.external_title}</td>
                           <td className="px-4 py-2">{activity.time_est}</td>
                           <td className="px-4 py-2">{activity.time_est_num}</td>
-                          <td className="px-4 py-2">
-                            {activity.about_text}
-                          </td>
-                          <td className="px-4 py-2">
-                            {activity.learning_objectives}
-                          </td>
+                          <td className="px-4 py-2">{activity.about_text}</td>
+                          <td className="px-4 py-2">{activity.learning_objectives}</td>
+                          <td className="px-4 py-2">{JSON.stringify(activity.params)}</td>
                           <td className="px-4 py-2">
                             <button
                               className="text-blue-500 hover:underline"
                               onClick={() => activity.id !== undefined 
-                                            && handleEditClick(activity as Activity)
-                                }
+                                            && handleEditClick(activity as Activity) }
                             >
                               ✏️
                             </button>

@@ -5,6 +5,9 @@ import { User } from '@supabase/supabase-js'
 import { checkUser } from '../general/get-user' // TODO: move check user up a level
 import CAJJoiner from './caj-joiner-component'
 
+
+// TODO: seperate tables per course
+
 export default function CourseActivityJoinTable(){
     const [courses, setCourses] = useState<Course[]>([]);
     const [activities, setActivities] = useState<Activity[]>([]);
@@ -99,9 +102,9 @@ export default function CourseActivityJoinTable(){
               <table className="min-w-full table-auto border border-gray-200 text-sm">
                 <thead className="bg-gray-100">
                   <tr>
-                    <th className="px-4 py-2 text-left">Course Id</th>
+                    {/* <th className="px-4 py-2 text-left">Course Id</th> */}
                     <th className="px-4 py-2 text-left">Course Title</th>
-                    <th className="px-4 py-2 text-left">Activity Id</th>
+                    {/* <th className="px-4 py-2 text-left">Activity Id</th> */}
                     <th className="px-4 py-2 text-left">Activity Title</th>
                     <th className="px-4 py-2 text-left">Order</th>
                   </tr>
@@ -109,16 +112,11 @@ export default function CourseActivityJoinTable(){
                 <tbody>
                   {courseActivities.map((courseActivity) => (
                     <tr key={courseActivity.id} className="border-t">
-                        <td className="px-4 py-2">{courseActivity.course_id}</td>
-                        <td className="px-4 py-2">{courseActivity.course.external_title}</td>
-                        <td className="px-4 py-2">{courseActivity.activity_id}</td>
-                        <td className="px-4 py-2">{courseActivity.activity.external_title}</td>
-                        <td className="px-4 py-2">
-                        {courseActivity.order}
-                        </td>
-                        <td className="px-4 py-2">
-
-                        </td>
+                        {/* <td className="px-4 py-2">{courseActivity.course_id}</td> */}
+                        <td className="px-4 py-2"><b>{courseActivity.course.external_title}</b></td>
+                        {/* <td className="px-4 py-2">{courseActivity.activity_id}</td> */}
+                        <td className="px-4 py-2"><b>{courseActivity.activity.external_title}</b></td>
+                        <td className="px-4 py-2">{courseActivity.order}</td>
                     </tr>
                   ))}
                 </tbody>

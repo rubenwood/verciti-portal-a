@@ -50,6 +50,9 @@ body {
 .button {
   @apply mt-2 px-4 py-2 bg-[#97fb57] text-[#121212] rounded-lg  hover:bg-[#83d84d];
 }
+.green-shadcn-button {
+  @apply bg-[#97fb57] hover:bg-[#83d84d] text-[#121212]
+}
 
 .header {
   @apply text-2xl font-bold text-center p-4;

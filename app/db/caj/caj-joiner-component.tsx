@@ -1,9 +1,6 @@
 "use client"
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import { User } from '@supabase/supabase-js'
-import { checkUser } from '../general/get-user' // TODO: move check user up a level
-
 import {
   Select,
   SelectContent,
@@ -14,39 +11,23 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+import { Button } from "@/components/ui/button"
 
-export function CourseDropdown(props: {courses: Course[], setCourseFunc: any }) {
+// TODO: show warning if that activity already exists in the course
+// TODO: make it so you can drag entries to reorder them
+
+export function CourseOrActivityDropdown(props: {text:string, dataArray: any[], setSelectedFunc: any }) {
   return (
-    <Select onValueChange={props.setCourseFunc}>
+    <Select onValueChange={props.setSelectedFunc}>
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select a course" />
+        <SelectValue placeholder={`Select ${props.text}`} />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>Courses</SelectLabel>
-          {props.courses.map((course) => (
-            <SelectItem key={course.id} value={course.id.toString()}>
-              {course.external_title}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
-  )
-}
-
-export function ActivityDropdown(props: { activities: Activity[], setActivityFunc: any }) {
-  return (
-    <Select onValueChange={props.setActivityFunc}>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select an activity" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          <SelectLabel>Activities</SelectLabel>
-          {props.activities.map((activity) => (
-            <SelectItem key={activity.id} value={activity.id.toString()}>
-              {activity.external_title}
+          <SelectLabel>{props.text}</SelectLabel>
+          {props.dataArray.map((element) => (
+            <SelectItem key={element.id} value={element.id.toString()}>
+              {element.external_title}
             </SelectItem>
           ))}
         </SelectGroup>
@@ -85,11 +66,11 @@ export default function CAJJoiner(props: any){
 
     return (
         <>
-        <div>
-            <CourseDropdown courses={courses} setCourseFunc={setSelectedCourse} />
-            <ActivityDropdown activities={activities} setActivityFunc={setSelectedActivity} />
+        <div className='flex flex-row space-x-[10px]'>
+            <CourseOrActivityDropdown text={"Course"} dataArray={courses} setSelectedFunc={setSelectedCourse} />
+            <CourseOrActivityDropdown text={"Activity"} dataArray={activities} setSelectedFunc={setSelectedActivity} />
             <br/>
-            <button className='button' onClick={addCourseActivityJoin}>Add Course Activity Join</button>
+            <Button className="green-shadcn-button" onClick={addCourseActivityJoin}>Add Course Activity Join</Button>
             <br/>
         </div>
         </>

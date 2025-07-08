@@ -20,7 +20,7 @@ type Activity = {
     time_est_num: string
     about_text: string
     learning_objectives: string
-    params: object
+    params: Record<string, any>
     type: string
     qr_url: string
     icon_url: string
