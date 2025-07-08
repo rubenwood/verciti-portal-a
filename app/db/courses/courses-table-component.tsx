@@ -4,38 +4,32 @@ import { supabase } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
 import { checkUser } from '../general/get-user' // TODO: move check user up a level
 
-export default function ActivitiesTable(){
-    const [activities, setActivities] = useState<Activity[]>([]);
+export default function CoursesTable(){
+    const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
     const [editingId, setEditingId] = useState<number | null>(null);
-    const [editForm, setEditForm] = useState<Partial<Activity>>({});
+    const [editForm, setEditForm] = useState<Partial<Course>>({});
     const [user, setUser] = useState<User | null>(null);
 
-    const addActivity = async () => {
-        const { data, error } = await supabase.from('activities').insert([
+    const addCourse = async () => {
+        const { data, error } = await supabase.from('courses').insert([
             {
-                external_title: 'New Activity',
-                internal_title: 'New Activity',
-                time_est: '~1 min',
-                time_est_num: 60,
-                icon_url: '',
-                title_asset_url: '',
-                about_text: 'About this activity...',
-                learning_objectives: 'Learning objectives...',
-                params: {},
-                type: 'lesson'
+                external_title: 'New Course',
+                internal_title: 'New Course',
+                description: 'About this course...',
+                icon: '',                
             }
         ]).select();
         if (error) {
-            console.error('Error adding activity:', error);
+            console.error('Error adding course:', error);
         } else {
-            setActivities([...activities, ...data as unknown as Activity[]]);
+            setCourses([...courses, ...data as unknown as Course[]]);
         }
     }
 
-    const handleEditClick = (activity: Activity) => {
-        setEditingId(activity.id)
-        setEditForm(activity)
+    const handleEditClick = (course: Course) => {
+        setEditingId(course.id)
+        setEditForm(course)
       }
     
       const handleCancel = () => {
@@ -43,22 +37,22 @@ export default function ActivitiesTable(){
         setEditForm({})
       }
     
-      const handleChange = (field: keyof Activity, value: string) => {
+      const handleChange = (field: keyof Course, value: string) => {
         setEditForm((prev) => ({ ...prev, [field]: value }))
       }
     
       const handleSave = async () => {
         if (!editingId) return
         const { error } = await supabase
-          .from('activities')
+          .from('courses')
           .update(editForm)
           .eq('id', editingId)
     
         if (error) {
-          console.error('Error updating activity:', error)
+          console.error('Error updating Course:', error)
         } else {
-          setActivities((prev) =>
-            prev.map((a) => (a.id === editingId ? { ...a, ...editForm } : a))
+          setCourses((prev) =>
+            prev.map((c) => (c.id === editingId ? { ...c, ...editForm } : c))
           )
           setEditingId(null)
           setEditForm({})
@@ -73,18 +67,18 @@ export default function ActivitiesTable(){
         };
         init();
 
-        const fetchActivities = async () => {
+        const fetchCourses = async () => {
             setLoading(true);
-            const { data, error } = await supabase.from('activities').select('*');
+            const { data, error } = await supabase.from('courses').select('*');
 
             if (error) {
-                console.error('Error fetching activities:', error);
+                console.error('Error fetching courses:', error);
             } else {
-                setActivities(data as Activity[]);
+                setCourses(data as Course[]);
             }
             setLoading(false);
         }
-        fetchActivities();
+        fetchCourses();
     }, []);
     
     if(!user){ return <p>Not logged in</p> }
@@ -92,13 +86,13 @@ export default function ActivitiesTable(){
 
     if(user && !loading) return (        
         <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">Activities</h1>
+            <h1 className="text-2xl font-bold mb-4">Courses</h1>
             <br/>
-            <button className='button' onClick={addActivity}>Add Activity</button>
+            <button className='button' onClick={addCourse}>Add Course</button>
             <br/>
             <br/>  
-          {activities.length === 0 ? (
-            <p>No activities found.</p>
+          {courses.length === 0 ? (
+            <p>No courses found.</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-full table-auto border border-gray-200 text-sm">
@@ -106,17 +100,15 @@ export default function ActivitiesTable(){
                   <tr>
                     <th className="px-4 py-2 text-left">Internal Title</th>
                     <th className="px-4 py-2 text-left">External Title</th>
-                    <th className="px-4 py-2 text-left">Time Estimate</th>
-                    <th className="px-4 py-2 text-left">Time Estimate (Sec)</th>
-                    <th className="px-4 py-2 text-left">About</th>
-                    <th className="px-4 py-2 text-left">Learning Objectives</th>
+                    <th className="px-4 py-2 text-left">Description</th>
+                    <th className="px-4 py-2 text-left">Icon</th>
                     <th className="px-4 py-2 text-left">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {activities.map((activity) => (
-                    <tr key={activity.id} className="border-t">
-                      {editingId === activity.id ? (
+                  {courses.map((course) => (
+                    <tr key={course.id} className="border-t">
+                      {editingId === course.id ? (
                         <>
                           <td className="px-4 py-2">
                             <input
@@ -137,38 +129,20 @@ export default function ActivitiesTable(){
                             />
                           </td>
                           <td className="px-4 py-2">
-                            <input
+                            <textarea
                               className="w-full border rounded px-2 py-1"
-                              value={editForm.time_est || ''}
+                              value={editForm.description || ''}
                               onChange={(e) =>
-                                handleChange('time_est', e.target.value)
-                              }
-                            />
-                          </td>
-                          <td className="px-4 py-2">
-                            <input
-                              className="w-full border rounded px-2 py-1"
-                              value={editForm.time_est_num || ''}
-                              onChange={(e) =>
-                                handleChange('time_est_num', e.target.value)
+                                handleChange('description', e.target.value)
                               }
                             />
                           </td>
                           <td className="px-4 py-2">
                             <textarea
                               className="w-full border rounded px-2 py-1"
-                              value={editForm.about_text || ''}
+                              value={editForm.icon || ''}
                               onChange={(e) =>
-                                handleChange('about_text', e.target.value)
-                              }
-                            />
-                          </td>
-                          <td className="px-4 py-2">
-                            <textarea
-                              className="w-full border rounded px-2 py-1"
-                              value={editForm.learning_objectives || ''}
-                              onChange={(e) =>
-                                handleChange('learning_objectives', e.target.value)
+                                handleChange('icon', e.target.value)
                               }
                             />
                           </td>
@@ -189,21 +163,19 @@ export default function ActivitiesTable(){
                         </>
                       ) : (
                         <>
-                          <td className="px-4 py-2">{activity.internal_title}</td>
-                          <td className="px-4 py-2">{activity.external_title}</td>
-                          <td className="px-4 py-2">{activity.time_est}</td>
-                          <td className="px-4 py-2">{activity.time_est_num}</td>
+                          <td className="px-4 py-2">{course.internal_title}</td>
+                          <td className="px-4 py-2">{course.external_title}</td>
                           <td className="px-4 py-2">
-                            {activity.about_text}
+                            {course.description}
                           </td>
                           <td className="px-4 py-2">
-                            {activity.learning_objectives}
+                            {course.icon}
                           </td>
                           <td className="px-4 py-2">
                             <button
                               className="text-blue-500 hover:underline"
-                              onClick={() => activity.id !== undefined 
-                                            && handleEditClick(activity as Activity)
+                              onClick={() => course.id !== undefined 
+                                            && handleEditClick(course as Course)
                                 }
                             >
                               ✏️

@@ -1,6 +1,7 @@
-"use client"
 import Link from "next/link"
+import CoursesTable from "../db/courses/courses-table-component"
 import ActivitiesTable from "../db/activities/activities-table-component"
+import CourseActivityJoinTable from "../db/caj/caj-table-component"
 
 export default function LMSDashboard(){
     return (
@@ -15,7 +16,11 @@ export default function LMSDashboard(){
                 Browse Models
             </Link>
             <br/>
+            <CoursesTable />
+            <br/>
             <ActivitiesTable />
+            <br/>
+            <CourseActivityJoinTable />
         </>
     )
 }
