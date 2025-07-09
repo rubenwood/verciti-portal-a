@@ -29,12 +29,9 @@ export async function updateActivity(activity: Activity){
       .eq('id', activity.id)
       .select();
 
-      if(error){ 
-        console.log(error);
-        return;
-      }
+      const output = {data: data, error: error};
 
-      return data;
+      return output;
 }
 
 

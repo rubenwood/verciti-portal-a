@@ -13,12 +13,13 @@ import {
     Edge,
     Connection } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import React from "react";
 
 import ActivitySelectTable from "./activity-select-table-component"
 
 import { Button } from "@/components/ui/button";
+import confetti from 'canvas-confetti';
 
 const ActivityNode = React.memo((props: any) => {
     return (
@@ -47,6 +48,8 @@ export default function ActivityEditor(){
     const [edges, setEdges] = useState<Edge[]>([])
     const [allActivities, setActivities] = useState<Activity[]>([]);
     const [allStages, setStages] = useState<Stage[]>([]);
+
+    const saveButtonRef = useRef<HTMLButtonElement | null>(null);
 
     const [selectedActivity, setSelectedActivity] = useState<Activity>();
     const selectActivity = (activity: Activity) => {
@@ -144,10 +147,24 @@ export default function ActivityEditor(){
         setEdges(tempEdges);
     }
 
-    const saveChanges = () =>{
+    const saveChanges = async () =>{
         if(selectedActivity == undefined){ return; }
         // save the modified params back to supabase
-        updateActivity(selectedActivity);
+        const result = await updateActivity(selectedActivity);
+        if(result.error){
+            console.log(result.error);
+        }else{
+            const rect = saveButtonRef.current.getBoundingClientRect();
+            const x = (rect.left + rect.width / 2) / window.innerWidth;
+            const y = (rect.top + rect.height / 2) / window.innerHeight;
+            confetti({
+                particleCount: 70,
+                spread: 50,
+                origin: { x, y },
+                startVelocity:30
+            });
+        }
+
     }
 
     const init = async () => {
@@ -181,7 +198,7 @@ export default function ActivityEditor(){
         <br/>
         <div className="w-[180vh] h-[80vh] bg-gray-100 relative">
             <div className="p-5">
-                <Button className="green-shadcn-button" onClick={saveChanges}>Save</Button>
+                <Button ref={saveButtonRef} className="green-shadcn-button" onClick={saveChanges}>Save</Button>
             </div>
             <ReactFlow 
                 nodes={nodes}
