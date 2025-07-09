@@ -179,7 +179,7 @@ export default function ActivityEditor(){
         <>
         <ActivitySelectTable setSelectedFunc={selectActivity} />
         <br/>
-        <div className="w-[100vh] h-[80vh] bg-gray-100 relative">
+        <div className="w-[180vh] h-[80vh] bg-gray-100 relative">
             <div className="p-5">
                 <Button className="green-shadcn-button" onClick={saveChanges}>Save</Button>
             </div>
