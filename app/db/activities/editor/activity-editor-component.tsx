@@ -1,66 +1,59 @@
 "use client"
-import { fetchStages, fetchActivities, updateActivity, showConfetti } from "../../general/utils";
+import { useEffect, useState, useCallback, useRef } from "react";
+import React from "react";
+import { fetchStages, updateActivity, showConfetti } from "../../general/utils";
+
 import { 
     ReactFlow,
     Background,
     Controls,
     applyNodeChanges,
     applyEdgeChanges,
-    Handle,
-    Position,
     addEdge,
     Node,
     Edge,
     Connection } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { useEffect, useState, useCallback, useRef } from "react";
-import React from "react";
 
+import { ActivityNode, StageNode, InfoTextNode } from "./flow-nodes";
 import ActivitySelectTable from "./activity-select-table-component"
 
 import { Button } from "@/components/ui/button";
 
-const ActivityNode = React.memo((props: any) => {
-    return (
-         <div className="bg-sky-100 border rounded shadow p-2 text-xs max-w-md">
-            <Handle type="source" position={Position.Right} />
-            <p><strong>External Title:</strong><br/>{props.data.selectedActivity.external_title}</p><br/>
-            <p><strong>Params:</strong><br/>{JSON.stringify(props.data.selectedActivity.params)}</p><br/>
-        </div>
-    );
-});
-
-const StageNode = React.memo((props: any) => {
-    return (
-         <div className="bg-lime-100 border rounded shadow p-2 text-xs max-w-md">
-            <Handle type="target" position={Position.Left} />
-            <p><strong>Id:</strong>{props.data.stage.id}</p>
-            <p><strong>Type:</strong>{props.data.stage.type}</p>
-            <p><strong>Assets:</strong>{JSON.stringify(props.data.stage.assets)}</p>
-            <p><strong>Params:</strong>{JSON.stringify(props.data.stage.params)}</p>
-        </div>
-    );
-});
-
 export default function ActivityEditor(){
     const [nodes, setNodes] = useState<Node[]>([]);
     const [edges, setEdges] = useState<Edge[]>([])
-    const [allActivities, setActivities] = useState<Activity[]>([]);
     const [allStages, setStages] = useState<Stage[]>([]);
 
     const saveButtonRef = useRef<HTMLButtonElement | null>(null);
 
     const [selectedActivity, setSelectedActivity] = useState<Activity>();
     const selectActivity = (activity: Activity) => {
-        setSelectedActivity(activity)
+        setSelectedActivity(activity);
     }
 
-    const nodeTypes = { stageNode: StageNode, activityNode: ActivityNode }; 
+    const nodeTypes = { activityNode: ActivityNode, stageNode: StageNode, infoTextNode: InfoTextNode }; 
 
     const onNodesChange = useCallback(
         (changes: any) => setNodes((nds) => applyNodeChanges(changes, nds)),
         []
     );
+    const onNodeContextMenu = useCallback((event: any, node: any) => {
+        event.preventDefault();
+        switch(node.type){
+            case 'activityNode':
+                console.log("ACTIVITY NODE");
+                break;
+            case 'stageNode':
+                console.log("STAGE NODE");
+                createInfoTextNode(node);
+                break;
+            case 'infoTextNode':
+                console.log("INFO NODE");
+                
+                break;
+        }
+    }, [nodes, edges]);
 
     const onEdgesChange = useCallback(
         (changes: any) => setEdges((eds) => applyEdgeChanges(changes, eds)),
@@ -125,6 +118,33 @@ export default function ActivityEditor(){
         
         setNodes(tempNodes);
     }
+    const createInfoTextNode = (node: any) => {
+        let stageParams = node.data.stage.params;
+        console.log(stageParams);
+        let info_text = {
+            id: stageParams.infoTextId,
+            text_en_uk:"",
+            audio_en_uk:""
+        };
+        let tempInfoNode = {
+            id: `info-${stageParams.infoTextId}`,
+            type: 'infoTextNode',
+            position: {x:node.position.x+300, y:node.position.y},
+            data: { info_text }
+        }
+
+        console.log(node.data.stage.id);
+        console.log(stageParams.infoTextId);
+
+        let newEdge = {
+            id:`${node.data.stage.id}_${stageParams.infoTextId}`,
+            source:`stage-${node.id}`,
+            target:`info-${stageParams.infoTextId}`
+        }
+
+        setNodes((prev) => [...prev, tempInfoNode]);
+        setEdges((prev) => [...prev, newEdge]);
+    }
 
     // creates edges that connect stages to an activity
     const connectStagesActivity = () => {
@@ -146,26 +166,21 @@ export default function ActivityEditor(){
         setEdges(tempEdges);
     }
 
-    const saveChanges = async () =>{
+    const saveChanges = async () => {
         if(selectedActivity == undefined){ return; }
         // save the modified params back to supabase
         const result = await updateActivity(selectedActivity);
         if(result.error){
             console.log(result.error);
-        }else{
+        } else {
             showConfetti(saveButtonRef);
         }
-
     }
 
     const init = async () => {
-        const tempActivities = await fetchActivities();
-        setActivities(tempActivities as Activity[]);
-
         const tempStages = await fetchStages();
         setStages(tempStages as Stage[]);
     }
-
     useEffect(() => {
         init();
     }, []);
@@ -173,9 +188,6 @@ export default function ActivityEditor(){
     useEffect(() => {
         createNodesForSelectedActivity();
     }, [selectedActivity]);
-
-    useEffect(() => {
-    }, [nodes]);
 
     useEffect(() => {
         if (selectedActivity && nodes.length > 0) {
@@ -195,6 +207,7 @@ export default function ActivityEditor(){
                 nodes={nodes}
                 nodeTypes={nodeTypes}
                 onNodesChange={onNodesChange}
+                onNodeContextMenu={onNodeContextMenu}
                 edges={edges}
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
