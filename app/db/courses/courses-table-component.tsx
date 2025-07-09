@@ -74,7 +74,7 @@ export default function CoursesTable(){
             if (error) {
                 console.error('Error fetching courses:', error);
             } else {
-                setCourses(data as Course[]);
+                setCourses(data);
             }
             setLoading(false);
         }

@@ -1,5 +1,17 @@
 import { supabase } from '@/lib/supabase'
 
+
+export async function fetchStages() {
+    const { data, error } = await supabase.from('stages').select('*');
+
+    if (error) {
+        console.error('Error fetching activities:', error);
+        return error;
+    }
+
+    return data as Stage[];
+}
+
 export async function fetchActivities() {
     const { data, error } = await supabase.from('activities').select('*');
 
@@ -8,8 +20,23 @@ export async function fetchActivities() {
         return error;
     }
 
-    return data;
+    return data as Activity[];
 }
+export async function updateActivity(activity: Activity){
+    const { data, error } = await supabase
+      .from('activities')
+      .update(activity)
+      .eq('id', activity.id)
+      .select();
+
+      if(error){ 
+        console.log(error);
+        return;
+      }
+
+      return data;
+}
+
 
 export async function fetchCourses() {
     const { data, error } = await supabase.from('courses').select('*');
@@ -19,5 +46,5 @@ export async function fetchCourses() {
         return error;
     }
 
-    return data;
+    return data as Course[];
 }

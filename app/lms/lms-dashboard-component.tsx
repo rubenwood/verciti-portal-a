@@ -1,9 +1,27 @@
+"use client"
 import Link from "next/link"
 import CoursesTable from "../db/courses/courses-table-component"
 import ActivitiesTable from "../db/activities/activities-table-component"
 import CourseActivityJoinTable from "../db/caj/caj-table-component"
 
+import { useEffect, useState } from 'react'
+import { User } from '@supabase/supabase-js'
+import { checkUser } from "../db/general/get-user"
+import ActivityEditor from "../db/activities/editor/activity-editor-component"
+
 export default function LMSDashboard(){
+    const [user, setUser] = useState<User | null>(null);
+
+    useEffect(() => {
+        const init = async () => {
+            const user = await checkUser();
+            if (user) { setUser(user); }
+        };
+        init();
+    }, []);
+
+    if(!user){ return <p>Not logged in</p> }
+
     return (
         <>
             <div>
@@ -15,12 +33,15 @@ export default function LMSDashboard(){
             <Link href="/model-browser" className="button">
                 Browse Models
             </Link>
-            <br/>
+            {/* <br/>
             <CoursesTable />
             <br/>
             <ActivitiesTable />
             <br/>
-            <CourseActivityJoinTable />
+            <CourseActivityJoinTable /> */}
+            <br/>
+            <br/>
+            <ActivityEditor />
         </>
     )
 }

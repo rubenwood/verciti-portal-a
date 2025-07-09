@@ -1,15 +1,12 @@
 "use client"
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import { User } from '@supabase/supabase-js'
-import { checkUser } from '../general/get-user' // TODO: move check user up a level
 
 export default function ActivitiesTable(){
     const [activities, setActivities] = useState<Activity[]>([]);
     const [loading, setLoading] = useState(true);
-    const [editingId, setEditingId] = useState<number | null>(null);
+    const [editingId, setEditingId] = useState<string | null>(null);
     const [editForm, setEditForm] = useState<Partial<Activity>>({});
-    const [user, setUser] = useState<User | null>(null);
     const [paramsInput, setParamsInput] = useState<string>('');
 
     const addActivity = async () => {
@@ -85,13 +82,6 @@ export default function ActivitiesTable(){
 
 
     useEffect(() => {
-        const init = async () => {
-            const user = await checkUser();
-            if (user) { setUser(user); }
-            setLoading(false);
-        };
-        init();
-
         const fetchActivities = async () => {
             setLoading(true);
             const { data, error } = await supabase.from('activities').select('*');
@@ -99,17 +89,16 @@ export default function ActivitiesTable(){
             if (error) {
                 console.error('Error fetching activities:', error);
             } else {
-                setActivities(data as Activity[]);
+                setActivities(data);
             }
             setLoading(false);
         }
         fetchActivities();
     }, []);
     
-    if(!user){ return <p>Not logged in</p> }
-    if(user && loading){ return <p className="p-4">Loading modules...</p> }    
+    if(loading){ return <p className="p-4">Loading modules...</p> }    
 
-    if(user && !loading) return (        
+    if(!loading) return (        
         <div className="p-6">
             <h1 className="text-2xl font-bold mb-4">Activities</h1>
             <br/>

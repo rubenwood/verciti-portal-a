@@ -1,5 +1,5 @@
 type Course = {
-    id: number
+    id: string
     created_at: string
     internal_title: string
     external_title: string    
@@ -11,7 +11,7 @@ type Course = {
 }
 
 type Activity = {
-    id: number
+    id: string
     created_at: string
     external_title: string
     internal_title: string
@@ -27,10 +27,18 @@ type Activity = {
     title_asset_url: string
 }
 
+type Stage = {
+    id: string,
+    created_at: string,
+    type: string,
+    assets: object,
+    params: Record<string, any>
+}
+
 type CourseActivity = {
-    id: number
-    course_id: number
-    activity_id: number
+    id: string
+    course_id: string
+    activity_id: string
     order: number
     created_at: string
 }
