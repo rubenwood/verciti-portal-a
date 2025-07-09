@@ -1,5 +1,5 @@
 "use client"
-import { fetchStages, fetchActivities, updateActivity } from "../../general/utils";
+import { fetchStages, fetchActivities, updateActivity, showConfetti } from "../../general/utils";
 import { 
     ReactFlow,
     Background,
@@ -19,7 +19,6 @@ import React from "react";
 import ActivitySelectTable from "./activity-select-table-component"
 
 import { Button } from "@/components/ui/button";
-import confetti from 'canvas-confetti';
 
 const ActivityNode = React.memo((props: any) => {
     return (
@@ -154,15 +153,7 @@ export default function ActivityEditor(){
         if(result.error){
             console.log(result.error);
         }else{
-            const rect = saveButtonRef.current.getBoundingClientRect();
-            const x = (rect.left + rect.width / 2) / window.innerWidth;
-            const y = (rect.top + rect.height / 2) / window.innerHeight;
-            confetti({
-                particleCount: 70,
-                spread: 50,
-                origin: { x, y },
-                startVelocity:30
-            });
+            showConfetti(saveButtonRef);
         }
 
     }

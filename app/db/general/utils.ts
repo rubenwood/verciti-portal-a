@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase'
-
+import confetti from 'canvas-confetti';
+import type { RefObject } from 'react';
 
 export async function fetchStages() {
     const { data, error } = await supabase.from('stages').select('*');
@@ -44,4 +45,19 @@ export async function fetchCourses() {
     }
 
     return data as Course[];
+}
+
+
+export function showConfetti<T extends HTMLElement = HTMLElement>(ref: RefObject<T>){
+    if (!ref?.current) return;
+
+    const rect = ref.current.getBoundingClientRect();
+    const x = (rect.left + rect.width / 2) / window.innerWidth;
+    const y = (rect.top + rect.height / 2) / window.innerHeight;
+    confetti({
+        particleCount: 70,
+        spread: 50,
+        origin: { x, y },
+        startVelocity:30
+    });
 }
