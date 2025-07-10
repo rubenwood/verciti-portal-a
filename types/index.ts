@@ -39,7 +39,7 @@ type InfoText = {
     id: string,
     created_at: string,
     text_en_uk: string,
-    audio_en_uk: string
+    media_en_uk: string
 }
 
 type CourseActivity = {

@@ -31,7 +31,7 @@ export const InfoTextNode = React.memo((props: any) => {
             <Handle type="target" position={Position.Left} />
             <p><strong>Id:</strong>{props.data.info_text.id}</p>
             <p><strong>Text (En-UK)</strong>{props.data.info_text.text_en_uk}</p>
-            <p><strong>Audio (En-UK)</strong>{props.data.info_text.audio_en_uk}</p>
+            <p><strong>Media (En-UK)</strong>{props.data.info_text.media_en_uk}</p>
         </div>
     );
 });

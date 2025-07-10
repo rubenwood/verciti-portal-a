@@ -76,8 +76,15 @@ export default function ActivityEditor(){
 
     const onConnect = useCallback((cbConnection: Connection) => {
         if(selectedActivity == undefined) { return; }
-
-        selectedActivity.params.stage_ids.push(cbConnection.target.replace('stage-',''));
+        
+        // activity - stage connection
+        if(cbConnection.source.startsWith('activity-') && cbConnection.target.startsWith('stage-')){
+            selectedActivity.params.stage_ids.push(cbConnection.target.replace('stage-',''));
+        }
+        // stage - info connection
+        if(cbConnection.source.startsWith('stage-') && cbConnection.target.startsWith('info-')){
+        
+        }
 
         // need to pass a new object to force re-render
         setSelectedActivity({ ...selectedActivity }); 
@@ -142,7 +149,7 @@ export default function ActivityEditor(){
         let info_text = {
             id: stageParams.infoTextId,
             text_en_uk: JSON.stringify(infoTextData.text_en_uk),
-            audio_en_uk: JSON.stringify(infoTextData.audio_en_uk)
+            media_en_uk: JSON.stringify(infoTextData.media_en_uk)
         };
         let tempInfoNode = {
             id: `info-${stageParams.infoTextId}`,
@@ -153,13 +160,15 @@ export default function ActivityEditor(){
 
         let newEdge = {
             id:`${node.data.stage.id}_${stageParams.infoTextId}`,
-            source:`stage-${node.id}`,
+            source:`stage-${node.data.stage.id}`,
             target:`info-${stageParams.infoTextId}`
         }
 
         setNodes((prev) => [...prev, tempInfoNode]);
         // TODO: edges not updated
-        setEdges((prev) => [...prev, newEdge]);
+        setTimeout(() => {
+            setEdges((prev) => [...prev, newEdge]);
+        }, 10);
     }
     const showInfoTextMenu = async (event: React.MouseEvent, node: any) => {
         setContextMenu({
