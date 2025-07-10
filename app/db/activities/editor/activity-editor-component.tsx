@@ -147,15 +147,17 @@ export default function ActivityEditor(){
         console.log(infoTextData);
 
         let info_text = {
-            id: stageParams.infoTextId,
+            id: infoTextData.id,
             text_en_uk: JSON.stringify(infoTextData.text_en_uk),
             media_en_uk: JSON.stringify(infoTextData.media_en_uk)
         };
         let tempInfoNode = {
-            id: `info-${stageParams.infoTextId}`,
+            id: `info-${infoTextData.id}`,
             type: 'infoTextNode',
             position: {x:node.position.x+300, y:node.position.y},
-            data: { info_text }
+            data: { info_text },
+            targetPosition:'left',
+            sourcePosition:'right'
         }
 
         let newEdge = {
@@ -171,13 +173,17 @@ export default function ActivityEditor(){
         }, 10);
     }
     const showInfoTextMenu = async (event: React.MouseEvent, node: any) => {
+        const container = event.currentTarget.closest(".react-flow"); // or the specific container class
+        const containerRect = container?.getBoundingClientRect();
+
+        const offsetX = event.clientX - (containerRect?.left ?? 0);
+        const offsetY = event.clientY - (containerRect?.top ?? 0);
         setContextMenu({
             visible: true,
-            x: event.clientX,
-            y: event.clientY,
+            x: offsetX,
+            y: offsetY,
             nodeId: node.id
-        });
-        
+        });        
     }
 
     // creates edges that connect stages to an activity

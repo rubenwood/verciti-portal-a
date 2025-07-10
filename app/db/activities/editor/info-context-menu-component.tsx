@@ -41,7 +41,7 @@ export default function InfoTextContextMenu({
 
     return (
         <div
-            className="absolute bg-white border rounded shadow-md p-2 z-50"
+            className="absolute z-50 bg-white shadow-lg rounded p-2"
             style={{ top: y, left: x }}
             onClick={(e) => e.stopPropagation()}
         >
