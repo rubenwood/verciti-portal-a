@@ -1,7 +1,12 @@
 "use client"
 import { useEffect, useState, useCallback, useRef } from "react";
 import React from "react";
-import { fetchStages, updateActivity, showConfetti } from "../../general/utils";
+import { 
+    fetchStages, 
+    updateActivity, 
+    fetchInfoText,
+    fetchAllInfoText, 
+    showConfetti } from "../../general/utils";
 
 import { 
     ReactFlow,
@@ -17,6 +22,7 @@ import '@xyflow/react/dist/style.css';
 
 import { ActivityNode, StageNode, InfoTextNode } from "./flow-nodes";
 import ActivitySelectTable from "./activity-select-table-component"
+import InfoTextContextMenu from "./info-context-menu-component";
 
 import { Button } from "@/components/ui/button";
 
@@ -24,6 +30,13 @@ export default function ActivityEditor(){
     const [nodes, setNodes] = useState<Node[]>([]);
     const [edges, setEdges] = useState<Edge[]>([])
     const [allStages, setStages] = useState<Stage[]>([]);
+
+    const [contextMenu, setContextMenu] = useState<{
+        visible: boolean;
+        x: number;
+        y: number;
+        nodeId: string;
+    } | null>(null);
 
     const saveButtonRef = useRef<HTMLButtonElement | null>(null);
 
@@ -49,6 +62,7 @@ export default function ActivityEditor(){
                 createInfoTextNode(node);
                 break;
             case 'infoTextNode':
+                showInfoTextMenu(event, node);
                 console.log("INFO NODE");
                 
                 break;
@@ -118,13 +132,17 @@ export default function ActivityEditor(){
         
         setNodes(tempNodes);
     }
-    const createInfoTextNode = (node: any) => {
+    const createInfoTextNode = async (node: any) => {
         let stageParams = node.data.stage.params;
         console.log(stageParams);
+        
+        const infoTextData: InfoText = await fetchInfoText(stageParams.infoTextId);
+        console.log(infoTextData);
+
         let info_text = {
             id: stageParams.infoTextId,
-            text_en_uk:"",
-            audio_en_uk:""
+            text_en_uk: JSON.stringify(infoTextData.text_en_uk),
+            audio_en_uk: JSON.stringify(infoTextData.audio_en_uk)
         };
         let tempInfoNode = {
             id: `info-${stageParams.infoTextId}`,
@@ -133,9 +151,6 @@ export default function ActivityEditor(){
             data: { info_text }
         }
 
-        console.log(node.data.stage.id);
-        console.log(stageParams.infoTextId);
-
         let newEdge = {
             id:`${node.data.stage.id}_${stageParams.infoTextId}`,
             source:`stage-${node.id}`,
@@ -143,7 +158,17 @@ export default function ActivityEditor(){
         }
 
         setNodes((prev) => [...prev, tempInfoNode]);
+        // TODO: edges not updated
         setEdges((prev) => [...prev, newEdge]);
+    }
+    const showInfoTextMenu = async (event: React.MouseEvent, node: any) => {
+        setContextMenu({
+            visible: true,
+            x: event.clientX,
+            y: event.clientY,
+            nodeId: node.id
+        });
+        
     }
 
     // creates edges that connect stages to an activity
@@ -217,6 +242,13 @@ export default function ActivityEditor(){
                 <Background />
                 <Controls />
             </ReactFlow>
+            <InfoTextContextMenu
+                visible={contextMenu?.visible ?? false}
+                x={contextMenu?.x ?? 0}
+                y={contextMenu?.y ?? 0}
+                nodeId={contextMenu?.nodeId ?? ""}
+                onClose={() => setContextMenu(null)}
+            />
         </div>
         </>
     );
