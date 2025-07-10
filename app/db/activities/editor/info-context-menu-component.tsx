@@ -9,13 +9,7 @@ type InfoTextContextMenuProps = {
     onClose: () => void;
 };
 
-export default function InfoTextContextMenu({
-    visible,
-    x,
-    y,
-    nodeId,
-    onClose,
-}: InfoTextContextMenuProps) {
+export default function InfoTextContextMenu({ visible, x, y, nodeId, onClose,}: InfoTextContextMenuProps) {
     if (!visible) return null;
 
     const handleEditClick = (e: React.MouseEvent) => {

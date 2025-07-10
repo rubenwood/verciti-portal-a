@@ -1,12 +1,7 @@
 "use client"
 import { useEffect, useState, useCallback, useRef } from "react";
 import React from "react";
-import { 
-    fetchStages, 
-    updateActivity, 
-    fetchInfoText,
-    fetchAllInfoText, 
-    showConfetti } from "../../general/utils";
+import { fetchStages, fetchInfoText, fetchAllInfoText } from "../../general/utils";
 
 import { 
     ReactFlow,
@@ -23,8 +18,7 @@ import '@xyflow/react/dist/style.css';
 import { ActivityNode, StageNode, InfoTextNode } from "./flow-nodes";
 import ActivitySelectTable from "./activity-select-table-component"
 import InfoTextContextMenu from "./info-context-menu-component";
-
-import { Button } from "@/components/ui/button";
+import EditorSaveButton from "./editor-save-btn-component";
 
 export default function ActivityEditor(){
     const [nodes, setNodes] = useState<Node[]>([]);
@@ -37,8 +31,6 @@ export default function ActivityEditor(){
         y: number;
         nodeId: string;
     } | null>(null);
-
-    const saveButtonRef = useRef<HTMLButtonElement | null>(null);
 
     const [selectedActivity, setSelectedActivity] = useState<Activity>();
     const selectActivity = (activity: Activity) => {
@@ -206,17 +198,6 @@ export default function ActivityEditor(){
         setEdges(tempEdges);
     }
 
-    const saveChanges = async () => {
-        if(selectedActivity == undefined){ return; }
-        // save the modified params back to supabase
-        const result = await updateActivity(selectedActivity);
-        if(result.error){
-            console.log(result.error);
-        } else {
-            showConfetti(saveButtonRef);
-        }
-    }
-
     const init = async () => {
         const tempStages = await fetchStages();
         setStages(tempStages as Stage[]);
@@ -240,9 +221,7 @@ export default function ActivityEditor(){
         <ActivitySelectTable setSelectedFunc={selectActivity} />
         <br/>
         <div className="w-[180vh] h-[80vh] bg-gray-100 relative">
-            <div className="p-5">
-                <Button ref={saveButtonRef} className="green-shadcn-button" onClick={saveChanges}>Save</Button>
-            </div>
+            <EditorSaveButton selectedActivity={selectedActivity} />
             <ReactFlow 
                 nodes={nodes}
                 nodeTypes={nodeTypes}
