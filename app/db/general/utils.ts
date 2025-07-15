@@ -3,6 +3,30 @@ import confetti from 'canvas-confetti';
 import type { RefObject } from 'react';
 
 
+export async function insertInfoTexts(rows: { heading: string; body: string }[]) {
+    const validRows = rows.filter(r => r.body.trim().length > 0);
+
+    const insertData = validRows.map(r => ({
+        text_en_uk: { title: r.heading, body: r.body.trim() },
+        text_en_us: null,
+        text_fr: null,
+        text_es: null,
+        text_de: null,
+        text_ar: null,
+        media_en_uk: null,
+        media_en_us: null,
+    }));
+
+    const { data, error } = await supabase.from('info_texts').insert(insertData).select();
+
+    if (error) {
+        console.error('Insert info text error:', error);
+        throw error;
+    }
+
+    return data;
+}
+
 export async function fetchAllInfoText() {
     const { data, error } = await supabase.from('info_texts').select('*');
 
@@ -22,6 +46,25 @@ export async function fetchInfoText(infoTextId: string) {
     }
 
     return data as InfoText[];
+}
+
+
+export async function insertStages(rows: { stageType: string, stageAssets: object, stageParams: Record<string, any> }[]) {
+    const insertData = rows.map( r => ({
+        type: r.stageType,
+        assets: r.stageAssets,
+        params: r.stageParams
+    }));
+    
+
+    const { data, error } = await supabase.from('stages').insert(insertData).select();
+
+    if (error) {
+    console.error('Insert stage error:', error);
+    throw error;
+    }
+
+    return data; // Contains id and created_at from Supabase
 }
 
 export async function fetchStages() {
@@ -68,7 +111,6 @@ export async function fetchCourses() {
 
     return data as Course[];
 }
-
 
 export function showConfetti<T extends HTMLElement = HTMLElement>(ref: RefObject<T>){
     if (!ref?.current) return;

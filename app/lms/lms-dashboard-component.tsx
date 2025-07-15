@@ -3,6 +3,7 @@ import Link from "next/link"
 import CoursesTable from "../db/courses/courses-table-component"
 import ActivitiesTable from "../db/activities/activities-table-component"
 import CourseActivityJoinTable from "../db/caj/caj-table-component"
+import InfoTextUploader from "../db/activities/info-text/info-text-upload-component"
 
 import { useEffect, useState } from 'react'
 import { User } from '@supabase/supabase-js'
@@ -40,6 +41,7 @@ export default function LMSDashboard(){
             <br/>
             <CourseActivityJoinTable /> */}
             <br/>
+            <InfoTextUploader />
             <br/>
             <ActivityEditor />
         </>
