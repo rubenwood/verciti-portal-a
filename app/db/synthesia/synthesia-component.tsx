@@ -7,36 +7,37 @@ import { useRef, useState } from "react";
 import { getInfoTextsByBatchId, showConfetti } from "../../db/general/utils";
 
 
-export async function createSynthesiaVideoFromTemplate(infoText: InfoText,videoTitle: string) {
+export async function createSynthesiaVideo(infoText: InfoText,videoTitle: string) {
     console.log(infoText.text_en_uk.body);
 
-    const response = await fetch('https://api.synthesia.io/v2/videos', {
+    const response = await fetch('/api/synthesia/create', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': '3cd3c875d802fe559c24bd50f0170327'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            test: false,
+            test: true,
             title: videoTitle,
             visibility: 'private',
             aspectRatio: '16:9',
             input: [
-            {
-                scriptText: infoText.text_en_uk.body,
-                avatar: 'de94052e-fdd0-4a27-8d6d-5e1dab38f2fe',
-                avatarSettings: {scale: 0.75, style: 'circular', backgroundColor: '#f6f2f2'},
-                background: 'workspace-media.eefd0e26-7cc4-4825-8963-114363cc0dbe',
-                backgroundSettings: {
-                    videoSettings: {
-                        shortBackgroundContentMatchMode: 'freeze',
-                        longBackgroundContentMatchMode: 'trim'
-                    }
-                }
-            }
-            ]
+                {
+                    scriptText: infoText.text_en_uk.body,
+                    avatar: 'de94052e-fdd0-4a27-8d6d-5e1dab38f2fe',
+                    avatarSettings: {
+                        scale: 0.75,
+                        style: 'circular',
+                        backgroundColor: '#f6f2f2',
+                    },
+                    background: 'workspace-media.eefd0e26-7cc4-4825-8963-114363cc0dbe',
+                    backgroundSettings: {
+                        videoSettings: {
+                            shortBackgroundContentMatchMode: 'freeze',
+                            longBackgroundContentMatchMode: 'trim',
+                        },
+                    },
+                },
+            ],
         }),
-    });
+    })
 
     if (!response.ok) {
         throw new Error(`Failed to create Synthesia video\n${await response.text()}`);
@@ -44,6 +45,13 @@ export async function createSynthesiaVideoFromTemplate(infoText: InfoText,videoT
 
     return await response.json();
 }
+
+export async function downloadAllVideos(videoIds: string[]) {
+    const downloadPromises = videoIds.map(async (videoId) => {
+        
+    });
+}
+
 
 export default function BatchSynthesia() {
     const [batchId, setBatchId] = useState<string>("");
@@ -57,12 +65,14 @@ export default function BatchSynthesia() {
             return;
         }
         
+        let videoIds = [];
         let i = 1;
         for (const infoText of infoTexts) {
             const videoTitle = `${videoTitlePrefix}-${i}`;
             try {
-                const videoResponse = await createSynthesiaVideoFromTemplate(infoText, videoTitle);
-                console.log(`Video created successfully: ${videoResponse.id}`);
+                const videoResponse = await createSynthesiaVideo(infoText, videoTitle);
+                console.log(`Video created successfully: ${videoResponse.id}`)
+                videoIds.push(videoResponse.id);
             } catch (error) {
                 console.error(`Error creating video for info text ID ${infoText.id}:`, error);
             }
@@ -74,6 +84,8 @@ export default function BatchSynthesia() {
             }
         }
 
+        
+        downloadAllVideos(videoIds);
         showConfetti(submitBtnRef);
     }
 
