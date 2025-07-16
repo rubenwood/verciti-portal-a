@@ -12,6 +12,7 @@ import { User } from '@supabase/supabase-js'
 import { checkUser } from "../db/general/get-user"
 import ActivityEditor from "../db/activities/editor/activity-editor-component"
 import BatchDelete from "../db/activities/editor/batch-delete-component"
+import BatchSynthesia from "../db/synthesia/synthesia-component"
 
 export default function LMSDashboard(){
     const [courseConfigVisible, setCourseConfigVisible] = useState(false);
@@ -55,6 +56,8 @@ export default function LMSDashboard(){
             <InfoTextUploader />
             <br/>
             <BatchDelete />
+            <br/>
+            <BatchSynthesia />
             <br/>
             <ActivityEditor />
         </>

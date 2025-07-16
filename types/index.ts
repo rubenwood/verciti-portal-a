@@ -39,7 +39,7 @@ type Stage = {
 type InfoText = {
     id: string,
     created_at: string,
-    text_en_uk: string,
+    text_en_uk: any,
     media_en_uk: string,
     batch_id: string
 }

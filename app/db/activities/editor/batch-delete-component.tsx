@@ -24,8 +24,12 @@ export default function BatchDelete(){
 
     return (
         <>
-        <div className="border-4 border-gray-200 rounded p-4 space-y-4">
-            <b>Batch delete</b>
+        <div className="grey-border">
+            <b>Batch delete</b><br/>
+            <i>
+                Enter the Batch ID to delete all info texts and stages associated with it.<br/>
+                This action cannot be undone.
+            </i>
             <input 
                 id='batch-id-input' 
                 type='text' 

@@ -2,6 +2,19 @@ import { supabase } from '@/lib/supabase'
 import confetti from 'canvas-confetti';
 import type { RefObject } from 'react';
 
+export async function getInfoTextsByBatchId(batchId: string) {
+    const { data, error } = await supabase
+        .from('info_texts')
+        .select('*')
+        .eq('batch_id', batchId);
+
+    if (error) {
+        console.error('Error fetching info texts:', error);
+        throw error;
+    }
+
+    return data;
+}
 
 export async function deleteInfoTextByBatchId(batchId: string) {
     const { data, error } = await supabase

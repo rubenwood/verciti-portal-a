@@ -93,8 +93,12 @@ export default function InfoTextUploader() {
   };
 
   return (
-    <div className="border-4 border-gray-200 rounded p-4 space-y-4">
-      <b>Batch Upload</b>
+    <div className="grey-border">
+      <b>Batch Upload</b><br/>
+      <i>
+        Upload a csv with the heading, body and batch id columns.<br/>
+        This tool will then create the info text entries and related stage for each.
+      </i>
       <br/>
       <input
         type="file"
