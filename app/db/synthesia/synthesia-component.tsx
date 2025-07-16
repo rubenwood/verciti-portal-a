@@ -68,7 +68,7 @@ export default function BatchSynthesia() {
             }
             i++;
 
-            if( i > 10) {
+            if(i > 15) {
                 console.warn("Stopping after 10 videos to avoid rate limits.");
                 break;
             }
