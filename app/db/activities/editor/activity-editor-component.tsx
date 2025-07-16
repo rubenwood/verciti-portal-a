@@ -2,7 +2,6 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import React from "react";
 import { fetchStages, fetchInfoText, fetchAllInfoText } from "../../general/utils";
-
 import { 
     ReactFlow,
     Background,
@@ -55,8 +54,7 @@ export default function ActivityEditor(){
                 break;
             case 'infoTextNode':
                 showInfoTextMenu(event, node);
-                console.log("INFO NODE");
-                
+                console.log("INFO NODE");                
                 break;
         }
     }, [nodes, edges]);
@@ -89,13 +87,19 @@ export default function ActivityEditor(){
         if(selectedActivity == undefined){ return; }
 
         const stageIdToRemove = edge.target.replace('stage-', '');
-        selectedActivity.params.stage_ids = selectedActivity.params.stage_ids.filter(
+        const updatedStageIds = selectedActivity.params.stage_ids.filter(
             (id: any) => id !== stageIdToRemove
         );
 
-        // need to pass a new object to force re-render
-        setSelectedActivity({ ...selectedActivity }); 
-        setEdges((eds) => eds.filter((e: any) => e.id !== edge.id));
+        const updatedActivity: Activity = {
+            ...selectedActivity,
+            params: {
+                ...selectedActivity.params,
+                stage_ids: updatedStageIds
+            }
+        };
+
+        setSelectedActivity(updatedActivity);
 
     }, [selectedActivity]);
 
@@ -135,6 +139,11 @@ export default function ActivityEditor(){
         let stageParams = node.data.stage.params;
         console.log(stageParams);
         
+        if (nodes.some(n => n.id === `info-${stageParams.infoTextId}`)) {
+            console.log(`Info node info-${stageParams.infoTextId} already exists.`);
+            return;
+        }
+        
         const infoTextData: InfoText = await fetchInfoText(stageParams.infoTextId);
         console.log(infoTextData);
 
@@ -159,10 +168,7 @@ export default function ActivityEditor(){
         }
 
         setNodes((prev) => [...prev, tempInfoNode]);
-        // TODO: edges not updated
-        setTimeout(() => {
-            setEdges((prev) => [...prev, newEdge]);
-        }, 10);
+        setEdges((prev) => [...prev, newEdge]);        
     }
     const showInfoTextMenu = async (event: React.MouseEvent, node: any) => {
         const container = event.currentTarget.closest(".react-flow"); // or the specific container class
@@ -178,25 +184,38 @@ export default function ActivityEditor(){
         });        
     }
 
-    // creates edges that connect stages to an activity
-    const connectStagesActivity = () => {
-        if(selectedActivity == undefined){ return; }
 
-        let activityStageIds = selectedActivity?.params?.stage_ids;
-        if(activityStageIds == undefined || activityStageIds.length == 0){ return; }
-        let tempEdges = [];
+    const buildEdges = () => {
+        if (!selectedActivity) return;
 
-        for(const stageId of activityStageIds){
-            let newEdge = {
-                id:`${selectedActivity.id}_${stageId}`,
-                source:`activity-${selectedActivity.id}`,
-                target:`stage-${stageId}`
-            }
-            tempEdges.push(newEdge);
+        const stageEdges: Edge[] = [];
+        const infoTextEdges: Edge[] = [];
+
+        // Build edges from activity to stages
+        const activityStageIds = selectedActivity.params?.stage_ids ?? [];
+        for (const stageId of activityStageIds) {
+            stageEdges.push({
+                id: `edge-activity-${selectedActivity.id}-stage-${stageId}`,
+                source: `activity-${selectedActivity.id}`,
+                target: `stage-${stageId}`,
+            });
         }
 
-        setEdges(tempEdges);
-    }
+        // Build edges from stages to their associated info texts
+        for (const stage of allStages) {
+            const infoId = stage.params?.infoTextId;
+            if (infoId) {
+                infoTextEdges.push({
+                    id: `edge-stage-${stage.id}-info-${infoId}`,
+                    source: `stage-${stage.id}`,
+                    target: `info-${infoId}`,
+                });
+            }
+        }
+
+        // Combine both sets
+        setEdges([...stageEdges, ...infoTextEdges]);
+    };
 
     const init = async () => {
         const tempStages = await fetchStages();
@@ -212,9 +231,10 @@ export default function ActivityEditor(){
 
     useEffect(() => {
         if (selectedActivity && nodes.length > 0) {
-            connectStagesActivity();
+            //connectStagesActivity();
+            buildEdges();
         }
-    }, [nodes, selectedActivity]);
+    }, [nodes, selectedActivity, allStages]);
 
     return (
         <>

@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react'
 import { User } from '@supabase/supabase-js'
 import { checkUser } from "../db/general/get-user"
 import ActivityEditor from "../db/activities/editor/activity-editor-component"
+import BatchDelete from "../db/activities/editor/batch-delete-component"
 
 export default function LMSDashboard(){
     const [user, setUser] = useState<User | null>(null);
@@ -42,6 +43,8 @@ export default function LMSDashboard(){
             <CourseActivityJoinTable /> */}
             <br/>
             <InfoTextUploader />
+            <br/>
+            <BatchDelete />
             <br/>
             <ActivityEditor />
         </>

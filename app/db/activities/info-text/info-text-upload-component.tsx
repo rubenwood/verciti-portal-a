@@ -1,5 +1,4 @@
 'use client';
-
 import { useState } from 'react';
 import * as XLSX from 'xlsx';
 import Papa from 'papaparse';
@@ -8,9 +7,14 @@ import { insertInfoTexts, insertStages } from '../../general/utils';
 type ParsedRow = {
   heading: string;
   body: string;
+  batchId: string;
 };
 
 export default function InfoTextUploader() {
+  const headingRowTitle = 'Heading Text';
+  const bodyRowTitle = 'Body Text';
+  const batchIdRowTitle = 'Batch Id';
+
   const [parsedRows, setParsedRows] = useState<ParsedRow[]>([]);
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState('');
@@ -36,8 +40,9 @@ export default function InfoTextUploader() {
           skipEmptyLines: true,
           complete: (results) => {
             const parsed = (results.data as any[]).map((row) => ({
-              heading: row['Heading Text'] || '',
-              body: row['Body Text'] || '',
+              heading: row[headingRowTitle] || '',
+              body: row[bodyRowTitle] || '',
+              batchId: row[batchIdRowTitle] || ''
             }));
             setParsedRows(parsed.filter((r) => r.body.trim().length > 0));
           },
@@ -47,8 +52,9 @@ export default function InfoTextUploader() {
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json(sheet);
         const parsed = (jsonData as any[]).map((row) => ({
-          heading: row['Heading Text'] || '',
-          body: row['Body Text'] || '',
+          heading: row[headingRowTitle] || '',
+          body: row[bodyRowTitle] || '',
+          batchId: row[batchIdRowTitle] || ''
         }));
         setParsedRows(parsed.filter((r) => r.body.trim().length > 0));
       }
@@ -69,12 +75,15 @@ export default function InfoTextUploader() {
       }
 
       setStatus('Uploading to Supabase...');
+      // inster info texts
       const infoTexts = await insertInfoTexts(parsedRows);
       const stageRows = infoTexts.map((infoText: InfoText) => ({
         stageType: 'info',
         stageAssets: [],
         stageParams: { infoTextId: infoText.id },
+        stageBatchId: infoText.batch_id
       }));
+      // insert a new stage for each info text
       const insertedStages = await insertStages(stageRows);
 
       setStatus(`✅ Successfully inserted ${infoTexts.length} records!`);
@@ -84,7 +93,9 @@ export default function InfoTextUploader() {
   };
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="border-4 border-gray-200 rounded p-4 space-y-4">
+      <b>Batch Upload</b>
+      <br/>
       <input
         type="file"
         accept=".csv,.xls,.xlsx"
@@ -94,7 +105,7 @@ export default function InfoTextUploader() {
         <button
           disabled={!parsedRows.length}
           onClick={handleSubmit}
-          className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
+          className="blue-submit-button"
         >
           Submit to Supabase
         </button>

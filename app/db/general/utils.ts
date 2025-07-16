@@ -3,7 +3,22 @@ import confetti from 'canvas-confetti';
 import type { RefObject } from 'react';
 
 
-export async function insertInfoTexts(rows: { heading: string; body: string }[]) {
+export async function deleteInfoTextByBatchId(batchId: string) {
+    const { data, error } = await supabase
+        .from('info_texts')
+        .delete()
+        .eq('batch_id', batchId)
+        .select();
+
+    if (error) {
+        console.error('Error deleting info texts:', error);
+        throw error;
+    }
+
+    return data;
+}
+
+export async function insertInfoTexts(rows: { heading: string; body: string; batchId: string }[]) {
     const validRows = rows.filter(r => r.body.trim().length > 0);
 
     const insertData = validRows.map(r => ({
@@ -15,6 +30,7 @@ export async function insertInfoTexts(rows: { heading: string; body: string }[])
         text_ar: null,
         media_en_uk: null,
         media_en_us: null,
+        batch_id: r.batchId
     }));
 
     const { data, error } = await supabase.from('info_texts').insert(insertData).select();
@@ -49,11 +65,27 @@ export async function fetchInfoText(infoTextId: string) {
 }
 
 
-export async function insertStages(rows: { stageType: string, stageAssets: object, stageParams: Record<string, any> }[]) {
+export async function deleteStageByBatchId(batchId: string) {
+    const { data, error } = await supabase
+        .from('stages')
+        .delete()
+        .eq('batch_id', batchId)
+        .select();
+
+    if (error) {
+        console.error('Error deleting info texts:', error);
+        throw error;
+    }
+
+    return data;
+}
+
+export async function insertStages(rows: { stageType: string, stageAssets: object, stageParams: Record<string, any>, stageBatchId: string }[]) {
     const insertData = rows.map( r => ({
         type: r.stageType,
         assets: r.stageAssets,
-        params: r.stageParams
+        params: r.stageParams,
+        batch_id: r.stageBatchId
     }));
     
 

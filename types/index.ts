@@ -32,14 +32,16 @@ type Stage = {
     created_at: string,
     type: string,
     assets: object,
-    params: Record<string, any>
+    params: Record<string, any>,
+    batch_id: string
 }
 
 type InfoText = {
     id: string,
     created_at: string,
     text_en_uk: string,
-    media_en_uk: string
+    media_en_uk: string,
+    batch_id: string
 }
 
 type CourseActivity = {
