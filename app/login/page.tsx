@@ -33,7 +33,7 @@ export default function Login(){
         <>
         <div className="grid items-center justify-items-center min-h-screen p-8 pb-20">
             <div>
-                <h1>Login</h1>
+                <h1 className='header'>Login</h1>
                 <input
                     type="email"
                     value={email}

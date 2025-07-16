@@ -1,5 +1,7 @@
 "use client"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
+
 import CoursesTable from "../db/courses/courses-table-component"
 import ActivitiesTable from "../db/activities/activities-table-component"
 import CourseActivityJoinTable from "../db/caj/caj-table-component"
@@ -12,6 +14,7 @@ import ActivityEditor from "../db/activities/editor/activity-editor-component"
 import BatchDelete from "../db/activities/editor/batch-delete-component"
 
 export default function LMSDashboard(){
+    const [courseConfigVisible, setCourseConfigVisible] = useState(false);
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
@@ -35,12 +38,19 @@ export default function LMSDashboard(){
             <Link href="/model-browser" className="button">
                 Browse Models
             </Link>
-            {/* <br/>
-            <CoursesTable />
             <br/>
-            <ActivitiesTable />
-            <br/>
-            <CourseActivityJoinTable /> */}
+            <Button className="green-shadcn-button" onClick={() => setCourseConfigVisible(!courseConfigVisible)}>
+                {courseConfigVisible ? "Hide Course Config" : "Show Course Config"}</Button>
+            {
+            courseConfigVisible ? 
+                <>
+                    {/* <CoursesTable />
+                    <br/>
+                    <ActivitiesTable />
+                    <br/> */}
+                    <CourseActivityJoinTable />
+                </> : null
+            }
             <br/>
             <InfoTextUploader />
             <br/>

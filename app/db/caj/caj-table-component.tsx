@@ -115,7 +115,7 @@ export default function CourseActivityJoinTable(){
                         {/* <td className="px-4 py-2">{courseActivity.course_id}</td> */}
                         <td className="px-4 py-2"><b>{courseActivity.course.external_title}</b></td>
                         {/* <td className="px-4 py-2">{courseActivity.activity_id}</td> */}
-                        <td className="px-4 py-2"><b>{courseActivity.activity.external_title}</b></td>
+                        <td className="px-4 py-2">{courseActivity.activity.external_title}</td>
                         <td className="px-4 py-2">{courseActivity.order}</td>
                     </tr>
                   ))}
