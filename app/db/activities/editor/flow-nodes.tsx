@@ -18,6 +18,7 @@ export const StageNode = React.memo((props: any) => {
             <Handle type="target" position={Position.Left} />
             <Handle type="source" position={Position.Right} />
             <p><strong>Id:</strong>{props.data.stage.id}</p>
+            <p><strong>Batch Id:</strong>{props.data.stage.batch_id}</p>
             <p><strong>Type:</strong>{props.data.stage.type}</p>
             <p><strong>Assets:</strong>{JSON.stringify(props.data.stage.assets)}</p>
             <p><strong>Params:</strong>{JSON.stringify(props.data.stage.params)}</p>
@@ -31,6 +32,7 @@ export const InfoTextNode = React.memo((props: any) => {
             <Handle type="target" position={Position.Left} />
             <Handle type="source" position={Position.Right} />
             <p><strong>Id:</strong>{props.data.info_text.id}</p>
+            <p><strong>Batch Id:</strong>{props.data.info_text.batch_id}</p>
             <p><strong>Text (En-UK)</strong>{props.data.info_text.text_en_uk}</p>
             <p><strong>Media (En-UK)</strong>{props.data.info_text.media_en_uk}</p>
         </div>

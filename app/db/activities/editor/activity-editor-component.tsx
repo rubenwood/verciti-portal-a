@@ -130,14 +130,14 @@ export default function ActivityEditor(){
                 data: { stage }
             }
             tempNodes.push(tempStageNode);
+            createInfoTextNode(tempStageNode);
             yPos += 100;
-        }        
+        }       
         
         setNodes(tempNodes);
     }
     const createInfoTextNode = async (node: any) => {
         let stageParams = node.data.stage.params;
-        console.log(stageParams);
         
         if (nodes.some(n => n.id === `info-${stageParams.infoTextId}`)) {
             console.log(`Info node info-${stageParams.infoTextId} already exists.`);
@@ -145,12 +145,12 @@ export default function ActivityEditor(){
         }
         
         const infoTextData: InfoText = await fetchInfoText(stageParams.infoTextId);
-        console.log(infoTextData);
 
         let info_text = {
             id: infoTextData.id,
             text_en_uk: JSON.stringify(infoTextData.text_en_uk),
-            media_en_uk: JSON.stringify(infoTextData.media_en_uk)
+            media_en_uk: JSON.stringify(infoTextData.media_en_uk),
+            batch_id: infoTextData.batch_id
         };
         let tempInfoNode = {
             id: `info-${infoTextData.id}`,
