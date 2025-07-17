@@ -2,7 +2,10 @@
 import { useState } from 'react';
 import * as XLSX from 'xlsx';
 import Papa from 'papaparse';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { insertInfoTexts, insertStages } from '../../general/utils';
+
 
 type ParsedRow = {
   heading: string;
@@ -75,13 +78,16 @@ export default function InfoTextUploader() {
       }
 
       setStatus('Uploading to Supabase...');
+      console.log(file?.name);
+      const batchId = file?.name.split('.')[0] || 'default-batch';
       // inster info texts
-      const infoTexts = await insertInfoTexts(parsedRows);
+      const infoTexts = await insertInfoTexts(parsedRows, batchId);
       const stageRows = infoTexts.map((infoText: InfoText) => ({
         stageType: 'info',
         stageAssets: [],
         stageParams: { infoTextId: infoText.id },
-        stageBatchId: infoText.batch_id
+        stageBatchId: batchId
+        //stageBatchId: infoText.batch_id
       }));
       // insert a new stage for each info text
       const insertedStages = await insertStages(stageRows);
@@ -100,19 +106,23 @@ export default function InfoTextUploader() {
         This tool will then create the info text entries and related stage for each.
       </i>
       <br/>
-      <input
-        type="file"
-        accept=".csv,.xls,.xlsx"
-        onChange={handleFileChange}
-      />
+      <br/>
+      <div className="grid w-full max-w-sm items-center gap-3">
+        <Input
+          id="dataFile"
+          type="file"
+          accept=".csv,.xls,.xlsx"
+          onChange={handleFileChange}
+        />
+      </div>
       <div>
-        <button
+        <Button
           disabled={!parsedRows.length}
           onClick={handleSubmit}
-          className="blue-submit-button"
+          className="green-shadcn-button"
         >
           Submit to Supabase
-        </button>
+        </Button>
       </div>
 
       {status && <p className="text-sm text-gray-700">{status}</p>}

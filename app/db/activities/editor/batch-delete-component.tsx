@@ -24,8 +24,8 @@ export default function BatchDelete(){
 
     return (
         <>
-        <div className="grey-border">
-            <b>Batch delete</b><br/>
+        <div className="red-border">
+            <b>Batch Delete</b><br/>
             <i>
                 Enter the Batch ID to delete all info texts and stages associated with it.<br/>
                 This action cannot be undone.
@@ -36,7 +36,7 @@ export default function BatchDelete(){
                 value={batchId}
                 onChange={(e) => setBatchId(e.target.value)} 
                 placeholder='Batch ID' className='input input-bordered w-full max-w-xs border rounded px-2 py-1' />
-            <Button className='green-shadcn-button' onClick={handleDelete}>Delete</Button>
+            <Button className='red-shadcn-button' onClick={handleDelete}>Delete</Button>
         </div>
         </>
     )

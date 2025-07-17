@@ -53,12 +53,18 @@ body {
 .green-shadcn-button {
   @apply bg-[#97fb57] hover:bg-[#83d84d] text-[#121212]
 }
+.red-shadcn-button {
+  @apply bg-[#ff000d] hover:bg-[#cc000a] text-[#121212]
+}
 .blue-submit-button {
   @apply bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50
 }
 
+.red-border{
+  @apply border-4 border-red-200 rounded-md p-4 space-y-4
+}
 .grey-border{
-  @apply border-4 border-gray-200 rounded p-4 space-y-4
+  @apply border-4 border-gray-200 rounded-md p-4 space-y-4
 }
 
 .header {

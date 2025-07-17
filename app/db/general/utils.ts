@@ -2,6 +2,29 @@ import { supabase } from '@/lib/supabase'
 import confetti from 'canvas-confetti';
 import type { RefObject } from 'react';
 
+export async function updateMediaPaths(uploaded: { title: string; key: string }[]) {
+    for (const { title, key } of uploaded) {
+        const match = key.match(/_info_([0-9a-f-]{36})_/i);
+        const infoTextId = match ? match[1] : null;
+
+        if (!infoTextId) {
+            console.warn(`Could not extract infoTextId from key: ${key}`);
+            continue;
+        }
+
+        const { error } = await supabase
+        .from('info_texts')
+        .update({ media_en_uk: key })
+        .eq('id', infoTextId);
+
+        if (error) {
+            console.error(`Failed to update media_en_uk for ID ${infoTextId}:`, error.message);
+        } else {
+            console.log(`Updated media_en_uk for ID ${infoTextId}: ${key}`);
+        }
+    }
+}
+
 export async function getInfoTextsByBatchId(batchId: string) {
     const { data, error } = await supabase
         .from('info_texts')
@@ -31,7 +54,7 @@ export async function deleteInfoTextByBatchId(batchId: string) {
     return data;
 }
 
-export async function insertInfoTexts(rows: { heading: string; body: string; batchId: string }[]) {
+export async function insertInfoTexts(rows: { heading: string; body: string;}[], bathcId: string) {
     const validRows = rows.filter(r => r.body.trim().length > 0);
 
     const insertData = validRows.map(r => ({
@@ -43,7 +66,7 @@ export async function insertInfoTexts(rows: { heading: string; body: string; bat
         text_ar: null,
         media_en_uk: null,
         media_en_us: null,
-        batch_id: r.batchId
+        batch_id: bathcId
     }));
 
     const { data, error } = await supabase.from('info_texts').insert(insertData).select();

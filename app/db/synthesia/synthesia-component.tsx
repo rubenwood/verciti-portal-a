@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Background } from "@xyflow/react";
 import { useRef, useState } from "react";
 
-import { getInfoTextsByBatchId, showConfetti } from "../../db/general/utils";
+import { getInfoTextsByBatchId, updateMediaPaths, showConfetti } from "../../db/general/utils";
 
 
 async function createSynthesiaVideo(infoText: InfoText,videoTitle: string) {
@@ -61,29 +61,12 @@ async function listAllVideos() {
         return data;
 }
 
-async function copyVideosToS3(s3Folder: string){
-    console.log("Copying videos to S3...");
-    const synthesiaPayload:SynthesiaPayload = await listAllVideos();
-    const response = await fetch('/api/aws/upload-synthesia', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            videos: synthesiaPayload.videos,
-            filepath: s3Folder
-        }),
-    });
-    console.log("Response from S3 upload:", response);
-    if (!response.ok) {
-        console.error(`Failed to copy videos to S3`, await response.text());
-        return null;
-    }
-}
-
 export default function BatchSynthesia() {
     const [batchId, setBatchId] = useState<string>("");
     const [videoTitlePrefix, setVideoTitlePrefix] = useState<string>("");
     const [s3Folder, setS3Folder] = useState<string>("");
     const submitBtnRef = useRef<HTMLButtonElement | null>(null);
+    const copyVideosBtnRef = useRef<HTMLButtonElement | null>(null);
 
     const createSynthesia = async () => {
         const infoTexts = await getInfoTextsByBatchId(batchId);
@@ -95,7 +78,7 @@ export default function BatchSynthesia() {
         let videoIds = [];
         let i = 1;
         for (const infoText of infoTexts) {
-            const videoTitle = `${videoTitlePrefix}-${i}`;
+            const videoTitle = `${videoTitlePrefix}_${i}_info_${infoText.id}_`;
             try {
                 const videoResponse = await createSynthesiaVideo(infoText, videoTitle);
                 console.log(`Video created successfully: ${videoResponse.id}`)
@@ -112,6 +95,32 @@ export default function BatchSynthesia() {
         }
         showConfetti(submitBtnRef);
     }
+
+    async function copyVideosToS3(s3Folder: string){
+        console.log("Copying videos to S3...");
+        const synthesiaPayload:SynthesiaPayload = await listAllVideos();
+        const response = await fetch('/api/aws/upload-synthesia', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                videos: synthesiaPayload.videos,
+                filepath: s3Folder
+            }),
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to copy videos to S3`, await response.text());
+            return null;
+        }
+
+        const data = await response.json();
+        console.log("Videos copied to S3:", data);
+        // update info text to have the S3 URL
+        updateMediaPaths(data.uploaded);
+        console.log("Media paths updated in the database.");
+        showConfetti(copyVideosBtnRef);
+    }
+
 
     return (
         <>
@@ -135,14 +144,17 @@ export default function BatchSynthesia() {
                 onChange={(e) => setVideoTitlePrefix(e.target.value)} />
             <br/>
             <Button ref={submitBtnRef} className="green-shadcn-button" onClick={createSynthesia}>Create Synthesia For batch</Button><br />
-            <Button className="green-shadcn-button" onClick={listAllVideos}>List all videos</Button><br />
+            <Button className="green-shadcn-button" onClick={listAllVideos}>List all videos</Button>
+            <br/>
+            <br/>
             <input 
                 type='text' 
                 placeholder='S3 Folder' 
                 className='input input-bordered w-full max-w-xs border rounded px-2 py-1'
                 onChange={(e) => setS3Folder(e.target.value)}
             />
-            <Button className="green-shadcn-button" onClick={() => copyVideosToS3(s3Folder)}>Copy videos to S3</Button><br />
+            <br/>
+            <Button ref={copyVideosBtnRef} className="green-shadcn-button" onClick={() => copyVideosToS3(s3Folder)}>Copy videos to S3</Button><br />
         </div>
         </>
     )
