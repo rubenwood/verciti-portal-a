@@ -7,7 +7,7 @@ import { useRef, useState } from "react";
 import { getInfoTextsByBatchId, showConfetti } from "../../db/general/utils";
 
 
-export async function createSynthesiaVideo(infoText: InfoText,videoTitle: string) {
+async function createSynthesiaVideo(infoText: InfoText,videoTitle: string) {
     console.log(infoText.text_en_uk.body);
 
     const response = await fetch('/api/synthesia/create', {
@@ -45,17 +45,44 @@ export async function createSynthesiaVideo(infoText: InfoText,videoTitle: string
 
     return await response.json();
 }
+// TODO: currently lists 0 - 100 videos, should be paginated
+async function listAllVideos() {
+        const response = await fetch('/api/synthesia/list', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        });
 
-export async function downloadAllVideos(videoIds: string[]) {
-    const downloadPromises = videoIds.map(async (videoId) => {
-        
-    });
+        if (!response.ok) {
+            console.error(`Failed to list videos`, await response.json());
+            return null;
+        }
+        const data = await response.json();
+        console.log(data);
+        return data;
 }
 
+async function copyVideosToS3(s3Folder: string){
+    console.log("Copying videos to S3...");
+    const synthesiaPayload:SynthesiaPayload = await listAllVideos();
+    const response = await fetch('/api/aws/upload-synthesia', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            videos: synthesiaPayload.videos,
+            filepath: s3Folder
+        }),
+    });
+    console.log("Response from S3 upload:", response);
+    if (!response.ok) {
+        console.error(`Failed to copy videos to S3`, await response.text());
+        return null;
+    }
+}
 
 export default function BatchSynthesia() {
     const [batchId, setBatchId] = useState<string>("");
     const [videoTitlePrefix, setVideoTitlePrefix] = useState<string>("");
+    const [s3Folder, setS3Folder] = useState<string>("");
     const submitBtnRef = useRef<HTMLButtonElement | null>(null);
 
     const createSynthesia = async () => {
@@ -83,9 +110,6 @@ export default function BatchSynthesia() {
                 break;
             }
         }
-
-        
-        downloadAllVideos(videoIds);
         showConfetti(submitBtnRef);
     }
 
@@ -110,7 +134,15 @@ export default function BatchSynthesia() {
                 className='input input-bordered w-full max-w-xs border rounded px-2 py-1'
                 onChange={(e) => setVideoTitlePrefix(e.target.value)} />
             <br/>
-            <Button ref={submitBtnRef} className="green-shadcn-button" onClick={createSynthesia}>Create Synthesia For batch</Button>
+            <Button ref={submitBtnRef} className="green-shadcn-button" onClick={createSynthesia}>Create Synthesia For batch</Button><br />
+            <Button className="green-shadcn-button" onClick={listAllVideos}>List all videos</Button><br />
+            <input 
+                type='text' 
+                placeholder='S3 Folder' 
+                className='input input-bordered w-full max-w-xs border rounded px-2 py-1'
+                onChange={(e) => setS3Folder(e.target.value)}
+            />
+            <Button className="green-shadcn-button" onClick={() => copyVideosToS3(s3Folder)}>Copy videos to S3</Button><br />
         </div>
         </>
     )

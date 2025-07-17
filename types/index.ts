@@ -66,3 +66,24 @@ type CourseActivityWithDetails = {
         external_title: any
     };
 }
+
+
+
+type SynthesiaVideo = {
+  title: string;
+  captions: SynthesiaCaptions;
+  download: string;
+  duration: string;
+  createdAt: number
+  lastUpdatedAt: number;
+  status: string;
+};
+type SynthesiaCaptions = {
+    srt: string;
+    vtt: string;
+}
+
+type SynthesiaPayload = {
+  videos: SynthesiaVideo[];
+  nextOffset?: number;
+};

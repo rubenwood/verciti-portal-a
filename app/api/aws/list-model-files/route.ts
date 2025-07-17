@@ -11,7 +11,7 @@ const s3 = new S3Client({
 });
 
 const BUCKET = "com.verciti.app1";
-const PREFIX = "models/";
+const PREFIX = "public/";
 
 export async function GET(req: Request) {
   try {
