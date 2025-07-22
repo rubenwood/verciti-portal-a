@@ -65,6 +65,9 @@ export default function ActivityEditor(){
                 showInfoTextMenu(event, node);
                 console.log("INFO NODE");                
                 break;
+            default:
+                console.warn("Unknown node type:", node.type);
+                break;  
         }
     }, [nodes, edges]);
 
@@ -225,28 +228,38 @@ export default function ActivityEditor(){
         setEdges((prev) => [...prev, newEdge]);        
     }
 
+    // CONTEXT MENU
     const showStageContextMenu = async (event: React.MouseEvent, node: any) => {
-        console.log(node);
+        console.log(node);        
         event.preventDefault();
+        setInfoContextMenu(null);
+        const pos = getNodeContainerPosition(event);        
         setStageContextMenu({
             visible: true,
-            x: event.clientX,
-            y: event.clientY,
+            x: pos.x,
+            y: pos.y,
             node: node
         });
     }
     const showInfoTextMenu = async (event: React.MouseEvent, node: any) => {
-        const container = event.currentTarget.closest(".react-flow"); // or the specific container class
-        const containerRect = container?.getBoundingClientRect();
-
-        const offsetX = event.clientX - (containerRect?.left ?? 0);
-        const offsetY = event.clientY - (containerRect?.top ?? 0);
+        event.preventDefault();
+        setStageContextMenu(null);
+        const pos = getNodeContainerPosition(event);
         setInfoContextMenu({
             visible: true,
-            x: offsetX,
-            y: offsetY,
+            x: pos.x,
+            y: pos.y,
             nodeId: node.id
         });        
+    }
+    const getNodeContainerPosition = (event: React.MouseEvent) => {
+        const container = event.currentTarget.closest(".react-flow");
+        if (!container) return { x: 0, y: 0 };
+        const containerRect = container.getBoundingClientRect();
+        return {
+            x: event.clientX - containerRect.left,
+            y: event.clientY - containerRect.top
+        };
     }
 
 
@@ -327,7 +340,13 @@ export default function ActivityEditor(){
                 Show All Nodes
             </Button>
         </div>
-        <div className="w-[180vh] h-[80vh] bg-gray-100 relative">
+        <div className="w-[180vh] h-[80vh] bg-gray-100 relative" onContextMenu={(e) => {
+            if ((e.target as HTMLElement).closest('.react-flow__node')) return;
+
+            e.preventDefault();
+            setStageContextMenu(null);
+            setInfoContextMenu(null);
+            }}>
             <EditorSaveButton selectedActivity={selectedActivity} />
             <ReactFlow 
                 nodes={nodes}
