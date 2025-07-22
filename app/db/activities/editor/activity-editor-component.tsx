@@ -262,10 +262,9 @@ export default function ActivityEditor(){
     }
     const preventDefaultOnFlowDiv = (e: React.MouseEvent) => {
         if ((e.target as HTMLElement).closest('.react-flow__node')) return;
-
-            e.preventDefault();
-            setStageContextMenu(null);
-            setInfoContextMenu(null);
+        e.preventDefault();
+        setStageContextMenu(null);
+        setInfoContextMenu(null);
     }
 
 

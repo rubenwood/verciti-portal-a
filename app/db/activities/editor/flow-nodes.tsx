@@ -5,8 +5,13 @@ export const ActivityNode = React.memo((props: any) => {
     return (
          <div className="bg-sky-100 border rounded shadow p-2 text-xs max-w-md">
             <Handle type="source" position={Position.Right} />
-            <p><strong>External Title:</strong><br/>{props.data.selectedActivity.external_title}</p><br/>
-            <p><strong>Params:</strong><br/>{JSON.stringify(props.data.selectedActivity.params)}</p><br/>
+            <strong>External Title:</strong><br/>
+            <input type="text" value={props.data.selectedActivity.external_title} onChange={() => {}}/>
+            <br/>
+            <br/>
+            <strong>Params:</strong><br/>
+            <input type="text" value={JSON.stringify(props.data.selectedActivity.params)} onChange={() => {}}/>
+            <br/>
         </div>
     );
 });
@@ -17,11 +22,21 @@ export const StageNode = React.memo((props: any) => {
          <div className="bg-lime-100 border rounded shadow p-2 text-xs max-w-md">
             <Handle type="target" position={Position.Left} />
             <Handle type="source" position={Position.Right} />
-            <p><strong>Id:</strong>{props.data.stage.id}</p>
-            <p><strong>Batch Id:</strong>{props.data.stage.batch_id}</p>
-            <p><strong>Type:</strong>{props.data.stage.type}</p>
-            <p><strong>Assets:</strong>{JSON.stringify(props.data.stage.assets)}</p>
-            <p><strong>Params:</strong>{JSON.stringify(props.data.stage.params)}</p>
+            <strong>Id:</strong>
+            <input type="text" value={props.data.stage.id} readOnly/>
+            <br/>
+            <strong>Batch Id:</strong>
+            <input type="text" value={props.data.stage.batch_id} readOnly/>
+            <br/>
+            <strong>Type:</strong>
+            <input type="text" value={props.data.stage.type} onChange={()=>{}}/>
+            <br/>
+            <strong>Assets:</strong>
+            <input type="text" value={JSON.stringify(props.data.stage.assets)} onChange={()=>{}}/>
+            <br/>
+            <strong>Params:</strong>
+            <input type="text" value={JSON.stringify(props.data.stage.params)} onChange={()=>{}}/>
+            <br/>
         </div>
     );
 });
@@ -31,10 +46,17 @@ export const InfoTextNode = React.memo((props: any) => {
          <div className="bg-teal-100 border rounded shadow p-2 text-xs max-w-md">
             <Handle type="target" position={Position.Left} />
             <Handle type="source" position={Position.Right} />
-            <p><strong>Id:</strong>{props.data.info_text.id}</p>
-            <p><strong>Batch Id:</strong>{props.data.info_text.batch_id}</p>
-            <p><strong>Text (En-UK)</strong>{props.data.info_text.text_en_uk}</p>
-            <p><strong>Media (En-UK)</strong>{props.data.info_text.media_en_uk}</p>
+            <strong>Id:</strong>
+            <input type="text" value={props.data.info_text.id} readOnly/>
+            <br/>
+            <strong>Batch Id:</strong>
+            <input type="text" value={props.data.info_text.batch_id} readOnly/>
+            <br/>
+            <strong>Text (En-UK)</strong>
+            <input type="text" value={props.data.info_text.text_en_uk} onChange={() => {}}/>
+            <br/>
+            <strong>Media (En-UK)</strong>
+            <input type="text" value={props.data.info_text.media_en_uk} onChange={() => {}}/>
         </div>
     );
 });
