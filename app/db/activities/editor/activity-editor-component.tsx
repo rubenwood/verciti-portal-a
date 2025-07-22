@@ -26,7 +26,6 @@ export default function ActivityEditor(){
     const [edges, setEdges] = useState<Edge[]>([])
     const [allStages, setStages] = useState<Stage[]>([]);
     const [showOnlyConnected, setShowOnlyConnected] = useState(true);
-
     const [stageContextMenu, setStageContextMenu] = useState<{
         visible: boolean;
         x: number;
@@ -261,6 +260,13 @@ export default function ActivityEditor(){
             y: event.clientY - containerRect.top
         };
     }
+    const preventDefaultOnFlowDiv = (e: React.MouseEvent) => {
+        if ((e.target as HTMLElement).closest('.react-flow__node')) return;
+
+            e.preventDefault();
+            setStageContextMenu(null);
+            setInfoContextMenu(null);
+    }
 
 
     const buildEdges = () => {
@@ -340,13 +346,7 @@ export default function ActivityEditor(){
                 Show All Nodes
             </Button>
         </div>
-        <div className="w-[180vh] h-[80vh] bg-gray-100 relative" onContextMenu={(e) => {
-            if ((e.target as HTMLElement).closest('.react-flow__node')) return;
-
-            e.preventDefault();
-            setStageContextMenu(null);
-            setInfoContextMenu(null);
-            }}>
+        <div className="w-[180vh] h-[80vh] bg-gray-100 relative" onContextMenu={(e) => preventDefaultOnFlowDiv(e)}>
             <EditorSaveButton selectedActivity={selectedActivity} />
             <ReactFlow 
                 nodes={nodes}
