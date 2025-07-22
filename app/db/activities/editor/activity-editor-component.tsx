@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState, useCallback, useRef } from "react";
 import React from "react";
-import { fetchStages, fetchInfoText, fetchAllInfoText } from "../../general/utils";
+import { fetchStages, fetchInfoText, fetchAllInfoText, insertStages } from "../../general/utils";
 import { 
     ReactFlow,
     Background,
@@ -15,21 +15,30 @@ import {
 import '@xyflow/react/dist/style.css';
 
 import { ActivityNode, StageNode, InfoTextNode } from "./flow-nodes";
-import ActivitySelectTable from "./activity-select-table-component"
+import ActivitySelectTable from "./activity-select-table-component";
+import StageContextMenu from "./stage-context-menu-component";
 import InfoTextContextMenu from "./info-context-menu-component";
 import EditorSaveButton from "./editor-save-btn-component";
+import { Button } from "@/components/ui/button";
 
 export default function ActivityEditor(){
     const [nodes, setNodes] = useState<Node[]>([]);
     const [edges, setEdges] = useState<Edge[]>([])
     const [allStages, setStages] = useState<Stage[]>([]);
+    const [showOnlyConnected, setShowOnlyConnected] = useState(true);
 
-    const [contextMenu, setContextMenu] = useState<{
+    const [stageContextMenu, setStageContextMenu] = useState<{
+        visible: boolean;
+        x: number;
+        y: number;
+        node: Node | null;
+    } | null>(null);
+    const [infoContextMenu, setInfoContextMenu] = useState<{
         visible: boolean;
         x: number;
         y: number;
         nodeId: string;
-    } | null>(null);
+    } | null>(null);    
 
     const [selectedActivity, setSelectedActivity] = useState<Activity>();
     const selectActivity = (activity: Activity) => {
@@ -50,7 +59,7 @@ export default function ActivityEditor(){
                 break;
             case 'stageNode':
                 console.log("STAGE NODE");
-                createInfoTextNode(node);
+                showStageContextMenu(event, node);
                 break;
             case 'infoTextNode':
                 showInfoTextMenu(event, node);
@@ -103,41 +112,86 @@ export default function ActivityEditor(){
 
     }, [selectedActivity]);
 
-    const createNodesForSelectedActivity = () => {
-        if(selectedActivity == undefined){ return; }
+    const createNodesForSelectedActivity = async () => {
+        if (!selectedActivity) return;
 
-        let tempNodes: any = [];
+        const connectedStageIds = selectedActivity.params?.stage_ids ?? [];
+        const tempNodes: Node[] = [];
         let xPos = 0;
 
-        // create a node for this activity
-        let tempActivityNode = {
+        // Activity node
+        const activityNode = {
             id: `activity-${selectedActivity.id}`,
             type: 'activityNode',
             position: { x: xPos, y: 100 },
-            data: { selectedActivity }
-        }
-        
-        tempNodes.push(tempActivityNode);
-        
+            data: { selectedActivity },
+        };
+        tempNodes.push(activityNode);
+
         xPos = 500;
         let yPos = 0;
-        // create nodes for all the stages on Supabase
-        for(const stage of allStages){
-            let tempStageNode = {
+
+        for (const stage of allStages) {
+            const isConnected = connectedStageIds.includes(stage.id);
+            if (showOnlyConnected && !isConnected) continue;
+
+            const stageNode = {
                 id: `stage-${stage.id}`,
                 type: 'stageNode',
                 position: { x: xPos, y: yPos },
-                data: { stage }
-            }
-            tempNodes.push(tempStageNode);
-            createInfoTextNode(tempStageNode);
+                data: { stage },
+            };
+
+            tempNodes.push(stageNode);
             yPos += 100;
-        }       
-        
+
+            await createInfoTextNode(stageNode);
+        }
+
         setNodes(tempNodes);
-    }
-    const createInfoTextNode = async (node: any) => {
-        let stageParams = node.data.stage.params;
+    };
+    const createNewStageFromContext = async () => {
+        if (!selectedActivity) return;
+        
+        const inserted = await insertStages([{
+            stageType: "",
+            stageAssets: {},
+            stageParams: {}, 
+            stageBatchId: ""
+        }]);
+        console.log("Inserted stage:", inserted);
+
+        const newStage: Stage = {
+            id: inserted[0].id,
+            type: inserted[0].type,
+            assets: inserted[0].assets,
+            params: inserted[0].params,
+            batch_id: inserted[0].batch_id,
+            created_at: inserted[0].created_at
+        };
+
+        // Add to allStages
+        const updatedStages = [...allStages, newStage];
+        setStages(updatedStages);
+
+        // Add to selectedActivity's stage_ids
+        const updatedStageIds = [...(selectedActivity.params.stage_ids ?? []), newStage.id];
+        const updatedActivity: Activity = {
+            ...selectedActivity,
+            params: {
+                ...selectedActivity.params,
+                stage_ids: updatedStageIds
+            }
+        };
+        setSelectedActivity(updatedActivity);
+    };
+    const createInfoTextNode = async (stageNode: any) => {
+        let stageParams = stageNode.data.stage.params;
+
+        if (!stageParams.infoTextId) {
+            console.warn(`No infoTextId on stage ${stageNode.id}`);
+            return;
+        }
         
         if (nodes.some(n => n.id === `info-${stageParams.infoTextId}`)) {
             console.log(`Info node info-${stageParams.infoTextId} already exists.`);
@@ -155,20 +209,31 @@ export default function ActivityEditor(){
         let tempInfoNode = {
             id: `info-${infoTextData.id}`,
             type: 'infoTextNode',
-            position: {x:node.position.x+300, y:node.position.y},
+            position: {x:stageNode.position.x+300, y:stageNode.position.y},
             data: { info_text },
             targetPosition:'left',
             sourcePosition:'right'
         }
 
         let newEdge = {
-            id:`${node.data.stage.id}_${stageParams.infoTextId}`,
-            source:`stage-${node.data.stage.id}`,
+            id:`${stageNode.data.stage.id}_${stageParams.infoTextId}`,
+            source:`stage-${stageNode.data.stage.id}`,
             target:`info-${stageParams.infoTextId}`
         }
 
         setNodes((prev) => [...prev, tempInfoNode]);
         setEdges((prev) => [...prev, newEdge]);        
+    }
+
+    const showStageContextMenu = async (event: React.MouseEvent, node: any) => {
+        console.log(node);
+        event.preventDefault();
+        setStageContextMenu({
+            visible: true,
+            x: event.clientX,
+            y: event.clientY,
+            node: node
+        });
     }
     const showInfoTextMenu = async (event: React.MouseEvent, node: any) => {
         const container = event.currentTarget.closest(".react-flow"); // or the specific container class
@@ -176,7 +241,7 @@ export default function ActivityEditor(){
 
         const offsetX = event.clientX - (containerRect?.left ?? 0);
         const offsetY = event.clientY - (containerRect?.top ?? 0);
-        setContextMenu({
+        setInfoContextMenu({
             visible: true,
             x: offsetX,
             y: offsetY,
@@ -217,6 +282,14 @@ export default function ActivityEditor(){
         setEdges([...stageEdges, ...infoTextEdges]);
     };
 
+    const filterToConnectedOnly = () => {
+        setShowOnlyConnected(true);
+    };
+
+    const showAllNodes = () => {
+        setShowOnlyConnected(false);
+    };
+
     const init = async () => {
         const tempStages = await fetchStages();
         setStages(tempStages as Stage[]);
@@ -227,11 +300,10 @@ export default function ActivityEditor(){
 
     useEffect(() => {
         createNodesForSelectedActivity();
-    }, [selectedActivity]);
+    }, [selectedActivity, showOnlyConnected]);
 
     useEffect(() => {
         if (selectedActivity && nodes.length > 0) {
-            //connectStagesActivity();
             buildEdges();
         }
     }, [nodes, selectedActivity, allStages]);
@@ -240,6 +312,21 @@ export default function ActivityEditor(){
         <>
         <ActivitySelectTable setSelectedFunc={selectActivity} />
         <br/>
+        <div className="mb-2">
+            <Button
+                variant="outline"
+                className="mr-2"
+                onClick={() => filterToConnectedOnly()}
+            >
+                Show Only Connected Nodes
+            </Button>
+            <Button
+                variant="outline"
+                onClick={() => showAllNodes()}
+            >
+                Show All Nodes
+            </Button>
+        </div>
         <div className="w-[180vh] h-[80vh] bg-gray-100 relative">
             <EditorSaveButton selectedActivity={selectedActivity} />
             <ReactFlow 
@@ -256,12 +343,22 @@ export default function ActivityEditor(){
                 <Background />
                 <Controls />
             </ReactFlow>
+
+            <StageContextMenu 
+                visible={stageContextMenu?.visible ?? false}                
+                x={stageContextMenu?.x ?? 0}
+                y={stageContextMenu?.y ?? 0}
+                createStageFunc={createNewStageFromContext}
+                showConnectedFunc={createInfoTextNode}
+                node={stageContextMenu?.node ?? null}
+                onClose={() => setStageContextMenu(null)}
+            />
             <InfoTextContextMenu
-                visible={contextMenu?.visible ?? false}
-                x={contextMenu?.x ?? 0}
-                y={contextMenu?.y ?? 0}
-                nodeId={contextMenu?.nodeId ?? ""}
-                onClose={() => setContextMenu(null)}
+                visible={infoContextMenu?.visible ?? false}
+                x={infoContextMenu?.x ?? 0}
+                y={infoContextMenu?.y ?? 0}
+                nodeId={infoContextMenu?.nodeId ?? ""}
+                onClose={() => setInfoContextMenu(null)}
             />
         </div>
         </>

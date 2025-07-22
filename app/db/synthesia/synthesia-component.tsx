@@ -7,14 +7,14 @@ import { useRef, useState } from "react";
 import { getInfoTextsByBatchId, updateMediaPaths, showConfetti } from "../../db/general/utils";
 
 
-async function createSynthesiaVideo(infoText: InfoText,videoTitle: string) {
+async function createSynthesiaVideo(infoText: InfoText,videoTitle: string, testMode: boolean = false) {
     console.log(infoText.text_en_uk.body);
 
     const response = await fetch('/api/synthesia/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            test: true,
+            test: testMode,
             title: videoTitle,
             visibility: 'private',
             aspectRatio: '16:9',
@@ -80,7 +80,7 @@ export default function BatchSynthesia() {
         for (const infoText of infoTexts) {
             const videoTitle = `${videoTitlePrefix}_${i}_info_${infoText.id}_`;
             try {
-                const videoResponse = await createSynthesiaVideo(infoText, videoTitle);
+                const videoResponse = await createSynthesiaVideo(infoText, videoTitle, false);
                 console.log(`Video created successfully: ${videoResponse.id}`)
                 videoIds.push(videoResponse.id);
             } catch (error) {
@@ -88,8 +88,8 @@ export default function BatchSynthesia() {
             }
             i++;
 
-            if(i > 15) {
-                console.warn("Stopping after 10 videos to avoid rate limits.");
+            if(i > 100) {
+                console.warn("Stopping after 100 videos to avoid rate limits.");
                 break;
             }
         }

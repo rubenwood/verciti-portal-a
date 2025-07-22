@@ -48,7 +48,7 @@ export default function LMSDashboard(){
                     {/* <CoursesTable />
                     <br/>
                     <ActivitiesTable />
-                    <br/> */}
+                    <br/>*/}
                     <CourseActivityJoinTable />
                 </> : null
             }

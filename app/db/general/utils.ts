@@ -83,7 +83,7 @@ export async function fetchAllInfoText() {
     const { data, error } = await supabase.from('info_texts').select('*');
 
     if (error) {
-        console.error('Error fetching activities:', error);
+        console.error('Error fetching info texts:', error);
         return error;
     }
 
@@ -93,7 +93,7 @@ export async function fetchInfoText(infoTextId: string) {
     const { data, error } = await supabase.from('info_texts').select('*').eq('id', infoTextId).single();
 
     if (error) {
-        console.error('Error fetching activities:', error);
+        console.error('Error fetching info text (by id):', error);
         return error;
     }
 
@@ -123,13 +123,12 @@ export async function insertStages(rows: { stageType: string, stageAssets: objec
         params: r.stageParams,
         batch_id: r.stageBatchId
     }));
-    
 
     const { data, error } = await supabase.from('stages').insert(insertData).select();
 
     if (error) {
-    console.error('Insert stage error:', error);
-    throw error;
+        console.error('Insert stage error:', error);
+        throw error;
     }
 
     return data; // Contains id and created_at from Supabase
@@ -139,7 +138,7 @@ export async function fetchStages() {
     const { data, error } = await supabase.from('stages').select('*');
 
     if (error) {
-        console.error('Error fetching activities:', error);
+        console.error('Error fetching stages:', error);
         return error;
     }
 
