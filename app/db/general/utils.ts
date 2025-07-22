@@ -54,6 +54,21 @@ export async function deleteInfoTextByBatchId(batchId: string) {
     return data;
 }
 
+// TODO: test & use this to update patch-batches
+export async function updateInfoText(infoText: { id: string; text_en_uk: string; media_en_uk?: string }) {
+    const { data, error } = await supabase
+        .from('info_texts')
+        .update(infoText)
+        .eq('id', infoText.id)
+        .select();
+
+    if (error) {
+        console.error('Error updating info text:', error);
+        throw error;
+    }
+
+    return data;
+}
 export async function insertInfoTexts(rows: { heading: string; body: string;}[], bathcId: string) {
     const validRows = rows.filter(r => r.body.trim().length > 0);
 

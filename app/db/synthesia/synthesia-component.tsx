@@ -27,7 +27,7 @@ async function createSynthesiaVideo(infoText: InfoText,videoTitle: string, testM
                         style: 'circular',
                         backgroundColor: '#f6f2f2',
                     },
-                    background: 'workspace-media.eefd0e26-7cc4-4825-8963-114363cc0dbe',
+                    background: 'workspace-media.6c580b79-3dfe-4e3e-b838-e920ab96181a',
                     backgroundSettings: {
                         videoSettings: {
                             shortBackgroundContentMatchMode: 'freeze',

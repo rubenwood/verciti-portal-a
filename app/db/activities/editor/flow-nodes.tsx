@@ -1,16 +1,34 @@
 import React from "react";
-import { Handle, Position } from "@xyflow/react";
+import { Handle, Position, useReactFlow, NodeProps } from "@xyflow/react";
 
 export const ActivityNode = React.memo((props: any) => {
+    const { updateNodeData } = useReactFlow();
+
+    const { id, data } = props;
+    const { selectedActivity } = data;
+
+    const handleChange = (field: string, value: any) => {
+        updateNodeData(id, {
+            ...data,
+            selectedActivity: {
+                ...selectedActivity,
+                [field]: value,
+            },
+        });
+    };
+
     return (
          <div className="bg-sky-100 border rounded shadow p-2 text-xs max-w-md">
             <Handle type="source" position={Position.Right} />
             <strong>External Title:</strong><br/>
-            <input type="text" value={props.data.selectedActivity.external_title} onChange={() => {}}/>
+            <input 
+                type="text" 
+                value={props.data.selectedActivity.external_title} 
+                onChange={(e) => handleChange("external_title", e.target.value)}/>
             <br/>
             <br/>
             <strong>Params:</strong><br/>
-            <input type="text" value={JSON.stringify(props.data.selectedActivity.params)} onChange={() => {}}/>
+            <textarea value={JSON.stringify(props.data.selectedActivity.params)} onChange={(e)=>{handleChange("params", e.target.value)}}/>
             <br/>
         </div>
     );
