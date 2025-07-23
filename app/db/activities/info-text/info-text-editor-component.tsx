@@ -100,11 +100,12 @@ export default function InfoTextEditor() {
             {infoTextResults && infoTextResults.length > 0 && (
                 <div className="mt-4 border p-4 rounded shadow">
                     <h2 className="font-bold mb-2">InfoTexts:</h2>
-                    <table className="w-full text-sm">
-                        <thead>
+                    <table className="w-full text-sm border border-gray-200">
+                        <thead className="bg-gray-100">
                             <tr>
                                 <th className="pr-4 text-left">ID</th>
                                 <th className="pr-4 text-left">Batch ID</th>
+                                <th className="pr-4 text-left">Sheet ID</th>
                                 <th className="pr-4 text-left">Title</th>
                                 <th className="pr-4 text-left">Body</th>
                                 <th className="pr-4 text-left">Actions</th>
@@ -112,9 +113,10 @@ export default function InfoTextEditor() {
                         </thead>
                         <tbody>
                             {infoTextResults.map((row) => (
-                                <tr key={row.id} className="align-top">
+                                <tr key={row.id} className="align-top divide-y divide-x divide-gray-200">
                                     <td className="pr-4">{row.id}</td>
                                     <td className="pr-4">{row.batch_id}</td>
+                                    <td className="pr-4">{row.sheet_id}</td>
                                     <td className="pr-4 w-1/4">
                                         {editingId === row.id ? (
                                             <Input

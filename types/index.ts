@@ -41,7 +41,8 @@ type InfoText = {
     created_at: string,
     text_en_uk: any,
     media_en_uk: string,
-    batch_id: string
+    batch_id: string,
+    sheet_id: number
 }
 
 type CourseActivity = {

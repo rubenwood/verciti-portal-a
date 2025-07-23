@@ -78,7 +78,7 @@ export default function BatchSynthesia() {
         let videoIds = [];
         let i = 1;
         for (const infoText of infoTexts) {
-            const videoTitle = `${videoTitlePrefix}_${i}_info_${infoText.id}_`;
+            const videoTitle = `${videoTitlePrefix}_${infoText.sheet_id}_info_${infoText.id}_`;
             try {
                 const videoResponse = await createSynthesiaVideo(infoText, videoTitle, false);
                 console.log(`Video created successfully: ${videoResponse.id}`)
