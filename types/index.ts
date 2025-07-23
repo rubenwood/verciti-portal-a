@@ -27,36 +27,6 @@ type Activity = {
     title_asset_url: string
 }
 
-type Stage = {
-    id: string,
-    created_at: string,
-    type: string,
-    assets: object,
-    params: Record<string, any>,
-    batch_id: string
-}
-type StageWithInfoText = {
-    stage: Stage,
-    related_info_text: InfoText
-}
-
-type InfoText = {
-    id: string,
-    created_at: string,
-    text_en_uk: any,
-    media_en_uk: string,
-    batch_id: string,
-    sheet_id: number
-}
-
-type CourseActivity = {
-    id: string
-    course_id: string
-    activity_id: string
-    order: number
-    created_at: string
-}
-
 type CourseActivityWithDetails = {
     id: any
     course_id: any
@@ -73,6 +43,57 @@ type CourseActivityWithDetails = {
 }
 
 
+type Stage = {
+    id: string,
+    created_at: string,
+    type: string,
+    assets: object,
+    params: Record<string, any>,
+    batch_id: string
+}
+
+type StageWithInfoText = {
+    stage: Stage,
+    related_info_text: InfoText
+}
+
+type InfoText = {
+    id: string,
+    created_at: string,
+    text_en_uk: any,
+    media_en_uk: string,
+    batch_id: string,
+    sheet_id: number
+}
+
+type QuizQuestion = {
+    id: string,
+    created_at: string,
+    question_text_en_uk: string,
+    correct_answer_en_uk: {
+        answer: string,
+        feedback: string[]
+    },
+    incorrect_answers: {
+        answer: string,
+        feedback: string[]
+    }[],
+    question_text_media_en_uk: string | null,
+    batch_id: string
+}
+
+type StageWithQuestions = {
+    stage: Stage,
+    related_questions: QuizQuestion[]
+}
+
+type CourseActivity = {
+    id: string
+    course_id: string
+    activity_id: string
+    order: number
+    created_at: string
+}
 
 type SynthesiaVideo = {
   title: string;
@@ -92,3 +113,4 @@ type SynthesiaPayload = {
   videos: SynthesiaVideo[];
   nextOffset?: number;
 };
+

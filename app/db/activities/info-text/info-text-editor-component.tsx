@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { fetchStagesWithInfoTexts, fetchInfoTextByBatchId, updateInfoText } from '../../general/utils';
+import { fetchStagesWithInfoTexts, updateInfoText } from '../../general/utils';
 import { PostgrestError } from '@supabase/supabase-js';
 
 export default function InfoTextEditor() {

@@ -3,6 +3,8 @@ import { PostgrestError } from '@supabase/supabase-js';
 import confetti from 'canvas-confetti';
 import type { RefObject } from 'react';
 
+
+
 export async function updateMediaPaths(uploaded: { title: string; key: string }[]) {
     for (const { title, key } of uploaded) {
         const match = key.match(/_info_([0-9a-f-]{36})_/i);
@@ -98,6 +100,60 @@ export async function insertInfoTexts(rows: { heading: string; body: string;}[],
     return data;
 }
 
+export async function fetchQuizStagesByBatchId(batchId: string): Promise<StageWithQuestions | PostgrestError> {
+    const { data: stages, error: stagesError } = await supabase
+        .from('stages')
+        .select('*')
+        .eq('batch_id', batchId)
+        .eq('type', 'quiz');
+
+    if (stagesError) {
+        console.error('Error fetching quiz stages:', stagesError);
+        return stagesError;
+    }
+
+    const questionsIds = stages.map((stage) => {
+        try {
+            const params = typeof stage.params === 'string' ? JSON.parse(stage.params) : stage.params;
+            return params?.questions || [];
+        } catch {
+            return null;
+        }
+    }).flat().filter((id): id is string => !!id);
+    
+    const uniqueQuestionIds = Array.from(new Set(questionsIds));
+
+    const { data: questions, error: questionsError } = await supabase
+        .from('quiz_questions')
+        .select('*')
+        .in('id', uniqueQuestionIds);
+
+    if (questionsError) {
+        console.error('Error fetching questions:', questionsError);
+        return questionsError;
+    }
+
+    const questionMap = new Map(questions.map((q) => [q.id, q]));
+
+    const results: StageWithQuestions[] = stages.map((stage) => {
+        let related_questions: QuizQuestion[] = [];
+        try {
+            const params = typeof stage.params === 'string' ? JSON.parse(stage.params) : stage.params;
+            const questionIds = params?.questions || [];
+            related_questions = questionIds.map((id: string) => questionMap.get(id)).filter((q): q is QuizQuestion => !!q);
+        } catch {
+            related_questions = [];
+        }
+
+        return {
+            stage,
+            related_questions,
+        };
+    });
+
+    return results; 
+}
+
 export async function fetchAllInfoText() {
     const { data, error } = await supabase.from('info_texts').select('*');
 
@@ -128,8 +184,6 @@ export async function fetchInfoTextById(infoTextId: string) {
 
     return data as InfoText[];
 }
-
-
 export async function deleteStageByBatchId(batchId: string) {
     const { data, error } = await supabase
         .from('stages')
@@ -144,7 +198,6 @@ export async function deleteStageByBatchId(batchId: string) {
 
     return data;
 }
-
 export async function insertStages(rows: { stageType: string, stageAssets: object, stageParams: Record<string, any>, stageBatchId: string }[]) {
     const insertData = rows.map( r => ({
         type: r.stageType,
@@ -162,7 +215,6 @@ export async function insertStages(rows: { stageType: string, stageAssets: objec
 
     return data; // Contains id and created_at from Supabase
 }
-
 export async function fetchStagesWithInfoTexts(batchId: string): Promise<StageWithInfoText[] | PostgrestError> {
    const { data: stages, error: stagesError } = await supabase
         .from('stages')
@@ -218,7 +270,6 @@ export async function fetchStagesWithInfoTexts(batchId: string): Promise<StageWi
 
     return results;
 }
-
 export async function fetchStages() {
     const { data, error } = await supabase.from('stages').select('*');
 
@@ -263,6 +314,8 @@ export async function fetchCourses() {
 
     return data as Course[];
 }
+
+
 
 export function showConfetti<T extends HTMLElement = HTMLElement>(ref: RefObject<T>){
     if (!ref?.current) return;

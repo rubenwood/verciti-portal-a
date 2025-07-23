@@ -69,7 +69,6 @@ export default function QuizUploader() {
 
     setStatus('Uploading to Supabase...');
     try {
-      // Step 1: Insert quiz questions
       const payload = parsedRows.map(row => ({
         question_text: row.question,
         correct_answer: {
@@ -105,7 +104,6 @@ export default function QuizUploader() {
         return;
       }
 
-      // Step 2: Group inserted questions by quiz_number
       const grouped = new Map<number, string[]>();
       parsedRows.forEach((row, i) => {
         const questionId = insertedQuestions[i]?.id;
@@ -115,10 +113,9 @@ export default function QuizUploader() {
         grouped.get(row.quiz_number)?.push(questionId);
       });
 
-      // Step 3: Insert stages
       const stagePayload = Array.from(grouped.entries()).map(([quizNumber, questionIds]) => ({
         type: 'quiz',
-        assets: [], // Assets optional
+        assets: [],
         params: {
           questions: questionIds
         },

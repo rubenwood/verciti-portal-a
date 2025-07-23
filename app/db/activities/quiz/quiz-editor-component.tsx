@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { fetchQuizStagesByBatchId } from "../../general/utils";
 
 
 
@@ -9,7 +10,12 @@ export default function QuizEditor(){
     const [searchTerm, setSearchTerm] = useState('');
 
     const searchClicked = async () => {
-    
+        const quizStages = await fetchQuizStagesByBatchId(searchTerm);
+        if ('message' in quizStages) {
+            console.error('Error fetching quiz stages:', quizStages.message);
+            return;
+        }
+        console.log('Quiz stages:', quizStages);
     }
 
     return (
