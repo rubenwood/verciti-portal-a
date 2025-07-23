@@ -55,7 +55,7 @@ export async function deleteInfoTextByBatchId(batchId: string) {
 }
 
 // TODO: test & use this to update patch-batches
-export async function updateInfoText(infoText: { id: string; text_en_uk: string; media_en_uk?: string }) {
+export async function updateInfoText(infoText: { id: string; text_en_uk: object; media_en_uk?: string }) {
     const { data, error } = await supabase
         .from('info_texts')
         .update(infoText)
@@ -104,7 +104,17 @@ export async function fetchAllInfoText() {
 
     return data as InfoText[];
 }
-export async function fetchInfoText(infoTextId: string) {
+export async function fetchInfoTextByBatchId(batchId: string) {
+    const { data, error } = await supabase.from('info_texts').select('*').eq('batch_id', batchId);
+
+    if (error) {
+        console.error('Error fetching info text (by id):', error);
+        return error;
+    }
+
+    return data as InfoText[];
+}
+export async function fetchInfoTextById(infoTextId: string) {
     const { data, error } = await supabase.from('info_texts').select('*').eq('id', infoTextId).single();
 
     if (error) {

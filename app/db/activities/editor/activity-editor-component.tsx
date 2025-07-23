@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState, useCallback, useRef } from "react";
 import React from "react";
-import { fetchStages, fetchInfoText, fetchAllInfoText, insertStages } from "../../general/utils";
+import { fetchStages, fetchInfoTextById, fetchAllInfoText, insertStages } from "../../general/utils";
 import { 
     ReactFlow,
     Background,
@@ -200,7 +200,7 @@ export default function ActivityEditor(){
             return;
         }
         
-        const infoTextData: InfoText = await fetchInfoText(stageParams.infoTextId);
+        const infoTextData: InfoText = await fetchInfoTextById(stageParams.infoTextId);
 
         let info_text = {
             id: infoTextData.id,
