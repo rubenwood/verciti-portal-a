@@ -35,6 +35,10 @@ type Stage = {
     params: Record<string, any>,
     batch_id: string
 }
+type StageWithInfoText = {
+    stage: Stage,
+    related_info_text: InfoText
+}
 
 type InfoText = {
     id: string,

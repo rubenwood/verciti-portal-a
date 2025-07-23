@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase'
+import { PostgrestError } from '@supabase/supabase-js';
 import confetti from 'canvas-confetti';
 import type { RefObject } from 'react';
 
@@ -55,12 +56,14 @@ export async function deleteInfoTextByBatchId(batchId: string) {
 }
 
 // TODO: test & use this to update patch-batches
-export async function updateInfoText(infoText: { id: string; text_en_uk: object; media_en_uk?: string }) {
+export async function updateInfoText(infoText: { id: string; text_en_uk: { title: string; body: string }; media_en_uk?: string;}) {
     const { data, error } = await supabase
-        .from('info_texts')
-        .update(infoText)
-        .eq('id', infoText.id)
-        .select();
+    .from('info_texts')
+    .update({
+        text_en_uk: infoText.text_en_uk,
+    })
+    .eq('id', infoText.id)
+    .select();
 
     if (error) {
         console.error('Error updating info text:', error);
@@ -158,6 +161,62 @@ export async function insertStages(rows: { stageType: string, stageAssets: objec
     }
 
     return data; // Contains id and created_at from Supabase
+}
+
+export async function fetchStagesWithInfoTexts(batchId: string): Promise<StageWithInfoText[] | PostgrestError> {
+   const { data: stages, error: stagesError } = await supabase
+        .from('stages')
+        .select('*')
+        .eq('batch_id', batchId);
+
+    if (stagesError) {
+        console.error('Error fetching stages:', stagesError);
+        return stagesError;
+    }
+
+    const infoTextIds = stages
+        .map((stage) => {
+            try {
+                const params = typeof stage.params === 'string' ? JSON.parse(stage.params) : stage.params;
+                return params?.infoTextId;
+            } catch {
+                return null;
+            }
+        })
+        .filter((id): id is string => !!id);
+
+    const uniqueInfoTextIds = Array.from(new Set(infoTextIds));
+
+    const { data: infoTexts, error: infoTextError } = await supabase
+        .from('info_texts')
+        .select('*')
+        .in('id', uniqueInfoTextIds);
+
+    if (infoTextError) {
+        console.error('Error fetching info texts:', infoTextError);
+        return infoTextError;
+    }
+
+    const infoTextMap = new Map(infoTexts.map((txt) => [txt.id, txt]));
+
+    const results: StageWithInfoText[] = stages.map((stage) => {
+        let related_info_text: InfoText | null = null;
+
+        try {
+            const params = typeof stage.params === 'string' ? JSON.parse(stage.params) : stage.params;
+            const infoTextId = params?.infoTextId;
+            related_info_text = infoTextMap.get(infoTextId) || null;
+        } catch {
+            related_info_text = null;
+        }
+
+        return {
+            stage,
+            related_info_text,
+        };
+    });
+
+    return results;
 }
 
 export async function fetchStages() {
