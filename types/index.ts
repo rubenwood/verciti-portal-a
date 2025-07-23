@@ -74,7 +74,7 @@ type QuizQuestion = {
         answer: string,
         feedback: string[]
     },
-    incorrect_answers: {
+    incorrect_answers_en_uk: {
         answer: string,
         feedback: string[]
     }[],

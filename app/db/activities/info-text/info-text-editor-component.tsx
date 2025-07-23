@@ -8,7 +8,7 @@ import { PostgrestError } from '@supabase/supabase-js';
 export default function InfoTextEditor() {
     const [searchTerm, setSearchTerm] = useState('');
     const [stagesInfoTextResults, setStageInfoTextResults] = useState<StageWithInfoText[] | null>();
-    const [infoTextResults, setInfoTextResults] = useState<InfoText[] | null>();
+    //const [infoTextResults, setInfoTextResults] = useState<InfoText[] | null>();
     const [error, setError] = useState<PostgrestError | null>(null);
 
     const [editingId, setEditingId] = useState<string | null>(null);

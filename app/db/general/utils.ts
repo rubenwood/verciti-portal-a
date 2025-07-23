@@ -100,7 +100,7 @@ export async function insertInfoTexts(rows: { heading: string; body: string;}[],
     return data;
 }
 
-export async function fetchQuizStagesByBatchId(batchId: string): Promise<StageWithQuestions | PostgrestError> {
+export async function fetchQuizStagesByBatchId(batchId: string): Promise<StageWithQuestions[] | PostgrestError> {
     const { data: stages, error: stagesError } = await supabase
         .from('stages')
         .select('*')
