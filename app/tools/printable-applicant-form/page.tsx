@@ -1,6 +1,5 @@
 'use client';
 import Link from "next/link";
-import * as XLSX from 'xlsx';
 import Papa from 'papaparse';
 import { useState, useEffect } from "react";
 
