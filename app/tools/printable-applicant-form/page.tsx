@@ -495,18 +495,24 @@ const PrintableApplication = ({data}: any) => (
     <div>
         <ApplicantInfoSection className='page-break' data={data} />
         <ApplicantEthnicSection className='page-break' data={data} />
+        <div className="page-break"></div>
         <br/>
         <ApplicantEmergencyContactSection className='page-break' data={data} />
+        <div className="page-break"></div>
         <br/>
         <ApplicantQualificationsSection className='page-break' data={data} />
+        <div className="page-break"></div>
         <br/>
         <ApplicantEmploymentSection className='page-break' data={data} />
+        <div className="page-break"></div>
         <br/>
         <ApplicantDisabilitySection className='page-break' data={data} />
         <div style={{height:"48px"}} />
         <ApplicantMarketingSection className='page-break' data={data} />
+        <div className="page-break"></div>
         <br/>
         <ApplicantDeclarationSection className='page-break' data={data} />
+        <div className="page-break"></div>
         <br/>
         <ApplicantSignSection className='page-break' data={data} />
     </div>
