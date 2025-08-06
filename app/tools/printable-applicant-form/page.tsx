@@ -443,7 +443,7 @@ const ApplicantDeclarationSection = ({ data }: any) => (
                         - Promptly inform the Employer and/or Verciti if any matters or issues arise, or might arise, that will, or may, affect my learning, development and progression<br/>
                         - All times behave in a safe and responsible manner and in accordance with the statutory requirements of health and safety law relating to my responsibilities from time to time<br/>
                         - Comply with the policies, regulations and procedures of my Employer and/or Verciti, notified to me from time to time;<br/><br/>
-                        If you wish to raise a complaint about how we have handled your personal data email to Verciti or any other issues, please email Verciti with full details of your issue. If you are not satisfied how your complaint has been dealt with, please be aware of Authority’s Whistleblowing and Complaints policies and processes. Whistleblowing involves entering a 'whistleblowing' webform on the 'Contact the Department for Education' page, which can be found below: <Link href='https://form.education.gov.uk/service/Contact_the_Department_for_Education'>Contact the Department for Education - DFE Online Forms</Link>. Whistleblowing entries for Skills Bootcamps must be clearly marked as 'Skills Bootcamps' and will submitted via the DfE's whistleblowing submission process and will be escalated to the relevant policy team.<br/><br/>
+                        If you wish to raise a complaint about how we have handled your personal data email to Verciti or any other issues, please email info@verciti.com with full details of your issue. If you are not satisfied how your complaint has been dealt with, please be aware of Authority’s Whistleblowing and Complaints policies and processes. Whistleblowing involves entering a 'whistleblowing' webform on the 'Contact the Department for Education' page, which can be found below: <Link href='https://form.education.gov.uk/service/Contact_the_Department_for_Education'>Contact the Department for Education - DFE Online Forms</Link>. Whistleblowing entries for Skills Bootcamps must be clearly marked as 'Skills Bootcamps' and will submitted via the DfE's whistleblowing submission process and will be escalated to the relevant policy team.<br/><br/>
                         Your information may also be shared with other third parties for the above purposes, but only where the law allows it and the sharing is in compliance with data protection legislation. You can agree to be contacted for other purposes by ticking any of the following boxes:<br/><br/>
 
                         {getMarker(data["Your information may also be shared with other third parties for the above purposes, but only where the law allows it and the sharing is in compliance with data protection legislation. You can agr..."], "About courses or learning opportunities")} About courses or learning opportunities<br/>
@@ -493,28 +493,22 @@ const ApplicantSignSection = ({ data }: any) => {
 };
 const PrintableApplication = ({data}: any) => (
     <div>
-        <ApplicantInfoSection data={data} />
-        <ApplicantEthnicSection data={data} />
-        <div className="page-break" />
-        <ApplicantEmergencyContactSection data={data} />
-        <div className="page-break" />
+        <ApplicantInfoSection className='page-break' data={data} />
+        <ApplicantEthnicSection className='page-break' data={data} />
         <br/>
-        <ApplicantQualificationsSection data={data} />
-        <div className="page-break" />
+        <ApplicantEmergencyContactSection className='page-break' data={data} />
         <br/>
-        <ApplicantEmploymentSection data={data} />
-        <div className="page-break" />
+        <ApplicantQualificationsSection className='page-break' data={data} />
         <br/>
-        <ApplicantDisabilitySection data={data} />
-        <div className="page-break" />
+        <ApplicantEmploymentSection className='page-break' data={data} />
         <br/>
-        <ApplicantMarketingSection data={data} />
-        <div className="page-break" />
+        <ApplicantDisabilitySection className='page-break' data={data} />
+        <div style={{height:"48px"}} />
+        <ApplicantMarketingSection className='page-break' data={data} />
         <br/>
-        <ApplicantDeclarationSection data={data} />
-        <div className="page-break" />
+        <ApplicantDeclarationSection className='page-break' data={data} />
         <br/>
-        <ApplicantSignSection data={data} />
+        <ApplicantSignSection className='page-break' data={data} />
     </div>
 );
 
@@ -555,7 +549,7 @@ export default function PrintableApplicantFormTool() {
                     image:          { type: 'jpeg', quality: 0.98 },
                     html2canvas:    { scale: 1, useCORS: true },
                     jsPDF:          { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                    pagebreak:      { mode: ['css', 'legacy'], before: '.page-break' }
+                    pagebreak:      { mode: ['css'], after:'*', before:'.page-break' }
                 };
 
                 await html2pdf().from(ref).set(opt).save();

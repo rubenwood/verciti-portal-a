@@ -55,10 +55,12 @@ body {
 }
 
 .page-break {
-  display: block;
-  height: 0;
-  page-break-before: always;
-  break-before: page;
+  display: block !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  page-break-after: always !important;
+  break-after: page !important;
 }
 .button {
   @apply mt-2 px-4 py-2 bg-[#97fb57] text-[#121212] rounded-lg  hover:bg-[#83d84d];
