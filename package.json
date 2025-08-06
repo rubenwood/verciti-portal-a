@@ -23,6 +23,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "formidable": "^3.5.4",
+    "html2pdf.js": "^0.9.0",
     "lucide-react": "^0.516.0",
     "next": "15.3.0",
     "papaparse": "^5.5.3",
