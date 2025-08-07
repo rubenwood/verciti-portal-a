@@ -54,7 +54,7 @@ type Stage = {
 
 type StageWithInfoText = {
     stage: Stage,
-    related_info_text: InfoText
+    related_info_text: InfoText | null
 }
 
 type InfoText = {

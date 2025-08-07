@@ -584,7 +584,7 @@ export default function PrintableApplicantFormTool() {
                     backgroundColor: '#fff', // fallback to safe color
                     fontFamily: 'Arial, sans-serif',
                 }}
-                ref={(el) => (formRefs.current[index] = el)}>
+                ref={(el) => { formRefs.current[index] = el }}>
                     <PrintableApplication data={entry} index={index} />
                 </div>
             ))}
