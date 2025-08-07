@@ -1,5 +1,4 @@
-import puppeteer from 'puppeteer-core';
-import { chromium } from 'playwright';
+import chromium from 'chrome-aws-lambda';
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
@@ -11,13 +10,12 @@ export async function POST(req: NextRequest){
         return NextResponse.json({ error: 'Missing HTML input' });
     }
 
-    const executablePath = chromium.executablePath();
-
-    const browser = await puppeteer.launch({
-        executablePath,
-        headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    })
+    const browser = await chromium.puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
+    });
 
     const page = await browser.newPage();
 
