@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "heroku-postbuild": "npx playwright install chromium"
+    "heroku-postbuild": "npx playwright install chromium && npm run build"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.830.0",
