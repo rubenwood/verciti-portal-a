@@ -33,6 +33,8 @@ export default function InfoTextEditor() {
     };
 
     const startEditing = (row: StageWithInfoText) => {
+        if(row == null) { console.error("row is null!"); return; }
+        if(row.related_info_text == null) { console.error("related info text is null!"); return; }
         setEditingId(row.stage.id);
         setEditFields({
             title: row.related_info_text.text_en_uk.title,
@@ -46,6 +48,9 @@ export default function InfoTextEditor() {
 
     const saveChanges = async (row: StageWithInfoText) => {
         try {
+            if(row == null) { console.error("no row!"); return; }
+            if(row.related_info_text == null) { console.error("no related info text"); return; }
+            
             await updateInfoText({
                 id: row.related_info_text.id,
                 text_en_uk: {
@@ -56,20 +61,27 @@ export default function InfoTextEditor() {
 
             // Update local state
             setStageInfoTextResults((prev) =>
-                prev?.map((item) =>
-                    item.related_info_text.id === row.related_info_text.id
-                        ? {
-                            ...item,
-                            related_info_text: {
-                                ...item.related_info_text,
-                                text_en_uk: {
-                                    title: editFields.title,
-                                    body: editFields.body,
+                prev
+                    ? prev.map((item) =>
+                        item?.related_info_text?.id === row?.related_info_text?.id && item.related_info_text
+                            ? {
+                                ...item,
+                                related_info_text: {
+                                    ...item.related_info_text,
+                                    text_en_uk: {
+                                        title: editFields.title,
+                                        body: editFields.body,
+                                    },
+                                    id: item.related_info_text.id,
+                                    created_at: item.related_info_text.created_at,
+                                    media_en_uk: item.related_info_text.media_en_uk,
+                                    batch_id: item.related_info_text.batch_id,
+                                    sheet_id: item.related_info_text.sheet_id,
                                 },
-                            },
-                        }
-                        : item
-                ) ?? null
+                            }
+                            : item
+                    )
+                    : null
             );
 
             cancelEditing();
@@ -118,10 +130,10 @@ export default function InfoTextEditor() {
                         <tbody>
                             {stagesInfoTextResults.map((row) => (
                                 <tr key={row.stage.id} className="align-top divide-y divide-x divide-gray-200">
-                                    <td className="pr-4">{row.stage.id}</td>
-                                    <td className="pr-4">{row.related_info_text.id}</td>
-                                    <td className="pr-4">{row.stage.batch_id}</td>
-                                    <td className="pr-4">{row.related_info_text.sheet_id}</td>
+                                    <td className="pr-4">{row?.stage.id}</td>
+                                    <td className="pr-4">{row?.related_info_text?.id}</td>
+                                    <td className="pr-4">{row?.stage.batch_id}</td>
+                                    <td className="pr-4">{row?.related_info_text?.sheet_id}</td>
                                     <td className="pr-4 w-1/4">
                                         {editingId === row.stage.id ? (
                                             <Input
@@ -131,7 +143,7 @@ export default function InfoTextEditor() {
                                                 }
                                             />
                                         ) : (
-                                            row.related_info_text.text_en_uk.title
+                                            row?.related_info_text?.text_en_uk.title
                                         )}
                                     </td>
                                     <td className="pr-4 w-1/2">
@@ -145,7 +157,7 @@ export default function InfoTextEditor() {
                                                 }
                                             />
                                         ) : (
-                                            <pre className="whitespace-pre-wrap">{row.related_info_text.text_en_uk.body}</pre>
+                                            <pre className="whitespace-pre-wrap">{row?.related_info_text?.text_en_uk.body}</pre>
                                         )}
                                     </td>
                                     <td className="pr-4 space-x-2">
