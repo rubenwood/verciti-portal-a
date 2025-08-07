@@ -7,7 +7,7 @@ import { checkUser } from '../general/get-user' // TODO: move check user up a le
 export default function CoursesTable(){
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
-    const [editingId, setEditingId] = useState<number | null>(null);
+    const [editingId, setEditingId] = useState<string>();
     const [editForm, setEditForm] = useState<Partial<Course>>({});
     const [user, setUser] = useState<User | null>(null);
 
@@ -33,7 +33,7 @@ export default function CoursesTable(){
       }
     
       const handleCancel = () => {
-        setEditingId(null)
+        setEditingId("")
         setEditForm({})
       }
     
@@ -54,7 +54,7 @@ export default function CoursesTable(){
           setCourses((prev) =>
             prev.map((c) => (c.id === editingId ? { ...c, ...editForm } : c))
           )
-          setEditingId(null)
+          setEditingId("")
           setEditForm({})
           }
         }
