@@ -25,7 +25,3 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Deploy on Heroku
 Some tools require a headless browser, so a serverless architecture is ill-advised.
-So, deploy on heroku.
-To deploy make sure you have the right buildpacks (in this order): 
-1. jontewks/puppeteer
-2. heroku/nodejs
