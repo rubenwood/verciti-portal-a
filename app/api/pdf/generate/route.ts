@@ -123,7 +123,7 @@ function ApplicantTable(data: any): Table {
   rows.push(
     new TableRow({
       children: [ // TODO: line breaks dont create new lines
-        createTableCell(`Address: ${data['Address']}\r\n\r\nPostcode: ${data['Postcode']}`, false, undefined, 4),
+        createTableCell(`Address: ${data['Address']}Postcode: ${data['Postcode']}`, false, undefined, 4),
       ],
     }),
   );
@@ -474,6 +474,34 @@ function AttainmentTable(data: any): Table {
   })
 }
 
+function EmploymentTable(data: any) : Table {
+  const rows: TableRow[] = [];
+
+  // Section header row
+  rows.push(
+    new TableRow({
+      children: [
+        createTableCell('5. Employment Information', true, 'B8CCE4', 4),
+      ],
+    }),
+    new TableRow({
+      children: [
+        createTableCell('1. On the day prior to this course, what is your employment status? (please tick one)', false, undefined, 1),
+        createTableCell('2. If employed, please state name of your employer, the postcode of your workplace, your current job role, industry/sector of current job, number of hours worked per week and your current salary (if more than 1 job, please state details for main employer):', false, undefined, 2),
+        createTableCell('3. Do you currently receive any of the following?', false, undefined, 1),
+      ],
+    }),
+  );
+
+  return new Table({
+    width: {
+      size: 100,
+      type: WidthType.PERCENTAGE,
+    },
+    rows
+  })
+}
+
 function EmptyParagraph(){
   return new Paragraph({
     children: [
@@ -494,7 +522,7 @@ function constructWordDoc(data: any) {
   const EthnicSection: Table = EthnicTable(data);
   const EmergencySection: Table = EmergencyTable(data);
   const AttainmentSection: Table = AttainmentTable(data);
-
+  const EmploymentSection: Table = EmploymentTable(data);
 
   const doc = new Document({
     sections: [
@@ -528,6 +556,8 @@ function constructWordDoc(data: any) {
           EmergencySection,
           ParagraphBreak,
           AttainmentSection,
+          ParagraphBreak,
+          EmploymentSection,
           ParagraphBreak,
         ],
       },
