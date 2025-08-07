@@ -246,7 +246,8 @@ function EthnicTable(data: any): Table {
           }),
           new TableCell({
             children: [createParagraphFromLines(col2Lines)],
-            margins: { top: 100, bottom: 100, left: 100, right: 100 },columnSpan:2,
+            margins: { top: 100, bottom: 100, left: 100, right: 100 },
+            columnSpan:2,
             borders: {
               top: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
               bottom: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
@@ -314,20 +315,162 @@ function AttainmentTable(data: any): Table {
     }),
   );
 
+  const col1Texts = [ "No record of attainment (have not attained any qualifications", 
+                      "Entry Level (Basic Entry Level, E)",
+                      "Level 1 (5GCSEs D-G/3-1; 1 AS Level; GNVQ Foundation; BTEC First Certificate)",
+                      "Level 2 (5 GCSEs A*-C/9-4; NVQ2; 2 or 3 AS Levels; GNVQ Intermediate; BTEC First Diploma)",
+                      "Level 3 (4 AS Level; 2 A2/A Level; NVQ3; BTEC Diploma/Extended Diploma/Access to HE)"];
+  const col1Lines = [
+    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col1Texts[0])} ${col1Texts[0]}`,
+    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col1Texts[1])} ${col1Texts[1]}`,
+    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col1Texts[2])} ${col1Texts[2]}`,
+    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col1Texts[3])} ${col1Texts[3]}`,
+    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col1Texts[4])} ${col1Texts[4]}`,
+  ];
+
+  const col2Texts = [ "Level 4 (Certificate of Higher Education; HNC)",
+                      "Level 5 (Foundation Degree; HND)",
+                      "Level 6 (Bachelor's Degree; Graduate qualification)",
+                      "Level 7 (Master's Degree; Postgraduate qualification)",
+                      "Level 8 (Doctorate, PhD)",
+                      "Other qualification: level not known",
+                      "Not known"];
+  const col2Lines = [
+    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[0])}, ${col2Texts[0]}`,
+    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[1])}, ${col2Texts[1]}`,
+    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[2])}, ${col2Texts[2]}`,
+    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[3])}, ${col2Texts[3]}`,
+    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[4])}, ${col2Texts[4]}`,
+    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[5])}, ${col2Texts[5]}`,
+    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[6])}, ${col2Texts[6]}`,
+  ];
+
+  const row2Col1Texts = [
+    "Medicine and dentistry",
+    "Subjects allied to medicine",
+    "Biological and sport sciences",
+    "Psychology",
+    "Veterinary sciences",
+    "Agriculture, food and related studies",
+    "Physical sciences",
+    "General and others in sciences",
+    "Mathematical sciences",
+    "Engineering and technology",
+    "Computing",
+    "Geographical and environmental studies (natural sciences)"
+  ];
+  const row2Col1Lines = [
+    ``,
+    `If you completed a level 6 qualification or higher, please select which subject this was in:`,
+    ``,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col1Texts[0])} ${row2Col1Texts[0]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col1Texts[1])} ${row2Col1Texts[1]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col1Texts[2])} ${row2Col1Texts[2]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col1Texts[3])} ${row2Col1Texts[3]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col1Texts[4])} ${row2Col1Texts[4]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col1Texts[5])} ${row2Col1Texts[5]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col1Texts[6])} ${row2Col1Texts[6]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col1Texts[7])} ${row2Col1Texts[7]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col1Texts[8])} ${row2Col1Texts[8]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col1Texts[9])} ${row2Col1Texts[9]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col1Texts[10])} ${row2Col1Texts[10]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col1Texts[11])} ${row2Col1Texts[11]}`,
+];
+
+  const row2Col2Texts = [
+    "Architecture, building and planning",
+    "Geographical and environmental studies (social sciences)",
+    "Humanities and liberal arts (non-specific)",
+    "Social sciences",
+    "Law",
+    "Business and management",
+    "Communications and media",
+    "Language and area studies",
+    "Historical, philosophical and religious studies",
+    "Creative arts and design",
+    "Education and teaching",
+    "Combined and general studies"
+  ];
+  const row2Col2Lines = [
+    ``,
+    ``,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[0])}, ${row2Col2Texts[0]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[1])}, ${row2Col2Texts[1]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[2])}, ${row2Col2Texts[2]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[3])}, ${row2Col2Texts[3]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[4])}, ${row2Col2Texts[4]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[5])}, ${row2Col2Texts[5]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[6])}, ${row2Col2Texts[6]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[7])}, ${row2Col2Texts[7]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[8])}, ${row2Col2Texts[8]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[9])}, ${row2Col2Texts[9]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[10])}, ${row2Col2Texts[10]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[11])}, ${row2Col2Texts[11]}`
+  ];
+
+  // TODO: might need to adjust column width or font sizes
+  rows.push(
+      new TableRow({
+        children: [
+          new TableCell({
+            children: [createParagraphFromLines(col1Lines)],
+            margins: { top: 100, bottom: 100, left: 100, right: 100 },
+            columnSpan:2,
+            borders: {
+              top: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
+              bottom: { style: BorderStyle.SINGLE, size: 0, color: "ffffff" },
+              left: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
+              right: { style: BorderStyle.NONE, size: 0, color: "ffffff" },
+            },
+           }),
+          new TableCell({
+              children: [createParagraphFromLines(col2Lines)],
+              margins: { top: 100, bottom: 100, left: 100, right: 100 },
+              columnSpan:2,
+              borders: {
+                top: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
+                bottom: { style: BorderStyle.NONE, size: 0, color: "ffffff" },
+                left: { style: BorderStyle.NONE, size: 0, color: "ffffff" },
+                right: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
+              },
+            })
+        ]
+      }),
+      new TableRow({
+        children: [
+          new TableCell({
+            children: [createParagraphFromLines(row2Col1Lines)],
+            margins: { top: 100, bottom: 100, left: 100, right: 100 },
+            columnSpan:2,
+            borders: {
+              top: { style: BorderStyle.NONE, size: 0, color: "ffffff" },
+              bottom: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
+              left: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
+              right: { style: BorderStyle.NONE, size: 0, color: "ffffff" },
+            },
+           }),
+          new TableCell({
+              children: [createParagraphFromLines(row2Col2Lines)],
+              margins: { top: 100, bottom: 100, left: 100, right: 100 },
+              columnSpan:2,
+              borders: {
+                top: { style: BorderStyle.NONE, size: 0, color: "ffffff" },
+                bottom: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
+                left: { style: BorderStyle.NONE, size: 0, color: "ffffff" },
+                right: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
+              },
+            })
+        ]
+      }),
+  );
+
+
   return new Table({
     width: {
       size: 100,
       type: WidthType.PERCENTAGE,
     },
-    rows,
-    borders: {
-      top: { style: BorderStyle.SINGLE, size: 1, color: 'cccccc' },
-      bottom: { style: BorderStyle.SINGLE, size: 1, color: 'cccccc' },
-      left: { style: BorderStyle.SINGLE, size: 1, color: 'cccccc' },
-      right: { style: BorderStyle.SINGLE, size: 1, color: 'cccccc' },
-      insideHorizontal: { style: BorderStyle.SINGLE, size: 1, color: 'cccccc' },
-      insideVertical: { style: BorderStyle.SINGLE, size: 1, color: 'cccccc' },
-    },
+    rows
   })
 }
 
@@ -385,6 +528,7 @@ function constructWordDoc(data: any) {
           EmergencySection,
           ParagraphBreak,
           AttainmentSection,
+          ParagraphBreak,
         ],
       },
     ],
