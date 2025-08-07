@@ -74,7 +74,7 @@ export async function updateInfoText(infoText: { id: string; text_en_uk: { title
 
     return data;
 }
-export async function insertInfoTexts(rows: { heading: string; body: string;}[], batchId: string, sheet_id: number) {
+export async function insertInfoTexts(rows: { heading: string; body: string; sheetId: number}[], batchId: string) {
     const validRows = rows.filter(r => r.body.trim().length > 0);
 
     const insertData = validRows.map(r => ({
@@ -87,7 +87,7 @@ export async function insertInfoTexts(rows: { heading: string; body: string;}[],
         media_en_uk: null,
         media_en_us: null,
         batch_id: batchId,
-        sheet_id: sheet_id
+        sheet_id: r.sheetId
     }));
 
     const { data, error } = await supabase.from('info_texts').insert(insertData).select();

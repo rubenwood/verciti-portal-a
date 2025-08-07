@@ -11,12 +11,14 @@ type ParsedRow = {
   heading: string;
   body: string;
   batchId: string;
+  sheetId: number;
 };
 
 export default function InfoTextUploader() {
   const headingRowTitle = 'Heading Text';
   const bodyRowTitle = 'Body Text';
   const batchIdRowTitle = 'Batch Id';
+  const sheetIdRowTitle = '#';
 
   const [parsedRows, setParsedRows] = useState<ParsedRow[]>([]);
   const [file, setFile] = useState<File | null>(null);
@@ -45,7 +47,8 @@ export default function InfoTextUploader() {
             const parsed = (results.data as any[]).map((row) => ({
               heading: row[headingRowTitle] || '',
               body: row[bodyRowTitle] || '',
-              batchId: row[batchIdRowTitle] || ''
+              batchId: row[batchIdRowTitle] || '',
+              sheetId: row[sheetIdRowTitle]
             }));
             setParsedRows(parsed.filter((r) => r.body.trim().length > 0));
           },
@@ -57,7 +60,8 @@ export default function InfoTextUploader() {
         const parsed = (jsonData as any[]).map((row) => ({
           heading: row[headingRowTitle] || '',
           body: row[bodyRowTitle] || '',
-          batchId: row[batchIdRowTitle] || ''
+          batchId: row[batchIdRowTitle] || '',
+          sheetId: row[sheetIdRowTitle]
         }));
         setParsedRows(parsed.filter((r) => r.body.trim().length > 0));
       }
