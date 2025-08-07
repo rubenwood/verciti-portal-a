@@ -536,34 +536,6 @@ export default function PrintableApplicantFormTool() {
         });
     };
 
-    const generatePDFs = async () => {
-        // save each printable application form as a pdf and upload to share point folder
-        //https://theblairproject.sharepoint.com/sites/tbp/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2Ftbp%2FShared%20Documents%2F1%29%20Adult%20Skills%20Training%2FCheshire%20and%20Warrington%20Bootcamps%2FLearner%20Data%2FCohort%201&viewid=d187a113%2D1e4a%2D461a%2Db76e%2De820756016c8&p=true&ga=1
-        // 1) Adult Skills Training / Cheshire and Warrington Bootcamps / Learner Data / Cohort X
-        // 
-
-        if (typeof window === 'undefined') return;
-
-        // Dynamic import only on client
-        const html2pdf = (await import('html2pdf.js')).default;
-
-        for (let i = 0; i < entries.length; i++) {
-            const ref: HTMLDivElement | null = formRefs.current[i];
-            if (ref instanceof HTMLDivElement) {
-                const opt = {
-                    margin:         10,
-                    filename:       `form-${i + 1}.pdf`,
-                    image:          { type: 'jpeg', quality: 0.98 },
-                    html2canvas:    { scale: 1, useCORS: true },
-                    jsPDF:          { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                    pagebreak:      { mode: ['css'], after:'*', before:'.page-break' }
-                };
-
-                await html2pdf().from(ref).set(opt).save();
-            }
-        }
-    }
-
     const generateAndDownloadPDF = async () => {
         for (let i = 0; i < formRefs.current.length; i++) {
             const ref = formRefs.current[i];
