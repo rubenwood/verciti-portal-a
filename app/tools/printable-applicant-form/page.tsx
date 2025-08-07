@@ -493,28 +493,29 @@ const ApplicantSignSection = ({ data }: any) => {
 };
 const PrintableApplication = ({data}: any) => (
     <div>
-        <ApplicantInfoSection className='page-break' data={data} />
-        <ApplicantEthnicSection className='page-break' data={data} />
+        <ApplicantInfoSection data={data} />
+        <ApplicantEthnicSection data={data} />
         <div className="page-break"></div>
         <br/>
-        <ApplicantEmergencyContactSection className='page-break' data={data} />
+        <ApplicantEmergencyContactSection data={data} />
         <div className="page-break"></div>
         <br/>
-        <ApplicantQualificationsSection className='page-break' data={data} />
+        <ApplicantQualificationsSection data={data} />
         <div className="page-break"></div>
         <br/>
-        <ApplicantEmploymentSection className='page-break' data={data} />
+        <ApplicantEmploymentSection data={data} />
         <div className="page-break"></div>
         <br/>
-        <ApplicantDisabilitySection className='page-break' data={data} />
-        <div style={{height:"48px"}} />
-        <ApplicantMarketingSection className='page-break' data={data} />
+        <ApplicantDisabilitySection data={data} />
+        <br/>
+        <ApplicantMarketingSection data={data} />
         <div className="page-break"></div>
         <br/>
-        <ApplicantDeclarationSection className='page-break' data={data} />
+        <div style={{height:"650px"}} />
+        <ApplicantDeclarationSection data={data} />
         <div className="page-break"></div>
         <br/>
-        <ApplicantSignSection className='page-break' data={data} />
+        <ApplicantSignSection data={data} />
     </div>
 );
 
@@ -563,6 +564,36 @@ export default function PrintableApplicantFormTool() {
         }
     }
 
+    const generateAndDownloadPDF = async () => {
+        for (let i = 0; i < formRefs.current.length; i++) {
+            const ref = formRefs.current[i];
+            if (!ref) continue;
+
+            const htmlString = ref.outerHTML;
+
+            const response = await fetch('/api/pdf/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ html: htmlString }),
+            });
+
+            if (!response.ok) {
+                console.error(`Failed to generate PDF for entry ${i + 1}`);
+                continue;
+            }
+
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `generated-${i + 1}.pdf`;
+            a.click();
+
+            URL.revokeObjectURL(url);
+        }
+    };
+
     useEffect(() => {
         if (entries.length > 0) {
             console.log('Parsed CSV entries:', entries);
@@ -574,7 +605,7 @@ export default function PrintableApplicantFormTool() {
             <div className="grid w-full max-w-sm items-center gap-3">
                 <Input type="file" accept=".csv" onChange={handleFileUpload} />
             </div>
-            <Button onClick={generatePDFs}>Create PDFs</Button>
+            <Button onClick={generateAndDownloadPDF}>Create PDFs</Button>
             {entries.map((entry, index) => (
                 <div 
                 key={index} 
