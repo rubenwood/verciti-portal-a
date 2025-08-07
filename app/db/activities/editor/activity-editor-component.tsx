@@ -11,7 +11,8 @@ import {
     addEdge,
     Node,
     Edge,
-    Connection } from '@xyflow/react';
+    Connection, 
+    Position} from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
 import { ActivityNode, StageNode, InfoTextNode } from "./flow-nodes";
@@ -215,8 +216,8 @@ export default function ActivityEditor(){
             type: 'infoTextNode',
             position: {x:stageNode.position.x+300, y:stageNode.position.y},
             data: { info_text },
-            targetPosition:'left',
-            sourcePosition:'right'
+            targetPosition:Position.Left,
+            sourcePosition:Position.Right
         }
 
         let newEdge = {

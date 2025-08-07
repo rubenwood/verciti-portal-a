@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { Node } from '@xyflow/react';
 
 type StageContextMenuProps = {
     visible: boolean;
