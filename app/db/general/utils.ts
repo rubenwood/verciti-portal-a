@@ -317,7 +317,7 @@ export async function fetchCourses() {
 
 
 
-export function showConfetti<T extends HTMLElement = HTMLElement>(ref: RefObject<T>){
+export function showConfetti<T extends HTMLElement = HTMLElement>(ref: RefObject<T | null>){
     if (!ref?.current) return;
 
     const rect = ref.current.getBoundingClientRect();
