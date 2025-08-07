@@ -200,7 +200,9 @@ export default function ActivityEditor(){
             return;
         }
         
-        const infoTextData: InfoText = await fetchInfoTextById(stageParams.infoTextId);
+        const infoTextData = await fetchInfoTextById(stageParams.infoTextId);
+        
+        if('message' in infoTextData){ console.error(infoTextData.message); return;}
 
         let info_text = {
             id: infoTextData.id,

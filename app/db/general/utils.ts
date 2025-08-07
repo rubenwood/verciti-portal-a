@@ -140,7 +140,7 @@ export async function fetchQuizStagesByBatchId(batchId: string): Promise<StageWi
         try {
             const params = typeof stage.params === 'string' ? JSON.parse(stage.params) : stage.params;
             const questionIds = params?.questions || [];
-            related_questions = questionIds.map((id: string) => questionMap.get(id)).filter((q): q is QuizQuestion => !!q);
+            related_questions = questionIds.map((id: string) => questionMap.get(id)).filter((q: any): q is QuizQuestion => !!q);
         } catch {
             related_questions = [];
         }
@@ -182,7 +182,7 @@ export async function fetchInfoTextById(infoTextId: string) {
         return error;
     }
 
-    return data as InfoText[];
+    return data as InfoText;
 }
 export async function deleteStageByBatchId(batchId: string) {
     const { data, error } = await supabase
