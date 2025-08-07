@@ -4,7 +4,7 @@ import { updateActivity, showConfetti } from "../../general/utils";
 import { Button } from "@/components/ui/button";
 
 export default function EditorSaveButton(props: any){
-    const saveButtonRef = useRef<HTMLButtonElement | null>(null);
+    const saveButtonRef = useRef<any>(null);
     
     const saveChanges = async (selectedActivity: any) => {
         if(selectedActivity == undefined){ return; }
