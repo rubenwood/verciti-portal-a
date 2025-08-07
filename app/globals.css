@@ -47,13 +47,6 @@ body {
   font-family: var(--font-lexend), Arial, Helvetica, sans-serif;
 }
 
-@media print {
-  .pdf-page-break {
-    page-break-before: always;
-    break-before: page;
-  }
-}
-
 .page-break {
   display: block !important;
   page-break-before: always !important;
