@@ -536,19 +536,19 @@ export default function PrintableApplicantFormTool() {
         });
     };
 
-    const generateAndDownloadPDF = async () => {
+    const generateAndDownloadDocx = async () => {
         for (let i = 0; i < entries.length; i++) {
             const data = entries[i];
 
             const response = await fetch('/api/pdf/generate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ data }),
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ data }),
             });
 
             if (!response.ok) {
-                console.error(`Failed to generate PDF for entry ${i + 1}`);
-                continue;
+            console.error(`Failed to generate document for entry ${i + 1}`);
+            continue;
             }
 
             const blob = await response.blob();
@@ -556,10 +556,17 @@ export default function PrintableApplicantFormTool() {
 
             const a = document.createElement('a');
             a.href = url;
-            a.download = `generated-${i + 1}.pdf`;
+            a.download = `generated-${i + 1}.docx`;
+
+            // Append to body for Firefox compatibility
+            document.body.appendChild(a);
             a.click();
+            a.remove();
 
             URL.revokeObjectURL(url);
+
+            // Optional delay to avoid simultaneous downloads
+            // await new Promise((r) => setTimeout(r, 500));
         }
     };
 
@@ -575,7 +582,7 @@ export default function PrintableApplicantFormTool() {
             <div className="grid w-full max-w-sm items-center gap-3">
                 <Input type="file" accept=".csv" onChange={handleFileUpload} />
             </div>
-            <Button onClick={generateAndDownloadPDF}>Create PDFs</Button>
+            <Button onClick={generateAndDownloadDocx}>Create PDFs</Button>
             {entries.map((entry, index) => (
                 <div 
                 key={index} 
