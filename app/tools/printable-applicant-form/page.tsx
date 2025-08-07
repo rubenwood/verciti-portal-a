@@ -537,16 +537,13 @@ export default function PrintableApplicantFormTool() {
     };
 
     const generateAndDownloadPDF = async () => {
-        for (let i = 0; i < formRefs.current.length; i++) {
-            const ref = formRefs.current[i];
-            if (!ref) continue;
-
-            const htmlString = ref.outerHTML;
+        for (let i = 0; i < entries.length; i++) {
+            const data = entries[i];
 
             const response = await fetch('/api/pdf/generate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ html: htmlString }),
+                body: JSON.stringify({ data }),
             });
 
             if (!response.ok) {
@@ -565,6 +562,7 @@ export default function PrintableApplicantFormTool() {
             URL.revokeObjectURL(url);
         }
     };
+
 
     useEffect(() => {
         if (entries.length > 0) {
