@@ -7,6 +7,7 @@ import {
   TableCell,
   TableRow,
   TextRun,
+  ExternalHyperlink,
   WidthType,
   BorderStyle,
   ShadingType,
@@ -37,14 +38,55 @@ function createTableCell(
   fill?: string,
   colSpan?: number
 ) {
+  const linkRegex = /<Link href=['"]([^'"]+)['"]>(.*?)<\/Link>/gi;
+  const parts: Paragraph[] = [];
+
+  // Split by lines first
+  text.split("\n").forEach(line => {
+    const segments: (TextRun | ExternalHyperlink)[] = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = linkRegex.exec(line)) !== null) {
+      const before = line.substring(lastIndex, match.index);
+      if (before) {
+        segments.push(new TextRun({ text: before, bold, font:'Arial', size:24 }));
+      }
+
+      segments.push(
+        new ExternalHyperlink({
+          link: match[1],
+          children: [
+            new TextRun({
+              text: match[2],
+              style: "Hyperlink",
+              font:'Arial',
+              size:24 
+            }),
+          ],
+        })
+      );
+
+      lastIndex = match.index + match[0].length;
+    }
+
+    // Remaining text after last link
+    const after = line.substring(lastIndex);
+    if (after) {
+      segments.push(new TextRun({ text: after, bold, font:'Arial', size:24 }));
+    }
+
+    parts.push(new Paragraph({ children: segments }));
+  });
+
   return new TableCell({
-    children: [createText(text, bold)],
+    children: parts,
     columnSpan: colSpan,
     shading: fill
       ? {
           fill,
-          color: 'auto',
-          val: 'clear',
+          color: "auto",
+          val: "clear",
         }
       : undefined,
     margins: {
@@ -502,6 +544,164 @@ function EmploymentTable(data: any) : Table {
   })
 }
 
+function DisabilityTable(data: any) : Table {
+  const rows: TableRow[] = [];
+
+  rows.push(
+      new TableRow({
+        children: [
+          createTableCell('6.	Disability, Learning Difficulty and or Long Term Health Condition – please tick all that apply, if no option is indicated the starred * option will be selected', true, 'B8CCE4', 4),
+        ],
+      }),
+      new TableRow({
+        children: [
+            createTableCell(`Do you consider that you have a learning difficulty, disability or long term health condition?\nYes ${getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "Yes")}	*No ${getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "No")}	Prefer not to say ${getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "Prefer not to say")}`, false, undefined, 3)
+        ]
+    }),
+    new TableRow({
+      children: [
+        createTableCell(`${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Allergy")} Allergy\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Asperger’s Syndrome")} Asperger’s Syndrome\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Asthma")} Asthma\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Autism Spectrum Condition")} Autism Spectrum Condition\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Cystic Fibrosis")} Cystic Fibrosis\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Diabetes")} Diabetes\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Disability Affecting Mobility")} Disability Affecting Mobility\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Dyscalculia")} Dyscalculia\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Dyslexia")} Dyslexia\n`),
+        createTableCell(`${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Epilepsy")} Epilepsy\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Hearing Impairment")} Hearing Impairment\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Diagnosed mental health condition")} Diagnosed mental health condition\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Moderate Learning Difficulty")} Moderate Learning Difficulty\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Physical Disability")} Physical Disability\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Other Specific Learning Difficulty e.g. Dyspraxia")} Other Specific Learning Difficulty e.g. Dyspraxia\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Profound/Complex Disabilities")} Profound/Complex Disabilities\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Severe Learning Difficulty")} Severe Learning Difficulty\n`),
+        createTableCell(`${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Social, Emotional & Behavioural Difficulties")} Social, Emotional & Behavioural Difficulties\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Speech, Language and Communication needs")} Speech, Language and Communication needs\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Temporary Disability after Illness or accident")} Temporary Disability after Illness or accident\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Visual Impairment-excluding glasses/contact lenses")} Visual Impairment-excluding glasses/contact lenses\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Prefer not to say")} Prefer not to say\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Are you a wheelchair user?")} Are you a wheelchair user?\n`)
+      ]
+    }),
+    new TableRow({
+      children:[
+        createTableCell(`If you have ticked more than one of the above, please state which disability, learning difficulty and/or health condition impacts most on your learning\n\n${data["If you have selected more than one of the above, please state which disability, learning difficulty and/or health condition impacts most on your learning"]}`, false, undefined, 3)
+      ]
+    }),
+    new TableRow({
+      children:[
+        createTableCell(`If you have a support need and would benefit from a confidential interview, please tick this box ${normalize(data["Do you a have support need and would benefit from a confidential interview"])== "Yes" ? "☒" : "☐"}`, false, undefined, 3)
+      ]
+    })
+  )
+
+  return new Table({
+    width: {
+      size: 100,
+      type: WidthType.PERCENTAGE,
+    },
+    rows
+  })
+}
+function MarketingTable(data: any) : Table {
+  const rows: TableRow[] = [];
+
+  rows.push(
+    new TableRow({
+      children: [
+        createTableCell('7. Contact and Marketing Information', true, 'B8CCE4', 4),
+      ],
+    }),
+    new TableRow({
+      children:[ 
+        createTableCell(`How did you hear about us?\n\n${getMarker(data["How did you hear about us?"], "Current Employer")} Current Employer\n${getMarker(data["How did you hear about us?"], "Job Centre / Work Coach / DWP")} Job Centre / Work Coach / DWP\n${getMarker(data["How did you hear about us?"], "Social Media")} Social Media\n${getMarker(data["How did you hear about us?"], "Friends / Family")} Friends / Family\n${getMarker(data["How did you hear about us?"], "FE college / training provider")} FE college / training provider\n${getMarker(data["How did you hear about us?"], "The National Careers Servic")} The National Careers Service\n${getMarker(data["How did you hear about us?"], "Gov.uk website")} Gov.uk website\n${getMarker(data["How did you hear about us?"], "Other (e.g. search engine, local media press)")} Other (e.g. search engine, local media press)\n`)
+      ]
+    })
+  )
+
+  return new Table({
+    width: {
+      size: 100,
+      type: WidthType.PERCENTAGE,
+    },
+    rows
+  })
+}
+function DeclarationTable(data: any) : Table {
+   const rows: TableRow[] = [];
+
+   rows.push(
+    new TableRow({
+      children: [
+        createTableCell('8. Learner Declaration and Commitment ', true, 'B8CCE4', 4),
+      ],
+    })
+  );
+
+  rows.push(
+    new TableRow({
+      children: [
+        createTableCell(`I agree that initial assessment and information advice and guidance concerning the course has been provided to me, this included information about the course, its entry requirements, the implications of the choice of course, its suitability and the support which is available to me. I agree that the information given on this agreement is true, correct and completed to the best of my knowledge and I understand that Verciti has the right to cancel my enrolment if it is found that I have provided false or inaccurate information. I agree that this information can be used to process my data for any purposes connected with my studies or my health and safety whilst on the premises. This also includes any other contractual requirements and, in particular to the disclosure of all the data on this form or otherwise collected about me to the DfE for the purposes noted in the Privacy Notice (add link to most current privacy notice and privacy Q&A here). I also agree with the below points relating to my chosen programme: \n\n- Take appropriate responsibility for my own learning, development and progression\n- Attend and undertake training required to achieve the Skills Bootcamp identified in Programme Details in the ILP\n- Promptly inform the Employer and/or Verciti if any matters or issues arise, or might arise, that will, or may, affect my learning, development and progression\n- All times behave in a safe and responsible manner and in accordance with the statutory requirements of health and safety law relating to my responsibilities from time to time\n- Comply with the policies, regulations and procedures of my Employer and/or Verciti, notified to me from time to time;\n\nIf you wish to raise a complaint about how we have handled your personal data email to Verciti or any other issues, please email info@verciti.com with full details of your issue. If you are not satisfied how your complaint has been dealt with, please be aware of Authority’s Whistleblowing and Complaints policies and processes. Whistleblowing involves entering a 'whistleblowing' webform on the 'Contact the Department for Education' page, which can be found below: <Link href='https://form.education.gov.uk/service/Contact_the_Department_for_Education'>Contact the Department for Education - DFE Online Forms</Link>. Whistleblowing entries for Skills Bootcamps must be clearly marked as 'Skills Bootcamps' and will submitted via the DfE's whistleblowing submission process and will be escalated to the relevant policy team.\n\nYour information may also be shared with other third parties for the above purposes, but only where the law allows it and the sharing is in compliance with data protection legislation. You can agree to be contacted for other purposes by ticking any of the following boxes:\n\n
+        ${getMarker(data["Your information may also be shared with other third parties for the above purposes, but only where the law allows it and the sharing is in compliance with data protection legislation. You can agr..."], "About courses or learning opportunities")} About courses or learning opportunities\n
+        ${getMarker(data["Your information may also be shared with other third parties for the above purposes, but only where the law allows it and the sharing is in compliance with data protection legislation. You can agr..."], "For research and evaluation purposes")} For research and evaluation purposes\n
+        ${getMarker(data["Your information may also be shared with other third parties for the above purposes, but only where the law allows it and the sharing is in compliance with data protection legislation. You can agr..."], "By post")} By post\n
+        ${getMarker(data["Your information may also be shared with other third parties for the above purposes, but only where the law allows it and the sharing is in compliance with data protection legislation. You can agr..."], "By phone")} By phone\n
+        ${getMarker(data["Your information may also be shared with other third parties for the above purposes, but only where the law allows it and the sharing is in compliance with data protection legislation. You can agr..."], "By email")} By email\n
+        \n\nI agree to visual images being used for marketing purposes\n
+        ${getMarker(data["I agree to visual images being used for marketing purposes"], "Yes")} Yes\n
+        ${getMarker(data["I agree to visual images being used for marketing purposes"], "No")} No \n\n`)
+      ]
+    })
+  );
+
+  return new Table({
+    width: {
+      size: 100,
+      type: WidthType.PERCENTAGE,
+    },
+    rows
+  })
+}
+
+function SignatureTable(data:any ): Table {
+  const rows: TableRow[] = [];
+  rows.push(
+      new TableRow({
+        children: [
+          new TableCell({
+            width: { size: 100, type: WidthType.DXA },
+            margins: { top: 100, bottom: 100, left: 100, right: 100 },
+            children: [createText('Learner Name')]
+          }),
+          new TableCell({
+            width: { size: 2000, type: WidthType.DXA },
+            margins: { top: 100, bottom: 100, left: 100, right: 100 },
+            children: [createText('')]
+          })
+        ]
+      }),
+      new TableRow({
+        children: [
+          new TableCell({
+            width: { size: 100, type: WidthType.DXA },
+            margins: { top: 100, bottom: 100, left: 100, right: 100 },
+            children: [createText('Signature')]
+          }),
+          new TableCell({
+            width: { size: 2000, type: WidthType.DXA },
+          margins: { top: 100, bottom: 100, left: 100, right: 100 },
+            children: [createText('')]
+          })
+        ]
+      }),
+      new TableRow({
+        children: [
+          new TableCell({
+            width: { size: 100, type: WidthType.DXA },
+            margins: { top: 100, bottom: 100, left: 100, right: 100 },
+            children: [createText('Date')]
+          }),
+          new TableCell({
+            width: { size: 2000, type: WidthType.DXA },
+            margins: { top: 100, bottom: 100, left: 100, right: 100 },
+            children: [createText('')]
+          })
+        ]
+      }),
+    );
+  return new Table({
+      width: {
+        size: 100,
+        type: WidthType.PERCENTAGE,
+      },
+      columnWidths: [200, 1800],
+      rows
+    })
+}
+
+
 function EmptyParagraph(){
   return new Paragraph({
     children: [
@@ -523,6 +723,10 @@ function constructWordDoc(data: any) {
   const EmergencySection: Table = EmergencyTable(data);
   const AttainmentSection: Table = AttainmentTable(data);
   const EmploymentSection: Table = EmploymentTable(data);
+  const DisabilitySection: Table = DisabilityTable(data);
+  const MarketingSection: Table = MarketingTable(data);
+  const DeclarationSection: Table = DeclarationTable(data);
+  const SignatureSection: Table = SignatureTable(data);
 
   const doc = new Document({
     sections: [
@@ -559,6 +763,13 @@ function constructWordDoc(data: any) {
           ParagraphBreak,
           EmploymentSection,
           ParagraphBreak,
+          DisabilitySection,
+          ParagraphBreak,
+          MarketingSection,
+          ParagraphBreak,
+          DeclarationSection,
+          ParagraphBreak,
+          SignatureSection
         ],
       },
     ],
