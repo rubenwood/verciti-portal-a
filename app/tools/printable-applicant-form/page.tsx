@@ -511,7 +511,6 @@ const PrintableApplication = ({data}: any) => (
         <ApplicantMarketingSection data={data} />
         <div className="page-break"></div>
         <br/>
-        <div style={{height:"650px"}} />
         <ApplicantDeclarationSection data={data} />
         <div className="page-break"></div>
         <br/>
@@ -521,6 +520,7 @@ const PrintableApplication = ({data}: any) => (
 
 export default function PrintableApplicantFormTool() {
     const [entries, setEntries] = useState<any[]>([]);
+    const [csvUrl, setCsvUrl] = useState("");
     const formRefs = useRef<(HTMLDivElement | null)[]>([]);
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -536,63 +536,97 @@ export default function PrintableApplicantFormTool() {
         });
     };
 
+    const handleFetchFromUrl = async () => {
+        if (!csvUrl.trim()) return;
+
+        try {
+            const response = await fetch(csvUrl);
+            if (!response.ok) throw new Error(`Failed to fetch CSV: ${response.statusText}`);
+            const csvText = await response.text();
+
+            Papa.parse(csvText, {
+                header: true,
+                skipEmptyLines: true,
+                complete: (results) => {
+                    setEntries(results.data);
+                },
+            });
+        } catch (error) {
+            console.error("Error fetching CSV:", error);
+        }
+    };
+
     const generateAndDownloadDocx = async () => {
         for (let i = 0; i < entries.length; i++) {
             const data = entries[i];
 
-            const response = await fetch('/api/pdf/generate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ data }),
+            const response = await fetch("/api/pdf/generate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ data }),
             });
 
             if (!response.ok) {
-            console.error(`Failed to generate document for entry ${i + 1}`);
-            continue;
+                console.error(`Failed to generate document for entry ${i + 1}`);
+                continue;
             }
 
             const blob = await response.blob();
             const url = URL.createObjectURL(blob);
 
-            const a = document.createElement('a');
+            const a = document.createElement("a");
             a.href = url;
             a.download = `generated-${i + 1}.docx`;
-
-            // Append to body for Firefox compatibility
             document.body.appendChild(a);
             a.click();
             a.remove();
-
             URL.revokeObjectURL(url);
-
-            // Optional delay to avoid simultaneous downloads
-            // await new Promise((r) => setTimeout(r, 500));
         }
     };
 
-
     useEffect(() => {
         if (entries.length > 0) {
-            console.log('Parsed CSV entries:', entries);
+            console.log("Parsed CSV entries:", entries);
         }
     }, [entries]);
 
     return (
         <>
             <div className="grid w-full max-w-sm items-center gap-3">
+                <label>Upload CSV File</label>
                 <Input type="file" accept=".csv" onChange={handleFileUpload} />
+
+                <label>Or Paste CSV URL</label>
+                <div className="flex gap-2">
+                    <Input
+                        type="url"
+                        placeholder="https://example.com/data.csv"
+                        value={csvUrl}
+                        onChange={(e) => setCsvUrl(e.target.value)}
+                    />
+                    <Button type="button" onClick={handleFetchFromUrl}>
+                        Load
+                    </Button>
+                </div>
             </div>
-            <Button onClick={generateAndDownloadDocx}>Create PDFs</Button>
+
+            <Button className="mt-4" onClick={generateAndDownloadDocx}>
+                Create DOCX Files
+            </Button>
+
             {entries.map((entry, index) => (
-                <div 
-                key={index} 
-                className="printable-form my-4 p-4 border rounded" 
-                style={{
-                    color: '#000',
-                    backgroundColor: '#fff', // fallback to safe color
-                    fontFamily: 'Arial, sans-serif',
-                }}
-                ref={(el) => { formRefs.current[index] = el }}>
+                <div
+                    key={index}
+                    className="printable-form my-4 p-4 border rounded"
+                    style={{
+                        color: "#000",
+                        backgroundColor: "#fff",
+                        fontFamily: "Arial, sans-serif",
+                    }}
+                    ref={(el) => {
+                        formRefs.current[index] = el;
+                    }}
+                >
                     <PrintableApplication data={entry} index={index} />
                 </div>
             ))}
