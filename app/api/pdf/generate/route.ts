@@ -86,7 +86,6 @@ function createTableCell(
       ? {
           fill,
           color: "auto",
-          val: "clear",
         }
       : undefined,
     margins: {
@@ -787,8 +786,9 @@ export async function POST(req: NextRequest) {
 
   const doc = constructWordDoc(data);
   const buffer = await Packer.toBuffer(doc);
+  const uint8Array = new Uint8Array(buffer);
 
-  return new Response(buffer, {
+  return new Response(uint8Array, {
     status: 200,
     headers: {
       'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
