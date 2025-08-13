@@ -5,7 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import Link from "next/link";
-import Papa from 'papaparse';
+import Papa from 'papaparse';   
+
+import { User } from '@supabase/supabase-js'
+import { checkUser } from "../../db/general/get-user"
+
+import Login from '../../login/login-component'
 
 
 const normalize = (str: string) => str?.trim().toLowerCase();
@@ -519,6 +524,7 @@ const PrintableApplication = ({data}: any) => (
 );
 
 export default function PrintableApplicantFormTool() {
+    const [user, setUser] = useState<User | null>(null);
     const [entries, setEntries] = useState<any[]>([]);
     const [csvUrl, setCsvUrl] = useState("");
     const formRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -585,10 +591,18 @@ export default function PrintableApplicantFormTool() {
     };
 
     useEffect(() => {
+        const init = async () => {
+            const user = await checkUser();
+            if (user) { setUser(user); }
+        };
+        init();
+
         if (entries.length > 0) {
             console.log("Parsed CSV entries:", entries);
         }
-    }, [entries]);
+    }, [entries, user]);
+
+    if(!user){ return <Login setUserFunc={setUser} user={user} /> }
 
     return (
         <>
