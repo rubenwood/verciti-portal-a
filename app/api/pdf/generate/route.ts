@@ -198,7 +198,7 @@ function ApplicantTable(data: any): Table {
   rows.push(
     new TableRow({
       children: [
-        createTableCell(`Email address: ${data['Email']}`, false, undefined, 4),
+        createTableCell(`Email address: ${data['Email Address']}`, false, undefined, 4),
       ],
     }),
   );
@@ -377,13 +377,13 @@ function AttainmentTable(data: any): Table {
                       "Other qualification: level not known",
                       "Not known"];
   const col2Lines = [
-    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[0])}, ${col2Texts[0]}`,
-    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[1])}, ${col2Texts[1]}`,
-    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[2])}, ${col2Texts[2]}`,
-    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[3])}, ${col2Texts[3]}`,
-    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[4])}, ${col2Texts[4]}`,
-    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[5])}, ${col2Texts[5]}`,
-    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[6])}, ${col2Texts[6]}`,
+    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[0])} ${col2Texts[0]}`,
+    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[1])} ${col2Texts[1]}`,
+    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[2])} ${col2Texts[2]}`,
+    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[3])} ${col2Texts[3]}`,
+    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[4])} ${col2Texts[4]}`,
+    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[5])} ${col2Texts[5]}`,
+    `${getMarker(data["Prior Attainment/Highest Previous Qualifications - please tick ONE box only"], col2Texts[6])} ${col2Texts[6]}`,
   ];
 
   const row2Col1Texts = [
@@ -518,6 +518,54 @@ function AttainmentTable(data: any): Table {
 function EmploymentTable(data: any) : Table {
   const rows: TableRow[] = [];
 
+  const col1Texts = [
+    "in full-time employment",
+    "in part-time employment",
+    "Employed – zero-hour contract",
+    "Self-employed",
+    "Unemployed less than 6 months",
+    "Unemployed for 6-11 months",
+    "Unemployed for 12-23 months",
+    "Unemployed for 24-35 months",
+    "Unemployed for 36 months or over",
+    "In full-time education or training",
+    "Not working – long term sickness",
+    "Not working – caring responsibilities",
+    "Prisoner",
+    "Retired"
+  ];
+  const col1Lines = [
+    `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[0])} ${col1Texts[0]}`,
+    `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[1])} ${col1Texts[1]}`,
+    `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[2])} ${col1Texts[2]}`,
+    `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[3])} ${col1Texts[3]}`,
+    `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[4])} ${col1Texts[4]}`,
+    `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[5])} ${col1Texts[5]}`,
+    `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[6])} ${col1Texts[6]}`,
+    `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[7])} ${col1Texts[7]}`,
+    `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[8])} ${col1Texts[8]}`,
+    `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[9])} ${col1Texts[9]}`,
+    `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[10])} ${col1Texts[10]}`,
+    `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[11])} ${col1Texts[11]}`,
+    `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[12])} ${col1Texts[12]}`,
+    `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[13])} ${col1Texts[13]}`
+  ];
+
+  const col3Texts = [
+    "In receipt of JSA",
+    "In receipt of ESA (Part of WRAG group)",
+    "In receipt of Universal Credit",
+    "In receipt of another State Benefit",
+    "None"
+  ];
+  const col3Lines = [
+    `${getMarker(data["Do you currently receive any of the following?"], col3Texts[0])} ${col3Texts[0]}`,
+    `${getMarker(data["Do you currently receive any of the following?"], col3Texts[1])} ${col3Texts[1]}`,
+    `${getMarker(data["Do you currently receive any of the following?"], col3Texts[2])} ${col3Texts[2]}`,
+    `${getMarker(data["Do you currently receive any of the following?"], col3Texts[3])} ${col3Texts[3]}`,
+    `${getMarker(data["Do you currently receive any of the following?"], col3Texts[4])} ${col3Texts[4]}`
+  ];
+
   // Section header row
   rows.push(
     new TableRow({
@@ -530,6 +578,13 @@ function EmploymentTable(data: any) : Table {
         createTableCell('1. On the day prior to this course, what is your employment status? (please tick one)', false, undefined, 1),
         createTableCell('2. If employed, please state name of your employer, the postcode of your workplace, your current job role, industry/sector of current job, number of hours worked per week and your current salary (if more than 1 job, please state details for main employer):', false, undefined, 2),
         createTableCell('3. Do you currently receive any of the following?', false, undefined, 1),
+      ],
+    }),
+  new TableRow({
+      children: [
+        createTableCell(col1Lines.join('\n'), false, undefined, 1),
+        createTableCell(`Name of employer: ${data["Name of Employer"]}\n\nWorkplace postcode: ${data["Workplace postcode"]}\n\nCurrent job title: ${data["Current Job Title"]}\n\nIndustry / sector of current occupation: ${data["Industry/sector of current occupation"]}\n\nHours worked per week: ${data["Hours worked per week"]}\n\nCurrent salary (please specify if hourly rate, weekly, monthly or yearly): ${data["Current Salary (please specify if hourly rate, weekly, monthly or yearly)"]}\n`, false, undefined, 2),
+        createTableCell(col3Lines.join('\n'), false, undefined, 1),
       ],
     }),
   );
@@ -554,24 +609,24 @@ function DisabilityTable(data: any) : Table {
       }),
       new TableRow({
         children: [
-            createTableCell(`Do you consider that you have a learning difficulty, disability or long term health condition?\nYes ${getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "Yes")}	*No ${getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "No")}	Prefer not to say ${getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "Prefer not to say")}`, false, undefined, 3)
+            createTableCell(`Do you consider that you have a learning difficulty, disability or long term health condition?\nYes ${getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "Yes")}	*No ${getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "No")}	Prefer not to say ${getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "Prefer Not to Say")}`, false, undefined, 3)
         ]
     }),
     new TableRow({
       children: [
-        createTableCell(`${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Allergy")} Allergy\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Asperger’s Syndrome")} Asperger’s Syndrome\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Asthma")} Asthma\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Autism Spectrum Condition")} Autism Spectrum Condition\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Cystic Fibrosis")} Cystic Fibrosis\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Diabetes")} Diabetes\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Disability Affecting Mobility")} Disability Affecting Mobility\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Dyscalculia")} Dyscalculia\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Dyslexia")} Dyslexia\n`),
-        createTableCell(`${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Epilepsy")} Epilepsy\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Hearing Impairment")} Hearing Impairment\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Diagnosed mental health condition")} Diagnosed mental health condition\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Moderate Learning Difficulty")} Moderate Learning Difficulty\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Physical Disability")} Physical Disability\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Other Specific Learning Difficulty e.g. Dyspraxia")} Other Specific Learning Difficulty e.g. Dyspraxia\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Profound/Complex Disabilities")} Profound/Complex Disabilities\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Severe Learning Difficulty")} Severe Learning Difficulty\n`),
-        createTableCell(`${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Social, Emotional & Behavioural Difficulties")} Social, Emotional & Behavioural Difficulties\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Speech, Language and Communication needs")} Speech, Language and Communication needs\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Temporary Disability after Illness or accident")} Temporary Disability after Illness or accident\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Visual Impairment-excluding glasses/contact lenses")} Visual Impairment-excluding glasses/contact lenses\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Prefer not to say")} Prefer not to say\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Are you a wheelchair user?")} Are you a wheelchair user?\n`)
+        createTableCell(`${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Allergy;")} Allergy\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Asperger’s Syndrome;")} Asperger’s Syndrome\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Asthma;")} Asthma\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Autism Spectrum Condition;")} Autism Spectrum Condition\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Cystic Fibrosis;")} Cystic Fibrosis\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Diabetes;")} Diabetes\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Disability Affecting Mobility;")} Disability Affecting Mobility\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Dyscalculia;")} Dyscalculia\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Dyslexia;")} Dyslexia\n`),
+        createTableCell(`${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Epilepsy;")} Epilepsy\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Hearing Impairment;")} Hearing Impairment\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Diagnosed mental health condition;")} Diagnosed mental health condition\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Moderate Learning Difficulty;")} Moderate Learning Difficulty\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Physical Disability;")} Physical Disability\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Other Specific Learning Difficulty e.g. Dyspraxia;")} Other Specific Learning Difficulty e.g. Dyspraxia\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Profound/Complex Disabilities;")} Profound/Complex Disabilities\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Severe Learning Difficulty;")} Severe Learning Difficulty\n`),
+        createTableCell(`${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Social, Emotional & Behavioural Difficulties;")} Social, Emotional & Behavioural Difficulties\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Speech, Language and Communication needs;")} Speech, Language and Communication needs\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Temporary Disability after Illness or accident;")} Temporary Disability after Illness or accident\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Visual Impairment-excluding glasses/contact lenses;")} Visual Impairment-excluding glasses/contact lenses\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Prefer not to say;")} Prefer not to say\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Are you a wheelchair user?;")} Are you a wheelchair user?\n`)
       ]
     }),
     new TableRow({
       children:[
-        createTableCell(`If you have ticked more than one of the above, please state which disability, learning difficulty and/or health condition impacts most on your learning\n\n${data["If you have selected more than one of the above, please state which disability, learning difficulty and/or health condition impacts most on your learning"]}`, false, undefined, 3)
+        createTableCell(`If you have selected more than one of the above, please state which disability, learning difficulty and/or health condition impacts most on your learning\n\n${data["If you have selected more than one of the above, please state which disability, learning difficulty and/or health condition impacts most on your learning"]}`, false, undefined, 3)
       ]
     }),
     new TableRow({
       children:[
-        createTableCell(`If you have a support need and would benefit from a confidential interview, please tick this box ${normalize(data["Do you a have support need and would benefit from a confidential interview"])== "Yes" ? "☒" : "☐"}`, false, undefined, 3)
+        createTableCell(`If you have a support need and would benefit from a confidential interview, please tick this box ${normalize(data["Do you a have support need and would benefit from a confidential interview"]) == "yes" ? "☒" : "☐"}`, false, undefined, 3)
       ]
     })
   )

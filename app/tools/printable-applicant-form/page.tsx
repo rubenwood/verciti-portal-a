@@ -74,7 +74,7 @@ const ApplicantInfoSection = ({ data }: any) => (
                     <td style={{ width:'100%', border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>Mobile No: {data["Mobile No"]}</td>
                 </tr>
                 <tr>
-                    <td style={{ width:'100%', border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>Email address: {data["Email"]}</td>
+                    <td style={{ width:'100%', border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>Email address: {data["Email Address"]}</td>
                 </tr>
             </tbody>
         </table>
@@ -351,38 +351,38 @@ const ApplicantDisabilitySection = ({ data }: any) => (
                     <td colSpan={3} style={{ border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>
                         Do you consider that you have a learning difficulty, disability or long term health condition?
                         <br />
-                        Yes {getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "Yes")}	*No {getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "No")}	Prefer not to say {getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "Prefer not to say")}
+                        Yes {getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition? "], "Yes")}	*No {getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "No")}	Prefer not to say {getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "Prefer Not to Say")}
                     </td>
                 </tr>
                 <tr>
                     <td style={{ border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Allergy")} Allergy<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Asperger’s Syndrome")} Asperger’s Syndrome<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Asthma")} Asthma<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Autism Spectrum Condition")} Autism Spectrum Condition<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Cystic Fibrosis")} Cystic Fibrosis<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Diabetes")} Diabetes<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Disability Affecting Mobility")} Disability Affecting Mobility<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Dyscalculia")} Dyscalculia<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Dyslexia")} Dyslexia<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Allergy;")} Allergy<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Asperger’s Syndrome;")} Asperger’s Syndrome<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Asthma;")} Asthma<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Autism Spectrum Condition;")} Autism Spectrum Condition<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Cystic Fibrosis;")} Cystic Fibrosis<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Diabetes;")} Diabetes<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Disability Affecting Mobility;")} Disability Affecting Mobility<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Dyscalculia;")} Dyscalculia<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Dyslexia;")} Dyslexia<br/>
                     </td>
                     <td style={{ border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Epilepsy")} Epilepsy<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Hearing Impairment")} Hearing Impairment<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Diagnosed mental health condition")} Diagnosed mental health condition<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Moderate Learning Difficulty")} Moderate Learning Difficulty<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Physical Disability")} Physical Disability<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Other Specific Learning Difficulty e.g. Dyspraxia")} Other Specific Learning Difficulty e.g. Dyspraxia<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Profound/Complex Disabilities")} Profound/Complex Disabilities<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Severe Learning Difficulty")} Severe Learning Difficulty<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Epilepsy;")} Epilepsy<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Hearing Impairment;")} Hearing Impairment<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Diagnosed mental health condition;")} Diagnosed mental health condition<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Moderate Learning Difficulty;")} Moderate Learning Difficulty<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Physical Disability;")} Physical Disability<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Other Specific Learning Difficulty e.g. Dyspraxia;")} Other Specific Learning Difficulty e.g. Dyspraxia<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Profound/Complex Disabilities;")} Profound/Complex Disabilities<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Severe Learning Difficulty;")} Severe Learning Difficulty<br/>
                     </td>
                     <td style={{ border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Social, Emotional & Behavioural Difficulties")} Social, Emotional & Behavioural Difficulties<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Speech, Language and Communication needs")} Speech, Language and Communication needs<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Temporary Disability after Illness or accident")} Temporary Disability after Illness or accident<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Visual Impairment-excluding glasses/contact lenses")} Visual Impairment-excluding glasses/contact lenses<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Prefer not to say")} Prefer not to say<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Are you a wheelchair user?")} Are you a wheelchair user?<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Social, Emotional & Behavioural Difficulties;")} Social, Emotional & Behavioural Difficulties<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Speech, Language and Communication needs;")} Speech, Language and Communication needs<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Temporary Disability after Illness or accident;")} Temporary Disability after Illness or accident<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Visual Impairment-excluding glasses/contact lenses;")} Visual Impairment-excluding glasses/contact lenses<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Prefer not to say;")} Prefer not to say<br/>
+                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Are you a wheelchair user?;")} Are you a wheelchair user?<br/>
                     </td>
                 </tr>
                 <tr style={{ border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>
@@ -393,7 +393,7 @@ const ApplicantDisabilitySection = ({ data }: any) => (
                 </tr>
                 <tr style={{ border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>
                     <td colSpan={3} style={{ border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>
-                        If you have a support need and would benefit from a confidential interview, please tick this box {normalize(data["Do you a have support need and would benefit from a confidential interview"])== "Yes" ? "☒" : "☐"}
+                        If you have a support need and would benefit from a confidential interview, please tick this box {normalize(data["Do you a have support need and would benefit from a confidential interview"]) == "yes" ? "☒" : "☐"}
                     </td>
                 </tr>
             </tbody>
@@ -580,9 +580,15 @@ export default function PrintableApplicantFormTool() {
             const blob = await response.blob();
             const url = URL.createObjectURL(blob);
 
+            console.log("DATA");
+            console.log(data);
+            
+            const now = new Date();
+            const timestamp = now.toISOString().replace(/[:.]/g, '-').replace('T', '_').replace('Z', '');
+            
             const a = document.createElement("a");
             a.href = url;
-            a.download = `generated-${i + 1}.docx`;
+            a.download = `generated-${data["Email Address"]}-${timestamp}.docx`;
             document.body.appendChild(a);
             a.click();
             a.remove();
