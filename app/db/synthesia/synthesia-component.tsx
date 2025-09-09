@@ -25,7 +25,7 @@ async function createSynthesiaVideo(infoText: InfoText,videoTitle: string, testM
                     avatarSettings: {
                         scale: 0.75,
                         style: 'circular',
-                        backgroundColor: '#f6f2f2',
+                        backgroundColor: '#121212', // #121212
                     },
                     background: 'workspace-media.6c580b79-3dfe-4e3e-b838-e920ab96181a',
                     backgroundSettings: {
