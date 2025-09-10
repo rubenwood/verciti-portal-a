@@ -27,7 +27,7 @@ async function createSynthesiaVideo(infoText: InfoText,videoTitle: string, testM
                         style: 'circular',
                         backgroundColor: '#121212', // #121212
                     },
-                    background: 'workspace-media.6c580b79-3dfe-4e3e-b838-e920ab96181a',
+                    background: 'workspace-media.8676edcf-664a-4f7b-b250-e706340e0a5e',
                     backgroundSettings: {
                         videoSettings: {
                             shortBackgroundContentMatchMode: 'freeze',
@@ -64,6 +64,7 @@ async function listAllVideos() {
 export default function BatchSynthesia() {
     const [batchId, setBatchId] = useState<string>("");
     const [videoTitlePrefix, setVideoTitlePrefix] = useState<string>("");
+    const [videoTitlePrefixCopy, setVideoTitlePrefixCopy] = useState<string>("");
     const [s3Folder, setS3Folder] = useState<string>("");
     const submitBtnRef = useRef<HTMLButtonElement | null>(null);
     const copyVideosBtnRef = useRef<HTMLButtonElement | null>(null);
@@ -96,14 +97,22 @@ export default function BatchSynthesia() {
         showConfetti(submitBtnRef);
     }
 
-    async function copyVideosToS3(s3Folder: string){
+    async function copyVideosToS3(s3Folder: string, videoTitlePrefix: string){
         console.log("Copying videos to S3...");
-        const synthesiaPayload:SynthesiaPayload = await listAllVideos();
+        const synthesiaPayload: SynthesiaPayload = await listAllVideos();
+        const videosInBatch: SynthesiaVideo[] = [];
+
+        for(const vid of synthesiaPayload.videos) {
+            if(vid.title.startsWith(videoTitlePrefix)) {
+                videosInBatch.push(vid);
+            }
+        }
+
         const response = await fetch('/api/aws/upload-synthesia', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                videos: synthesiaPayload.videos,
+                videos: videosInBatch,
                 filepath: s3Folder
             }),
         });
@@ -153,8 +162,14 @@ export default function BatchSynthesia() {
                 className='input input-bordered w-full max-w-xs border rounded px-2 py-1'
                 onChange={(e) => setS3Folder(e.target.value)}
             />
+            <input 
+                type='text' 
+                placeholder='video title prefix' 
+                className='input input-bordered w-full max-w-xs border rounded px-2 py-1'
+                onChange={(e) => setVideoTitlePrefixCopy(e.target.value)}
+            />
             <br/>
-            <Button ref={copyVideosBtnRef} className="green-shadcn-button" onClick={() => copyVideosToS3(s3Folder)}>Copy videos to S3</Button><br />
+            <Button ref={copyVideosBtnRef} className="green-shadcn-button" onClick={() => copyVideosToS3(s3Folder, videoTitlePrefixCopy)}>Copy videos to S3</Button><br />
         </div>
         </>
     )

@@ -83,15 +83,13 @@ export default function InfoTextUploader() {
 
       setStatus('Uploading to Supabase...');
       console.log(file?.name);
-      const batchId = file?.name.split('.')[0] || 'default-batch';
       // inster info texts
-      const infoTexts = await insertInfoTexts(parsedRows, batchId);
+      const infoTexts = await insertInfoTexts(parsedRows, parsedRows[0].batchId);
       const stageRows = infoTexts.map((infoText: InfoText) => ({
         stageType: 'info',
         stageAssets: [],
         stageParams: { infoTextId: infoText.id },
-        stageBatchId: batchId
-        //stageBatchId: infoText.batch_id
+        stageBatchId: infoText.batch_id
       }));
       // insert a new stage for each info text
       const insertedStages = await insertStages(stageRows);
