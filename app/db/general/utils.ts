@@ -4,26 +4,30 @@ import confetti from 'canvas-confetti';
 import type { RefObject } from 'react';
 
 
-
+// updates the media_en_uk field to be a filepath from the s3 upload,
+// matching on batch_id and sheet_id extracted from the video file title
 export async function updateMediaPaths(uploaded: { title: string; key: string }[]) {
     for (const { title, key } of uploaded) {
-        const match = key.match(/_info_([0-9a-f-]{36})_/i);
-        const infoTextId = match ? match[1] : null;
-
-        if (!infoTextId) {
-            console.warn(`Could not extract infoTextId from key: ${key}`);
+        // Extract batch_id and sheet_id from the title
+        const match = title.match(/^([^_]+)_([^_]+)_info_[0-9a-f-]{36}_/i);
+        if (!match) {
+            console.warn(`Could not extract batch_id and sheet_id from title: ${title}`);
             continue;
         }
 
+        const batchId = match[1];
+        const sheetId = match[2];
+
         const { error } = await supabase
-        .from('info_texts')
-        .update({ media_en_uk: key })
-        .eq('id', infoTextId);
+            .from('info_texts')
+            .update({ media_en_uk: key })
+            .eq('batch_id', batchId)
+            .eq('sheet_id', sheetId);
 
         if (error) {
-            console.error(`Failed to update media_en_uk for ID ${infoTextId}:`, error.message);
+            console.error(`Failed to update media_en_uk for batch_id=${batchId}, sheet_id=${sheetId}:`, error.message);
         } else {
-            console.log(`Updated media_en_uk for ID ${infoTextId}: ${key}`);
+            console.log(`Updated media_en_uk for batch_id=${batchId}, sheet_id=${sheetId}: ${key}`);
         }
     }
 }

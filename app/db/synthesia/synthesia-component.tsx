@@ -64,7 +64,7 @@ async function listAllVideos() {
 export default function BatchSynthesia() {
     const [batchId, setBatchId] = useState<string>("");
     const [videoTitlePrefix, setVideoTitlePrefix] = useState<string>("");
-    const [videoTitlePrefixCopy, setVideoTitlePrefixCopy] = useState<string>("");
+    const [videoTitleBatchId, setVideoTitleBatchId] = useState<string>("");
     const [s3Folder, setS3Folder] = useState<string>("");
     const submitBtnRef = useRef<HTMLButtonElement | null>(null);
     const copyVideosBtnRef = useRef<HTMLButtonElement | null>(null);
@@ -79,7 +79,7 @@ export default function BatchSynthesia() {
         let videoIds = [];
         let i = 1;
         for (const infoText of infoTexts) {
-            const videoTitle = `${videoTitlePrefix}_${infoText.sheet_id}_info_${infoText.id}_`;
+            const videoTitle = `${infoText.batch_id}_${infoText.sheet_id}_info_${infoText.id}_`;
             try {
                 const videoResponse = await createSynthesiaVideo(infoText, videoTitle, false);
                 console.log(`Video created successfully: ${videoResponse.id}`)
@@ -97,13 +97,13 @@ export default function BatchSynthesia() {
         showConfetti(submitBtnRef);
     }
 
-    async function copyVideosToS3(s3Folder: string, videoTitlePrefix: string){
+    async function copyVideosToS3(s3Folder: string, videoTitleBatchId: string){
         console.log("Copying videos to S3...");
         const synthesiaPayload: SynthesiaPayload = await listAllVideos();
         const videosInBatch: SynthesiaVideo[] = [];
 
         for(const vid of synthesiaPayload.videos) {
-            if(vid.title.startsWith(videoTitlePrefix)) {
+            if(vid.title.startsWith(videoTitleBatchId)) {
                 videosInBatch.push(vid);
             }
         }
@@ -164,12 +164,12 @@ export default function BatchSynthesia() {
             />
             <input 
                 type='text' 
-                placeholder='video title prefix' 
+                placeholder='video title batch id' 
                 className='input input-bordered w-full max-w-xs border rounded px-2 py-1'
-                onChange={(e) => setVideoTitlePrefixCopy(e.target.value)}
+                onChange={(e) => setVideoTitleBatchId(e.target.value)}
             />
             <br/>
-            <Button ref={copyVideosBtnRef} className="green-shadcn-button" onClick={() => copyVideosToS3(s3Folder, videoTitlePrefixCopy)}>Copy videos to S3</Button><br />
+            <Button ref={copyVideosBtnRef} className="green-shadcn-button" onClick={() => copyVideosToS3(s3Folder, videoTitleBatchId)}>Copy videos to S3</Button><br />
         </div>
         </>
     )
