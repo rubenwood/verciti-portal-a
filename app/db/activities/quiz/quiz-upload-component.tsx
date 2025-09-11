@@ -70,33 +70,36 @@ export default function QuizUploader() {
     setStatus('Uploading to Supabase...');
     try {
       const payload = parsedRows.map(row => ({
-        question_text: row.question,
-        correct_answer: {
+        question_text_en_uk: row.question,
+        correct_answer_en_uk: {
           answer: row.correct_answer,
-          feedback: row.correct_feedbacks
+          feedback: [ row.correct_feedbacks ]
         },
-        incorrect_answers: [
+        incorrect_answers_en_uk: [
           {
             answer: row.incorrect_answer_1,
-            feedback: row.incorrect_answer_1_feedbacks
+            feedback: [ row.incorrect_answer_1_feedbacks ]
           },
           {
             answer: row.incorrect_answer_2,
-            feedback: row.incorrect_answer_2_feedbacks
+            feedback: [ row.incorrect_answer_2_feedbacks ]
           },
           {
             answer: row.incorrect_answer_3,
-            feedback: row.incorrect_answer_3_feedbacks
+            feedback: [ row.incorrect_answer_3_feedbacks ]
           }
         ],
         question_text_media_en_uk: null,
-        batch_id: batchId
+        batch_id: batchId,
+        quiz_num: row.quiz_number,
+        sheet_id: row.sheet_id
       }));
+      console.log("Payload:", payload);
 
       const { data: insertedQuestions, error } = await supabase
         .from('quiz_questions')
         .insert(payload)
-        .select('id, batch_id, question_text, correct_answer, incorrect_answers');
+        .select('id, batch_id, question_text_en_uk, correct_answer_en_uk, incorrect_answers_en_uk');
 
       if (error || !insertedQuestions) {
         console.error(error);
