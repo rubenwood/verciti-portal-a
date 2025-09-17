@@ -25,6 +25,15 @@ export default function Login(props: any){
         }
     };
 
+    const handleLoginWithGoogle = async () => {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: window.location.origin + '/google-login'
+            }
+        });
+    }
+
     return(
         <>
         <div className="grid items-center justify-items-center min-h-screen p-8 pb-20">
@@ -47,6 +56,11 @@ export default function Login(props: any){
                 <button className="button" onClick={handleLogin}>
                     Login
                 </button>
+                <br />
+                <button className="button mt-2" onClick={handleLoginWithGoogle}>
+                    Login with Google
+                </button>
+                {error && <p className="text-red-500 mt-2">{error}</p>}
             </div>
         </div>
         </>
