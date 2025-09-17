@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 export default function GoogleLoginButton() {
   const searchParams = useSearchParams();
@@ -38,16 +38,18 @@ export default function GoogleLoginButton() {
   };
 
   return (
-    <div>
-      <button
-        className="px-4 py-2 bg-blue-600 text-white rounded-lg mt-2"
-        onClick={openApp}
-        disabled={!accessToken}
-      >
-        Return to Verciti App
-      </button>
+    <Suspense fallback={<p>Loading...</p>}>
+        <div>
+        <button
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg mt-2"
+            onClick={openApp}
+            disabled={!accessToken}
+        >
+            Return to Verciti App
+        </button>
 
-      {!accessToken && <p className="text-gray-500 mt-2">Just a sec!</p>}
-    </div>
+        {!accessToken && <p className="text-gray-500 mt-2">Just a sec!</p>}
+        </div>
+    </Suspense>
   );
 }
