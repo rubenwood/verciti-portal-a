@@ -7,19 +7,16 @@ export default function GoogleLoginButton() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const url = new URL(window.location.href);
-
-      // Query params (?access_token=...)
-      const at = url.searchParams.get("access_token");
-      const rt = url.searchParams.get("refresh_token");
 
       // Hash params (#access_token=...)
-      const hashParams = new URLSearchParams(window.location.hash.slice(1));
-      const hashAccess = hashParams.get("access_token");
-      const hashRefresh = hashParams.get("refresh_token");
+      const hash = window.location.hash.slice(1); // remove #
+      const hashParams = new URLSearchParams(hash);
 
-      setAccessToken(at || hashAccess);
-      setRefreshToken(rt || hashRefresh);
+      const at = hashParams.get("access_token");
+      const rt = hashParams.get("refresh_token");
+
+      setAccessToken(at);
+      setRefreshToken(rt);
 
       // Optional: clear tokens from URL so they don’t stay in history
       //window.history.replaceState({}, document.title, url.pathname);
