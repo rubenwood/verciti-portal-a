@@ -29,9 +29,15 @@ export default function Login(props: any){
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: window.location.origin + '/google-login'
+                redirectTo: 'http://localhost:3000/google-login'
             }
         });
+        if(error){
+            setError(error.message);
+            console.error('Google Login error:', error.message);
+        } else {
+            console.log('Google Login initiated:', data);
+        }
     }
 
     return(
