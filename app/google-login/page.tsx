@@ -19,9 +19,11 @@ export default function GoogleLogin(){
             //setAccessToken(accessToken);
             //setRefreshToken(refreshToken);
             //setTokenType(tokenType);
-            const deeplink = `verciti://edtechapp?at=${encodeURIComponent(accessToken)}
-            ${refreshToken != null ? `&rt=${encodeURIComponent(refreshToken)}` : ''}
-            ${tokenType != null ? `&tt=${encodeURIComponent(tokenType)}` : ''}`;
+            let atStr = accessToken != null ? `at=${encodeURIComponent(accessToken)}` : '';
+            let rtStr = refreshToken != null ? `&rt=${encodeURIComponent(refreshToken)}` : '';
+            let ttStr = tokenType != null ? `&tt=${encodeURIComponent(tokenType)}` : '';
+            
+            const deeplink = `verciti://edtechapp?${atStr}${rtStr}${ttStr}`;
             setDeeplink(deeplink);
             //window.location.href = deeplink;
         }
