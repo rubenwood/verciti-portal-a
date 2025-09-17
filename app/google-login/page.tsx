@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 export default function GoogleLogin(){
     const [accessToken, setAccessToken] = useState<string | null>(null);
     const [refreshToken, setRefreshToken] = useState<string | null>(null);
+    const [tokenType, setTokenType] = useState<string | null>(null);
 
     useEffect(() => {
         if (typeof window === "undefined") return;
@@ -11,6 +12,10 @@ export default function GoogleLogin(){
         const hashParams = new URLSearchParams(window.location.hash.slice(1));
         const accessToken = hashParams.get("access_token");
         const refreshToken = hashParams.get("refresh_token");
+        const tokenType = hashParams.get("token_type");
+        alert('AT: '+accessToken);
+        alert('RT: '+refreshToken);
+        alert('TT: '+tokenType);
 
         if (accessToken) {
             setAccessToken(accessToken);
