@@ -33,6 +33,7 @@ export default function GoogleLoginButton() {
       accessToken
     )}${refreshToken ? `&refresh_token=${encodeURIComponent(refreshToken)}` : ""}`;
 
+    console.log(deeplink);
     window.location.href = deeplink;
   };
 
