@@ -2,9 +2,10 @@
 import { useEffect, useState } from "react";
 
 export default function GoogleLogin(){
-    const [accessToken, setAccessToken] = useState<string | null>(null);
-    const [refreshToken, setRefreshToken] = useState<string | null>(null);
-    const [tokenType, setTokenType] = useState<string | null>(null);
+    //const [accessToken, setAccessToken] = useState<string | null>(null);
+    //const [refreshToken, setRefreshToken] = useState<string | null>(null);
+    //const [tokenType, setTokenType] = useState<string | null>(null);
+    const [deeplink, setDeeplink] = useState<string | null>(null);
 
     useEffect(() => {
         if (typeof window === "undefined") return;
@@ -13,25 +14,23 @@ export default function GoogleLogin(){
         const accessToken = hashParams.get("access_token");
         const refreshToken = hashParams.get("refresh_token");
         const tokenType = hashParams.get("token_type");
-        alert('AT: '+accessToken);
-        alert('RT: '+refreshToken);
-        alert('TT: '+tokenType);
-
+        
         if (accessToken) {
-            setAccessToken(accessToken);
-            setRefreshToken(refreshToken);
-            const deeplink = `verciti://edtechapp?access_token=${encodeURIComponent(
-                accessToken
-            )}${refreshToken ? `&refresh_token=${encodeURIComponent(refreshToken)}` : ""}`;
-
+            //setAccessToken(accessToken);
+            //setRefreshToken(refreshToken);
+            //setTokenType(tokenType);
+            const deeplink = `verciti://edtechapp?at=${encodeURIComponent(accessToken)}
+            ${refreshToken != null ? `&rt=${encodeURIComponent(refreshToken)}` : ''}
+            ${tokenType != null ? `&tt=${encodeURIComponent(tokenType)}` : ''}`;
+            setDeeplink(deeplink);
             //window.location.href = deeplink;
         }
     }, []);
 
     const openApp = () =>{
-        let dl = 'verciti://edtechapp?at='+accessToken+'&rt='+refreshToken;
-        alert(dl);
-        window.open(dl, '_self');
+        if(deeplink == null) return;
+        alert(deeplink);
+        window.open(deeplink);
     }
 
     return(
