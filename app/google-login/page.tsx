@@ -17,7 +17,7 @@ export default function GoogleLoginButton() {
 
       setAccessToken(at);
       setRefreshToken(rt);
-
+        alert(at);
       // Optional: clear tokens from URL so they don’t stay in history
       //window.history.replaceState({}, document.title, url.pathname);
     }
