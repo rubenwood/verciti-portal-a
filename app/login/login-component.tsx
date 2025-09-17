@@ -29,7 +29,7 @@ export default function Login(props: any){
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: 'vertciti-portal.vercel.app/google-login'
+                redirectTo: 'https://qufeoomnqojcinjgnczw.supabase.co/auth/v1/callback'
             }
         });
         if(error){
