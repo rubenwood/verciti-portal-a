@@ -2,9 +2,6 @@
 import { useEffect, useState } from "react";
 
 export default function GoogleLogin(){
-    //const [accessToken, setAccessToken] = useState<string | null>(null);
-    //const [refreshToken, setRefreshToken] = useState<string | null>(null);
-    //const [tokenType, setTokenType] = useState<string | null>(null);
     const [deeplink, setDeeplink] = useState<string | null>(null);
 
     useEffect(() => {
@@ -16,23 +13,20 @@ export default function GoogleLogin(){
         const tokenType = hashParams.get("token_type");
         
         if (accessToken) {
-            //setAccessToken(accessToken);
-            //setRefreshToken(refreshToken);
-            //setTokenType(tokenType);
             let atStr = accessToken != null ? `&at=${encodeURIComponent(accessToken)}` : '';
             let rtStr = refreshToken != null ? `&rt=${encodeURIComponent(refreshToken)}` : '';
             let ttStr = tokenType != null ? `&tt=${encodeURIComponent(tokenType)}` : '';
             
             const deeplink = `verciti://app?glogin${atStr}${rtStr}${ttStr}`;
             setDeeplink(deeplink);
-            //window.location.href = deeplink;
+            window.location.href = deeplink;
         }
     }, []);
 
     const openApp = () =>{
         if(deeplink == null) return;
         console.log(deeplink);
-        window.open(deeplink);
+        window.location.href = deeplink;
     }
 
     return(
