@@ -48,7 +48,7 @@ export default function GoogleLogin(){
         }
 
     return(
-        <div className="grid items-center justify-items-center min-h-screen p-8 pb-20">
+        <div className="grid items-center justify-items-center min-h-screen">
             {deeplink == null ?
                 <>
                     <p className="text-center">Logging in with Google...</p>
