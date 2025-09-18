@@ -7,6 +7,7 @@ export default function GoogleLogin(){
     const [error, setError] = useState('');
 
     useEffect(() => {
+        if(deeplink == null){ handleLoginWithGoogle(); }
         if (typeof window === "undefined") return;
 
         const hashParams = new URLSearchParams(window.location.hash.slice(1));
@@ -51,7 +52,6 @@ export default function GoogleLogin(){
             {deeplink == null ?
                 <>
                     <p className="text-center">Logging in with Google...</p>
-                    {handleLoginWithGoogle()}
                     <button className="button mt-2" onClick={handleLoginWithGoogle}>
                         Login with Google
                     </button>
