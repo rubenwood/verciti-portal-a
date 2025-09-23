@@ -301,6 +301,14 @@ export async function fetchActivities() {
 
     return data as Activity[];
 }
+export async function fetchActivityById(activityId: string) {
+    const { data, error } = await supabase.from('activities').select('*').eq('id', activityId).single();
+    if (error) {
+        console.error('Error fetching activity (by id):', error);
+        return error;
+    }
+    return data as Activity;
+}
 
 export async function updateActivity(activity: Activity){
     const { data, error } = await supabase

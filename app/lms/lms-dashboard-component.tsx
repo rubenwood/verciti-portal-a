@@ -16,6 +16,7 @@ import BatchSynthesia from "../db/synthesia/synthesia-component"
 import InfoTextEditor from "../db/activities/info-text/info-text-editor-component"
 import QuizUploader from "../db/activities/quiz/quiz-upload-component"
 import QuizEditor from "../db/activities/quiz/quiz-editor-component"
+import StageOrderer from "../db/activities/editor/stage-order-component"
 
 export default function LMSDashboard(){
     const [courseConfigVisible, setCourseConfigVisible] = useState(false);
@@ -68,7 +69,8 @@ export default function LMSDashboard(){
             <br/>
             <QuizEditor />
             <br/>
-            <ActivityEditor />
+            <StageOrderer />
+            {/* <ActivityEditor /> */}
         </>
     )
 }
