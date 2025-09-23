@@ -86,7 +86,6 @@ export default function StageOrderer() {
 
     const getStagesClicked = async () => {
         if(!activityId || activityId.trim() === '') {
-            //setError({ message: 'Activity Id is required', details: null, hint: null, code: null });
             setStagesResults(null);
             return;
         }
