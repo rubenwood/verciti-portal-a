@@ -61,6 +61,24 @@ export async function deleteInfoTextByBatchId(batchId: string) {
     return data;
 }
 
+export async function deleteQuizQuestionsByBatchId(batchId: string) {
+}
+
+export async function deleteStageByBatchId(batchId: string) {
+    const { data, error } = await supabase
+        .from('stages')
+        .delete()
+        .eq('batch_id', batchId)
+        .select();
+
+    if (error) {
+        console.error('Error deleting info texts:', error);
+        throw error;
+    }
+
+    return data;
+}
+
 // TODO: test & use this to update patch-batches
 export async function updateInfoText(infoText: { id: string; text_en_uk: { title: string; body: string }; media_en_uk?: string;}) {
     const { data, error } = await supabase
@@ -187,20 +205,6 @@ export async function fetchInfoTextById(infoTextId: string) {
     }
 
     return data as InfoText;
-}
-export async function deleteStageByBatchId(batchId: string) {
-    const { data, error } = await supabase
-        .from('stages')
-        .delete()
-        .eq('batch_id', batchId)
-        .select();
-
-    if (error) {
-        console.error('Error deleting info texts:', error);
-        throw error;
-    }
-
-    return data;
 }
 export async function insertStages(rows: { stageType: string, stageAssets: object, stageParams: Record<string, any>, stageBatchId: string }[]) {
     const insertData = rows.map( r => ({

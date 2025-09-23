@@ -4,17 +4,18 @@ import { deleteInfoTextByBatchId, deleteStageByBatchId } from "../../general/uti
 import { Button } from "@/components/ui/button";
 
 export default function BatchDelete(){
-    const [batchId, setBatchId] = useState<string>("");
+    const [infoTextBatchId, setInfoBatchId] = useState<string>("");
+    const [quizBatchId, setQuizBatchId] = useState<string>("");
 
     const handleDelete = async () => {
-        if (!batchId) {
+        if (!infoTextBatchId) {
             alert("Please enter a Batch ID");
             return;
         }
 
         try {
-            await deleteInfoTextByBatchId(batchId);
-            await deleteStageByBatchId(batchId);
+            await deleteInfoTextByBatchId(infoTextBatchId);
+            await deleteStageByBatchId(infoTextBatchId);
             alert("Batch deleted successfully");
         } catch (error) {
             console.error("Error deleting batch:", error);
@@ -31,11 +32,19 @@ export default function BatchDelete(){
                 This action cannot be undone.
             </i>
             <input 
-                id='batch-id-input' 
+                id='info-batch-id-input' 
                 type='text' 
-                value={batchId}
-                onChange={(e) => setBatchId(e.target.value)} 
-                placeholder='Batch ID' className='input input-bordered w-full max-w-xs border rounded px-2 py-1' />
+                value={infoTextBatchId}
+                onChange={(e) => setInfoBatchId(e.target.value)} 
+                placeholder='Info Batch ID' className='input input-bordered w-full max-w-xs border rounded px-2 py-1' />
+            <br/>
+            <input 
+                id='quiz-batch-id-input' 
+                type='text' 
+                value={quizBatchId}
+                onChange={(e) => setQuizBatchId(e.target.value)} 
+                placeholder='Quiz Batch ID' className='input input-bordered w-full max-w-xs border rounded px-2 py-1' />
+            <br/>
             <Button className='red-shadcn-button' onClick={handleDelete}>Delete</Button>
         </div>
         </>
