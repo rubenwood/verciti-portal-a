@@ -272,6 +272,12 @@ export async function fetchStagesWithInfoTexts(batchId: string): Promise<StageWi
         };
     });
 
+    // sort the stages by the info text's sheet_id
+    results.sort((a, b) => {
+        const sheetA = a.related_info_text?.sheet_id ?? Number.MAX_SAFE_INTEGER;
+        const sheetB = b.related_info_text?.sheet_id ?? Number.MAX_SAFE_INTEGER;
+        return sheetA - sheetB;
+    });
     return results;
 }
 export async function fetchStages() {

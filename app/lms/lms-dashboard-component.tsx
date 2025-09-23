@@ -68,7 +68,7 @@ export default function LMSDashboard(){
             <br/>
             <QuizEditor />
             <br/>
-            {/* <ActivityEditor /> */}
+            <ActivityEditor />
         </>
     )
 }

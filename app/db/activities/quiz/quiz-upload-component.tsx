@@ -28,6 +28,7 @@ export default function QuizUploader() {
   const [parsedRows, setParsedRows] = useState<ParsedQuizRow[]>([]);
   const [file, setFile] = useState<File | null>(null);
   const [batchId, setBatchId] = useState('');
+  const [titlePrefix, setTitlePrefix] = useState('');
   const [status, setStatus] = useState('');
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,20 +74,20 @@ export default function QuizUploader() {
         question_text_en_uk: row.question,
         correct_answer_en_uk: {
           answer: row.correct_answer,
-          feedback: [ row.correct_feedbacks ]
+          feedback: row.correct_feedbacks
         },
         incorrect_answers_en_uk: [
           {
             answer: row.incorrect_answer_1,
-            feedback: [ row.incorrect_answer_1_feedbacks ]
+            feedback: row.incorrect_answer_1_feedbacks
           },
           {
             answer: row.incorrect_answer_2,
-            feedback: [ row.incorrect_answer_2_feedbacks ]
+            feedback: row.incorrect_answer_2_feedbacks
           },
           {
             answer: row.incorrect_answer_3,
-            feedback: [ row.incorrect_answer_3_feedbacks ]
+            feedback: row.incorrect_answer_3_feedbacks
           }
         ],
         question_text_media_en_uk: null,
@@ -120,6 +121,7 @@ export default function QuizUploader() {
         type: 'quiz',
         assets: [],
         params: {
+          title: `${titlePrefix} Quiz ${quizNumber}`,
           questions: questionIds
         },
         batch_id: batchId
@@ -139,6 +141,7 @@ export default function QuizUploader() {
       setParsedRows([]);
       setFile(null);
       setBatchId('');
+      setTitlePrefix('');
     } catch (err: any) {
       console.error(err);
       setStatus('Unexpected error: ' + err.message);
@@ -163,6 +166,12 @@ export default function QuizUploader() {
           placeholder="Enter batch ID"
           value={batchId}
           onChange={(e) => setBatchId(e.target.value)}
+        />
+        <Input
+          type="text"
+          placeholder="Enter title prefix"
+          value={titlePrefix}
+          onChange={(e) => setTitlePrefix(e.target.value)}
         />
         <Input
           id="dataFile"
