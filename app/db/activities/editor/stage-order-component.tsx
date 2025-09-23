@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PostgrestError } from '@supabase/supabase-js';
-import { fetchActivityById } from '../../general/utils';
+import { fetchActivityById, updateActivity } from '../../general/utils';
 import { Card, CardContent } from '@/components/ui/card';
 import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -31,6 +31,7 @@ function SortableStageItem({ id }: { id: string }) {
 
 export function ActivityParamsEditor({ activity }: any) {
   const [stageIds, setStageIds] = useState<string[]>(activity?.params?.stage_ids || []);
+  const tempActivity = activity;
 
   useEffect(() => {
     if (activity?.params?.stage_ids) setStageIds(activity.params.stage_ids);
@@ -47,9 +48,16 @@ export function ActivityParamsEditor({ activity }: any) {
     setStageIds((items) => arrayMove(items, oldIndex, newIndex));
   };
 
-  const saveOrder = () => {
-    console.log('Saving new order:', stageIds);
-    // TODO: persist with Supabase
+  const saveOrder = async () => {
+    const updatedActivity = { ...tempActivity, params: { ...tempActivity.params, stage_ids: stageIds } };
+
+    const resp = await updateActivity(updatedActivity);
+    console.log('Update response:', resp);
+    if(resp.error == null){
+        alert('Activity updated successfully');
+    }else{
+        console.error('Error updating activity:', resp.error);
+    }
   };
 
   return (

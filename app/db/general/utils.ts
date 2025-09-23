@@ -46,6 +46,7 @@ export async function getInfoTextsByBatchId(batchId: string) {
     return data;
 }
 
+// Delete by batch id from any table
 export async function deleteByBatchId(batchId: string, tableName: string) {
     const { data, error } = await supabase
         .from(tableName)
