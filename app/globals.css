@@ -58,6 +58,9 @@ body {
 .green-shadcn-button {
   @apply bg-[#97fb57] hover:bg-[#83d84d] text-[#121212]
 }
+.green-shadcn-button-fw {
+  @apply bg-[#97fb57] hover:bg-[#83d84d] text-[#121212] w-full
+}
 .red-shadcn-button {
   @apply bg-[#ff000d] hover:bg-[#cc000a] text-[#121212]
 }

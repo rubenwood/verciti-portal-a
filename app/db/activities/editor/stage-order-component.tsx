@@ -20,7 +20,7 @@ function SortableStageItem({ id }: { id: string }) {
     <Card 
         ref={setNodeRef} 
         style={style} 
-        className="p-2 mb-2 cursor-grab"
+        className="p-2 mb-2 cursor-grab select-none"
         {...attributes}
         {...listeners}
     >
@@ -54,7 +54,10 @@ export function ActivityParamsEditor({ activity }: any) {
 
   return (
     <div>
-      <i>Activity Params Editor</i>
+      <i>Activity Params Editor</i><br/>
+      <Button className="green-shadcn-button-fw" onClick={saveOrder}>
+        Save Order
+      </Button>
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={stageIds} strategy={verticalListSortingStrategy}>
           {stageIds.map((id) => (
@@ -62,10 +65,6 @@ export function ActivityParamsEditor({ activity }: any) {
           ))}
         </SortableContext>
       </DndContext>
-
-      <Button className="mt-4 w-full" onClick={saveOrder}>
-        Save Order
-      </Button>
     </div>
   );
 }
