@@ -46,27 +46,9 @@ export async function getInfoTextsByBatchId(batchId: string) {
     return data;
 }
 
-export async function deleteInfoTextByBatchId(batchId: string) {
+export async function deleteByBatchId(batchId: string, tableName: string) {
     const { data, error } = await supabase
-        .from('info_texts')
-        .delete()
-        .eq('batch_id', batchId)
-        .select();
-
-    if (error) {
-        console.error('Error deleting info texts:', error);
-        throw error;
-    }
-
-    return data;
-}
-
-export async function deleteQuizQuestionsByBatchId(batchId: string) {
-}
-
-export async function deleteStageByBatchId(batchId: string) {
-    const { data, error } = await supabase
-        .from('stages')
+        .from(tableName)
         .delete()
         .eq('batch_id', batchId)
         .select();

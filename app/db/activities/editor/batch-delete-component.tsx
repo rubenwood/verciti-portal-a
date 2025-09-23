@@ -1,6 +1,5 @@
-'use client'
 import { useState } from "react";
-import { deleteInfoTextByBatchId, deleteStageByBatchId } from "../../general/utils";
+import { deleteByBatchId } from "../../general/utils";
 import { Button } from "@/components/ui/button";
 
 export default function BatchDelete(){
@@ -8,14 +7,16 @@ export default function BatchDelete(){
     const [quizBatchId, setQuizBatchId] = useState<string>("");
 
     const handleDelete = async () => {
-        if (!infoTextBatchId) {
-            alert("Please enter a Batch ID");
+        if (!infoTextBatchId || !quizBatchId) {
+            alert("Please enter a Batch ID for both Info Texts and Quizzes.");
             return;
         }
 
         try {
-            await deleteInfoTextByBatchId(infoTextBatchId);
-            await deleteStageByBatchId(infoTextBatchId);
+            await deleteByBatchId(infoTextBatchId, 'info_texts');
+            await deleteByBatchId(infoTextBatchId, 'stages');
+            await deleteByBatchId(quizBatchId, 'quiz_questions');
+            await deleteByBatchId(quizBatchId, 'stages');
             alert("Batch deleted successfully");
         } catch (error) {
             console.error("Error deleting batch:", error);
