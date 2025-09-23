@@ -4,59 +4,72 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PostgrestError } from '@supabase/supabase-js';
 import { fetchActivityById } from '../../general/utils';
-import type { DragEndEvent } from '@/components/ui/shadcn-io/list';
-import {
-  ListGroup,
-  ListHeader,
-  ListItem,
-  ListItems,
-  ListProvider,
-} from '@/components/ui/shadcn-io/list';
+import { Card, CardContent } from '@/components/ui/card';
+import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core';
+import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
-export function ActivityParamsEditor(props: any) {
-    
-    useEffect(() => {
-        console.log("ActivityParamsEditor props.activity:", props.activity);
-    }, [props.activity]);
+function SortableStageItem({ id }: { id: string }) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
-    if(!props.activity || !props.activity.params || !props.activity.params.stage_ids) {
-        return <p>No stages found in activity params.</p>;
-    }
-
-    const handleDragEnd = (event: DragEndEvent) => {
-    }
-
-    const saveOrder = async () => {
-        console.log("Saving new order:", props.activity.params.stage_ids);
-    }
-
-    return (
-        <div>
-            <i>Activity Params Editor</i><br/><br/>
-            <ListProvider onDragEnd={handleDragEnd}>
-                <ListGroup id='stages-list' key='stages-list' >
-                    <ListHeader>
-                        <h3>Stages</h3>
-                    </ListHeader>
-                    <ListItems>
-                        {props.activity.params.stage_ids.map((stage: any, index: number) => (
-                            <ListItem 
-                                id={stage}
-                                key={`id-${stage}`}
-                                index={index}
-                                name={`Stage-${stage}`}
-                                parent='stages-list'
-                            >
-                                ID: {stage}
-                            </ListItem>
-                        ))}
-                    </ListItems>
-                </ListGroup>
-            </ListProvider>
-            <Button className="green-shadcn-button" onClick={saveOrder}>Save Order</Button>
-        </div>
-    );
+  return (
+    <Card 
+        ref={setNodeRef} 
+        style={style} 
+        className="p-2 mb-2 cursor-grab"
+        {...attributes}
+        {...listeners}
+    >
+      <CardContent className="flex items-center">{id}</CardContent>
+    </Card>
+  );
 }
+
+export function ActivityParamsEditor({ activity }: any) {
+  const [stageIds, setStageIds] = useState<string[]>(activity?.params?.stage_ids || []);
+
+  useEffect(() => {
+    if (activity?.params?.stage_ids) setStageIds(activity.params.stage_ids);
+  }, [activity]);
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = stageIds.indexOf(active.id as string);
+    const newIndex = stageIds.indexOf(over.id as string);
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    setStageIds((items) => arrayMove(items, oldIndex, newIndex));
+  };
+
+  const saveOrder = () => {
+    console.log('Saving new order:', stageIds);
+    // TODO: persist with Supabase
+  };
+
+  return (
+    <div>
+      <i>Activity Params Editor</i>
+      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={stageIds} strategy={verticalListSortingStrategy}>
+          {stageIds.map((id) => (
+            <SortableStageItem key={id} id={id} />
+          ))}
+        </SortableContext>
+      </DndContext>
+
+      <Button className="mt-4 w-full" onClick={saveOrder}>
+        Save Order
+      </Button>
+    </div>
+  );
+}
+
 
 export default function StageOrderer() {
     const [activityId, setActivityId] = useState('');
