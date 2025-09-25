@@ -17,9 +17,11 @@ import InfoTextEditor from "../db/activities/info-text/info-text-editor-componen
 import QuizUploader from "../db/activities/quiz/quiz-upload-component"
 import QuizEditor from "../db/activities/quiz/quiz-editor-component"
 import StageOrderer from "../db/activities/editor/stage-order-component"
+import ActivityEditorSimple from "../db/activities/editor/activity-editor-simple-component"
 
 export default function LMSDashboard(){
     const [courseConfigVisible, setCourseConfigVisible] = useState(false);
+    const [batchToolsVisible, setbatchToolsVisible] = useState(false);
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
@@ -46,6 +48,9 @@ export default function LMSDashboard(){
             <br/>
             <Button className="green-shadcn-button" onClick={() => setCourseConfigVisible(!courseConfigVisible)}>
                 {courseConfigVisible ? "Hide Course Config" : "Show Course Config"}</Button>
+            <Button className="green-shadcn-button" onClick={() => setbatchToolsVisible(!batchToolsVisible)}>
+                {batchToolsVisible? "Hide Batch Tools" : "Show Batch Tools"}</Button>
+            
             {
             courseConfigVisible ? 
                 <>
@@ -57,20 +62,28 @@ export default function LMSDashboard(){
                 </> : null
             }
             <br/>
-            <InfoTextUploader />
-            <br/>
-            <BatchDelete />
-            <br/>
-            <BatchSynthesia />
+            {
+                batchToolsVisible ?
+                <>
+                <InfoTextUploader />
+                <br/>
+                <BatchDelete />
+                <br/>
+                <BatchSynthesia />
+                <br/>
+                <QuizUploader />
+                </> : null
+            }
+            
             <br/>
             <InfoTextEditor />
-            <br/>
-            <QuizUploader />
             <br/>
             <QuizEditor />
             <br/>
             <StageOrderer />
             {/* <ActivityEditor /> */}
+            <br/>
+            <ActivityEditorSimple />
         </>
     )
 }
