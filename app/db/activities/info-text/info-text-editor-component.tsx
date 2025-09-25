@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input';
 import { fetchStagesWithInfoTexts, updateInfoText } from '../../general/utils';
 import { PostgrestError } from '@supabase/supabase-js';
 
+import { InfoTextAdder } from './info-text-adder-component';
+
 export default function InfoTextEditor() {
     const [searchTerm, setSearchTerm] = useState('');
     const [stagesInfoTextResults, setStageInfoTextResults] = useState<StageWithInfoText[] | null>();
@@ -107,6 +109,8 @@ export default function InfoTextEditor() {
                     Search By Batch Id
                 </Button>
             </div>
+
+            <InfoTextAdder />
 
             {error && (
                 <div className="text-red-500 mt-4">Error: {error.message}</div>
