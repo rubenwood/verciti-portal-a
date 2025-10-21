@@ -22,7 +22,7 @@ export function BSTDropdown(props: {items: any, placeholder: string, setSelected
             <SelectContent>
                 <SelectGroup>
                     {props.items.map((element: any) => (
-                        <SelectItem key={element.id} value={element.id.toString()}>
+                        <SelectItem key={element.id} value={element.name.toString()}>
                             {element.name} 
                         </SelectItem>
                     ))}
@@ -41,22 +41,58 @@ export function DataCopyTool() {
     const [selectedToBranch, setSelectedToBranch] = useState(null);
     const [selectedFromSchema, setSelectedFromSchema] = useState(null);
     const [selectedToSchema, setSelectedToSchema] = useState(null);
+    const [tablesInFromSchema, setTablesInFromSchema] = useState([]);
+    const [tablesInToSchema, setTablesInToSchema] = useState([]);
     const [selectedFromTable, setSelectedFromTable] = useState(null);
     const [selectedToTable, setSelectedToTable] = useState(null);
 
-    useEffect(() => {
-        async function fetchSchemas() {
-            const { data, error } = await supabase.rpc('list_schemas');
-            console.log(data);
-            if (!error) {
-                setSchemas(data
-                    .filter((s: any) => !s.schema_name.startsWith('pg_'))
-                    .map((s: any, i: any) => ({ id: i, name: s.schema_name }))
-                );
-            }
+    async function fetchSchemas() {
+        const { data, error } = await supabase.rpc('list_schemas');
+        console.log(data);
+        if (!error) {
+            setSchemas(data
+                .filter((s: any) => !s.schema_name.startsWith('pg_'))
+                .map((s: any, i: any) => ({ id: i, name: s.schema_name }))
+            );
         }
+    }
+
+    async function fetchTables(toOrFrom: string, schema: string, setTableFunc: any) {
+        console.log(`Fetching tables for ${toOrFrom} schema: ${schema}`);
+        if(!schema) return;
+
+        console.log("schema" + schema);
+        const { data, error } = await supabase.rpc('list_tables', { schema_name: schema.toLowerCase() });
+
+        if (error) {
+            console.error('Error fetching tables:', error);
+            return;
+        }
+
+        if (!data) {
+            console.log('No tables returned');
+            setTableFunc([]);
+            return;
+        }
+
+        console.log('Tables:', data);
+        setTableFunc(data.map((t: any, i: number) => ({ id: i, name: t.table_name })));
+    }
+
+
+    useEffect(() => {
         fetchSchemas();
     }, []);
+
+    useEffect(() => {
+        if (!selectedFromSchema) return;
+        fetchTables("fromTables", selectedFromSchema, setTablesInFromSchema);
+    }, [selectedFromSchema]);
+
+    useEffect(() => {
+        if (!selectedToSchema) return;
+        fetchTables("toTables", selectedToSchema, setTablesInToSchema);
+    }, [selectedToSchema]);
 
     return (
     <div>
@@ -77,8 +113,8 @@ export function DataCopyTool() {
         <br/>
         <b>Tables:</b>
         <div>
-            From: <BSTDropdown items={tables} placeholder="Select table" setSelectedFunc={setSelectedFromTable}/>
-            To: <BSTDropdown items={tables} placeholder="Select table" setSelectedFunc={setSelectedToTable}/>
+            From: <BSTDropdown items={tablesInFromSchema} placeholder="Select table" setSelectedFunc={setSelectedFromTable}/>
+            To: <BSTDropdown items={tablesInToSchema} placeholder="Select table" setSelectedFunc={setSelectedToTable}/>
         </div>
         <Button className="green-shadcn-button mt-4">Copy</Button>
     </div>
