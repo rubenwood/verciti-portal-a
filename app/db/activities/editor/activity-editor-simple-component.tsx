@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { createContext, useContext, useState, ReactNode } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -39,19 +39,25 @@ import {
 import { fetchActivities } from "../../general/utils"
 import { PostgrestError } from "@supabase/supabase-js"
 
+/* CONTEXT */
+const EditingActivityContext = createContext<{ editingActivity: Activity | null; setEditingActivity: (a: Activity | null) => void;} | null>(null);
 
-export function ActivityCardList({ activities }: { activities: Activity[] }) {
+export function ActivityBrowser({ activities }: { activities: Activity[] }) {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {activities.map((act, idx) => (
-        <div key={idx}>
-          <ActivityCard activity={act} />
-        </div>
-      ))}
+      {activities
+        .filter((act) => act.params.stage_ids != null)
+        .map((act) => (
+          <div key={act.id}>
+            <ActivityCard activity={act} />
+          </div>
+        ))}
     </div>
   );
 }
 export function ActivityCard({ activity }: { activity: Activity }){
+    const context = useContext(EditingActivityContext);
+
     return(
         <Card
         key={activity.id}
@@ -79,8 +85,8 @@ export function ActivityCard({ activity }: { activity: Activity }){
                 variant="ghost"
                 className="gap-1 h-8"
                 onClick={(e) => {
-                    e.stopPropagation()
-                    //handleEditActivity(activity)
+                    e.stopPropagation();
+                    context?.setEditingActivity(activity);
                 }}
             >
                 <Edit3 className="h-3 w-3" />
@@ -92,8 +98,119 @@ export function ActivityCard({ activity }: { activity: Activity }){
     )
 }
 
+export function ActivityDetailElement( 
+    {
+        detailName,
+        colName,
+        value,
+        onChange
+    } : {
+        detailName: string;
+        colName:string;
+        value: any;
+        onChange:(colName:string, value: string) =>void}){
+    return( 
+        <div className="space-y-2">
+            <Label htmlFor={detailName}>{detailName}</Label>
+            <Input
+            id={detailName}
+            value={value}
+            onChange={(e) => onChange(colName, e.target.value)}
+            placeholder={detailName}
+            />
+        </div>
+    );
+}
+
+export function ActivityDetailsEditor({ activity }: { activity: Activity }){
+    const context = useContext(EditingActivityContext);
+    const [activityDetailsMinimized, setActivityDetailsMinimized] = useState(true);
+
+    const handleActivityUpdate = (colName: string, value: any) => {
+
+    }
+    
+    return (
+        <Card>
+            <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setActivityDetailsMinimized(!activityDetailsMinimized)}
+                    className="gap-2 p-2"
+                >
+                    {activityDetailsMinimized ? (
+                    <ChevronDown className="h-4 w-4" />
+                    ) : (
+                    <ChevronUp className="h-4 w-4" />
+                    )}
+                </Button>
+                <div>
+                    <CardTitle className="text-lg">Activity Details</CardTitle>
+                    <CardDescription>
+                    {activityDetailsMinimized
+                        ? "Click to expand activity editor"
+                        : "Update the basic information for this activity"}
+                    </CardDescription>
+                </div>
+                </div>
+            </div>
+            </CardHeader>
+            {!activityDetailsMinimized && (
+            <CardContent className="pt-0 space-y-4">
+                <div className="grid gap-4 md:grid-cols-2">
+                <ActivityDetailElement 
+                detailName="title"
+                colName="external_title"
+                value={activity.external_title}
+                onChange={handleActivityUpdate} />
+
+                <ActivityDetailElement 
+                detailName="estimatedTime"
+                colName="time_est"
+                value={activity.time_est}
+                onChange={handleActivityUpdate} />
+
+                <ActivityDetailElement 
+                detailName="estimatedTimeNum"
+                colName="time_est_num"
+                value={activity.time_est_num}
+                onChange={handleActivityUpdate} />
+                
+                <ActivityDetailElement 
+                detailName="about"
+                colName="about_text"
+                value={activity.about_text}
+                onChange={handleActivityUpdate} />
+
+                <ActivityDetailElement 
+                detailName="learningObjectives"
+                colName="learning_objectives"
+                value={activity.learning_objectives}
+                onChange={handleActivityUpdate} />
+                </div>
+                
+                <Button className="w-full md:w-auto">Save Activity Changes</Button>
+            </CardContent>
+            )}
+        </Card>
+    )
+}
+export function ActivityStagesEditor({ activity }: { activity: Activity }){
+    useContext(EditingActivityContext);
+    return (
+        <>
+
+        </>
+    )
+}
+
+
 export default function ActivityEditorSimple() {
   const [activities, setActivities] = useState<PostgrestError | Activity[]>();
+  const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
 
   const getActivities = async () => {
     let temp = await fetchActivities();
@@ -102,15 +219,24 @@ export default function ActivityEditorSimple() {
 
   return (
     <div className="space-y-6">
-      <Button onClick={getActivities}>Begin</Button>
+        <Button onClick={getActivities}>Begin</Button>
 
-      {
-        Array.isArray(activities) ? (
-            <ActivityCardList activities={activities} />
-        ) : activities ? (
-            <div className="text-red-500">Error: {activities.message}</div>
-        ) : null
-      }
+        <EditingActivityContext.Provider value={{ editingActivity, setEditingActivity }}>
+        {/* Activity browser */
+            Array.isArray(activities) ? (
+                <ActivityBrowser activities={activities} />
+            ) : activities ? (
+                <div className="text-red-500">Error: {activities.message}</div>
+            ) : null
+        }
+        { /* Activity editor, metadata and stages */
+            editingActivity ?
+                <>
+                    <ActivityDetailsEditor activity={editingActivity} />
+                    <ActivityStagesEditor activity={editingActivity} />
+                </> : null
+        }
+      </EditingActivityContext.Provider>
     </div>
   );
 }
