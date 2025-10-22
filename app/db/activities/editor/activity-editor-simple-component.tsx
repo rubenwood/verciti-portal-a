@@ -112,9 +112,10 @@ export function ActivityDetailElement(
     return( 
         <div className="space-y-2">
             <Label htmlFor={detailName}>{detailName}</Label>
-            <Input
+            <Textarea
+            className="editable-textarea"
             id={detailName}
-            value={value}
+            defaultValue={value}
             onChange={(e) => onChange(colName, e.target.value)}
             placeholder={detailName}
             />
@@ -263,12 +264,18 @@ export function StageDetails(stage: Stage){
                     <div>
                         <Label>Assets:</Label>
                         {/* <pre className="bg-gray-100 p-2 rounded">{JSON.stringify(stage.assets, null, 2)}</pre> */}
-                        <Textarea className="bg-gray-100 p-2 rounded" defaultValue={JSON.stringify(stage.assets, null, 2)} />
+                        <Textarea 
+                        className="editable-textarea" 
+                        rows={10} 
+                        defaultValue={JSON.stringify(stage.assets, null, 2)} />
                     </div>
                     <div>
                         <Label>Params:</Label>
                         {/* <pre className="bg-gray-100 p-2 rounded">{JSON.stringify(stage.params, null, 2)}</pre> */}
-                        <Textarea className="bg-gray-100 p-2 rounded" defaultValue={JSON.stringify(stage.params, null, 2)} />
+                        <Textarea 
+                        className="editable-textarea" 
+                        rows={10} 
+                        defaultValue={JSON.stringify(stage.params, null, 2)} />
                     </div>
                 </div>
             </CardContent>
