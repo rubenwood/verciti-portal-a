@@ -130,7 +130,7 @@ export function ActivityDetailElement(
             <Textarea
             className="editable-textarea"
             id={detailName}
-            defaultValue={value}
+            value={value ?? ""}
             onChange={(e) => onChange(colName, e.target.value)}
             placeholder={detailName}
             />
@@ -158,6 +158,10 @@ export function ActivityDetailsEditor(){
         await updateActivity(editingActivity);
         showConfetti(saveBtnRef);
     }
+
+    useEffect(() => {
+        console.log("Editing activity changed:", editingActivity);
+    }, [editingActivity]);
     
     return (
         <Card className="border-gray-400">
