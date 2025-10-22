@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, ReactNode } from "react"
+import { createContext, useContext, useState, ReactNode, useRef } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -36,7 +36,7 @@ import {
   Edit3,
 } from "lucide-react"
 
-import { fetchActivities } from "../../general/utils"
+import { fetchActivities, updateActivity, showConfetti } from "../../general/utils"
 import { PostgrestError } from "@supabase/supabase-js"
 
 /* CONTEXT */
@@ -122,12 +122,26 @@ export function ActivityDetailElement(
     );
 }
 
-export function ActivityDetailsEditor({ activity }: { activity: Activity }){
+export function ActivityDetailsEditor(){
+    // establish the context
     const context = useContext(EditingActivityContext);
+    if (!context || !context.editingActivity) { return null; }
+    const { editingActivity, setEditingActivity } = context;
+    // other state vars
     const [activityDetailsMinimized, setActivityDetailsMinimized] = useState(true);
 
+    const saveBtnRef = useRef<HTMLButtonElement>(null);
+    
     const handleActivityUpdate = (colName: string, value: any) => {
+        setEditingActivity({
+            ...editingActivity,
+            [colName]: value,
+        });
+    }
 
+    const saveChanges = async () => {
+        await updateActivity(editingActivity);
+        showConfetti(saveBtnRef);
     }
     
     return (
@@ -164,40 +178,41 @@ export function ActivityDetailsEditor({ activity }: { activity: Activity }){
                 <ActivityDetailElement 
                 detailName="title"
                 colName="external_title"
-                value={activity.external_title}
+                value={editingActivity.external_title}
                 onChange={handleActivityUpdate} />
 
                 <ActivityDetailElement 
                 detailName="estimatedTime"
                 colName="time_est"
-                value={activity.time_est}
+                value={editingActivity.time_est}
                 onChange={handleActivityUpdate} />
 
                 <ActivityDetailElement 
                 detailName="estimatedTimeNum"
                 colName="time_est_num"
-                value={activity.time_est_num}
+                value={editingActivity.time_est_num}
                 onChange={handleActivityUpdate} />
                 
                 <ActivityDetailElement 
                 detailName="about"
                 colName="about_text"
-                value={activity.about_text}
+                value={editingActivity.about_text}
                 onChange={handleActivityUpdate} />
 
                 <ActivityDetailElement 
                 detailName="learningObjectives"
                 colName="learning_objectives"
-                value={activity.learning_objectives}
+                value={editingActivity.learning_objectives}
                 onChange={handleActivityUpdate} />
                 </div>
                 
-                <Button className="w-full md:w-auto">Save Activity Changes</Button>
+                <Button ref={saveBtnRef} onClick={saveChanges} className="w-full md:w-auto">Save Activity Changes</Button>
             </CardContent>
             )}
         </Card>
     )
 }
+
 export function ActivityStagesEditor({ activity }: { activity: Activity }){
     useContext(EditingActivityContext);
     return (
@@ -232,7 +247,7 @@ export default function ActivityEditorSimple() {
         { /* Activity editor, metadata and stages */
             editingActivity ?
                 <>
-                    <ActivityDetailsEditor activity={editingActivity} />
+                    <ActivityDetailsEditor />
                     <ActivityStagesEditor activity={editingActivity} />
                 </> : null
         }
