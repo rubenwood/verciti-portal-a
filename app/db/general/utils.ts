@@ -335,8 +335,6 @@ export async function copyDataBetweenTables(
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
         { db: { schema: toSchema } })
 
-    console.log("From: " + fromTable + " To: " + toTable);
-
     const { data: rows, error: selectError } = await fromClient
     .from(fromTable)
     .select('*')
@@ -354,7 +352,7 @@ export async function copyDataBetweenTables(
 
     const { error: insertError } = await toClient
     .from(toTable)
-    .insert(rows);
+    .upsert(rows);
 
     if (insertError) {
         console.error('Error inserting rows:', insertError);
