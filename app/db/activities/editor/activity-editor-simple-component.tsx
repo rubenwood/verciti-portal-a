@@ -66,10 +66,10 @@ export function ActivityCard({ activity }: { activity: Activity }){
             <div className="flex items-start justify-between">
             <CardTitle className="text-lg text-balance leading-tight">{activity.external_title}</CardTitle>
             </div>
-            <CardDescription className="text-pretty">{activity.about_text}</CardDescription>
+            <CardDescription>{activity.about_text}</CardDescription>
         </CardHeader>
         <CardContent className="pt-0">
-            <div className="flex items-center justify-between text-sm text-muted-foreground">
+            <div className="flex items-center justify-between text-sm">
             <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1">
                 <Clock className="h-4 w-4" />
@@ -121,7 +121,6 @@ export function ActivityDetailElement(
         </div>
     );
 }
-
 export function ActivityDetailsEditor(){
     // establish the context
     const context = useContext(EditingActivityContext);
@@ -175,6 +174,7 @@ export function ActivityDetailsEditor(){
             {!activityDetailsMinimized && (
             <CardContent className="pt-0 space-y-4">
                 <div className="grid gap-4 md:grid-cols-2">
+                <p>ID: {editingActivity.id}</p><br/>
                 <ActivityDetailElement 
                 detailName="title"
                 colName="external_title"
@@ -262,11 +262,13 @@ export function StageDetails(stage: Stage){
                 <div className="space-y-2">
                     <div>
                         <Label>Assets:</Label>
-                        <pre className="bg-gray-100 p-2 rounded">{JSON.stringify(stage.assets, null, 2)}</pre>
+                        {/* <pre className="bg-gray-100 p-2 rounded">{JSON.stringify(stage.assets, null, 2)}</pre> */}
+                        <Textarea className="bg-gray-100 p-2 rounded" defaultValue={JSON.stringify(stage.assets, null, 2)} />
                     </div>
                     <div>
                         <Label>Params:</Label>
-                        <pre className="bg-gray-100 p-2 rounded">{JSON.stringify(stage.params, null, 2)}</pre>
+                        {/* <pre className="bg-gray-100 p-2 rounded">{JSON.stringify(stage.params, null, 2)}</pre> */}
+                        <Textarea className="bg-gray-100 p-2 rounded" defaultValue={JSON.stringify(stage.params, null, 2)} />
                     </div>
                 </div>
             </CardContent>
