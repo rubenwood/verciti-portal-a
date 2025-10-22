@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, ReactNode, useRef } from "react"
+import { createContext, useContext, useState, ReactNode, useRef, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -36,7 +36,7 @@ import {
   Edit3,
 } from "lucide-react"
 
-import { fetchActivities, updateActivity, showConfetti } from "../../general/utils"
+import { fetchActivities, updateActivity, fetchStagesByIds,showConfetti } from "../../general/utils"
 import { PostgrestError } from "@supabase/supabase-js"
 
 /* CONTEXT */
@@ -213,12 +213,116 @@ export function ActivityDetailsEditor(){
     )
 }
 
-export function ActivityStagesEditor({ activity }: { activity: Activity }){
-    useContext(EditingActivityContext);
-    return (
-        <>
 
-        </>
+export function StageList(){
+    // establish the context
+    const context = useContext(EditingActivityContext);
+    if (!context || !context.editingActivity) { return null; }
+    const { editingActivity, setEditingActivity } = context;
+    // other state vars
+    const [stages, setStages] = useState<Stage[]>([]);
+
+    useEffect(() => {
+        console.log("Editing activity changed, load stages...");
+        const loadStages = async () => {
+            if (editingActivity && editingActivity.params.stage_ids) {
+                const tmpStages = await fetchStagesByIds(editingActivity.params.stage_ids);
+
+                if(!Array.isArray(tmpStages)){
+                    console.error("Error fetching stages:", tmpStages);
+                    return;
+                }
+
+                setStages(tmpStages);
+                console.log("Fetched stages:", tmpStages);
+            }
+        };
+        loadStages();
+    }, [editingActivity]);
+
+    return(
+        <div>
+            {/* display a list of stage here, each should have an edit button*/}
+            {stages.length === 0 ? (
+                <div>No stages found for this activity.</div>
+            ) : (stages.map((stage) => (
+                StageDetails(stage)
+            )))}
+        </div>
+    )
+}
+export function StageDetails(stage: Stage){
+    return(
+        <Card key={stage.id} className="mb-4">
+            <CardHeader>
+                <CardTitle className="text-md">Stage ID: {stage.id}</CardTitle>
+                <p>Type: {stage.type}</p>
+            </CardHeader>
+            <CardContent>
+                <div className="space-y-2">
+                    <div>
+                        <Label>Assets:</Label>
+                        <pre className="bg-gray-100 p-2 rounded">{JSON.stringify(stage.assets, null, 2)}</pre>
+                    </div>
+                    <div>
+                        <Label>Params:</Label>
+                        <pre className="bg-gray-100 p-2 rounded">{JSON.stringify(stage.params, null, 2)}</pre>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    )
+}
+
+export function ActivityStagesEditor(){
+    // establish the context
+    const context = useContext(EditingActivityContext);
+    if (!context || !context.editingActivity) { return null; }
+    const { editingActivity, setEditingActivity } = context;
+    // other state vars
+    const [stageDetailsMinimized, setStageDetailsMinimized] = useState(true);
+
+    return (
+        <Card>
+            <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setStageDetailsMinimized(!stageDetailsMinimized)}
+                    className="gap-2 p-2"
+                >
+                    {stageDetailsMinimized ? (
+                    <ChevronDown className="h-4 w-4" />
+                    ) : (
+                    <ChevronUp className="h-4 w-4" />
+                    )}
+                </Button>
+                <div>
+                    <CardTitle className="text-lg">Stage Details</CardTitle>
+                    <CardDescription>
+                    {stageDetailsMinimized
+                        ? "Click to expand stage editor"
+                        : "Update the stages for this activity"}
+                    </CardDescription>
+                </div>
+                </div>
+            </div>
+            </CardHeader>
+            {!stageDetailsMinimized && (
+                <CardContent className="pt-0 space-y-4">
+                {/* 
+                TODO:
+                    Display list of stages associated with this activity
+                    Reordering stages
+                    Display stage details (edit stage)
+                    Adding/removing stages
+                */}
+                    <StageList />
+                </CardContent>
+            )}
+        </Card>
     )
 }
 
@@ -248,7 +352,7 @@ export default function ActivityEditorSimple() {
             editingActivity ?
                 <>
                     <ActivityDetailsEditor />
-                    <ActivityStagesEditor activity={editingActivity} />
+                    <ActivityStagesEditor />
                 </> : null
         }
       </EditingActivityContext.Provider>

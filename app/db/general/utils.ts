@@ -266,6 +266,17 @@ export async function fetchStagesWithInfoTexts(batchId: string): Promise<StageWi
     });
     return results;
 }
+export async function fetchStagesByIds(stageIds: string[]): Promise<Stage[] | PostgrestError> {
+    const { data, error } = await supabase
+        .from('stages')
+        .select('*')
+        .in('id', stageIds);
+    if (error) {
+        console.error('Error fetching stages by IDs:', error);
+        return error;
+    }
+    return data as Stage[];
+}
 export async function fetchStages() {
     const { data, error } = await supabase.from('stages').select('*');
 

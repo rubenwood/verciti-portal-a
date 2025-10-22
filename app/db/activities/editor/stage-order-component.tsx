@@ -62,7 +62,6 @@ export function ActivityParamsEditor({ activity }: any) {
 
   return (
     <div>
-      <i>Activity Params Editor</i><br/>
       <Button className="green-shadcn-button-fw" onClick={saveOrder}>
         Save Order
       </Button>
