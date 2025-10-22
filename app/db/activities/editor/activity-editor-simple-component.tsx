@@ -262,6 +262,8 @@ export function StageDetailsEditor({ stage, index }: {stage: Stage, index: numbe
     const [inStage, setStage] = useState<Stage>(stage);
     const [stageValue, setStageValue] = useState("");
 
+    const [editingContent, setEditingContent] = useState(false);
+
     const saveBtnRef = useRef<HTMLButtonElement>(null);
     const saveChanges = async () => {
         const updatedStage: Stage = JSON.parse(stageValue);
@@ -285,8 +287,12 @@ export function StageDetailsEditor({ stage, index }: {stage: Stage, index: numbe
                     Stage ID: {stage.id}<br/>
                     Type: {stage.type}
                 </CardTitle>
-            </CardHeader>
+            </CardHeader>            
             <CardContent>
+                <Button onClick={() => { setEditingContent(!editingContent); }} className="mb-4">
+                    {editingContent ? "Hide Stage Editor" : "Edit Stage"}
+                </Button>
+                {editingContent ? (
                 <div className="space-y-2">
                     <div>
                         <Label>Stage Data:</Label>
@@ -304,8 +310,9 @@ export function StageDetailsEditor({ stage, index }: {stage: Stage, index: numbe
                     : null
                     }
                 </div>
-                
+                ) : null}                   
             </CardContent>
+            
         </Card>
     )
 }
