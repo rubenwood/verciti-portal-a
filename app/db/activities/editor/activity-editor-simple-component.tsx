@@ -112,7 +112,6 @@ export function ActivityCard({ activity }: { activity: Activity }){
         </Card>
     )
 }
-
 export function ActivityDetailElement( 
     {
         detailName,
@@ -221,6 +220,18 @@ export function ActivityDetailsEditor(){
                 detailName="learningObjectives"
                 colName="learning_objectives"
                 value={editingActivity.learning_objectives}
+                onChange={handleActivityUpdate} />
+
+                <ActivityDetailElement 
+                detailName="status"
+                colName="status"
+                value={editingActivity.status}
+                onChange={handleActivityUpdate} />
+
+                <ActivityDetailElement 
+                detailName="dirName"
+                colName="dir_name"
+                value={editingActivity.dir_name}
                 onChange={handleActivityUpdate} />
                 </div>
                 
@@ -426,17 +437,24 @@ export function InfoTextEditor({ infoTextId }: {infoTextId: string}){
 
 // MAIN COMPONENT
 export default function ActivityEditorSimple() {
-  const [activities, setActivities] = useState<PostgrestError | Activity[]>();
-  const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
+    const [activities, setActivities] = useState<PostgrestError | Activity[]>();
+    const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
 
-  const getActivities = async () => {
+    const getActivities = async () => {
     let temp = await fetchActivities();
     setActivities(temp);
-  };
+    };
 
-  return (
+    const showActivityCreator = () => {
+
+    }
+
+    return (
     <div className="space-y-6">
-        <Button onClick={getActivities}>Begin</Button>
+        <div className="space-x-4">
+            <Button onClick={getActivities}>Edit Existing</Button>
+            <Button onClick={showActivityCreator}>Create New</Button>
+        </div>
 
         <EditingActivityContext.Provider value={{ editingActivity, setEditingActivity }}>
         {/* Activity browser */
@@ -453,7 +471,7 @@ export default function ActivityEditorSimple() {
                     <ActivityStagesEditor />
                 </> : null
         }
-      </EditingActivityContext.Provider>
+        </EditingActivityContext.Provider>
     </div>
-  );
+    );
 }

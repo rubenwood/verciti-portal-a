@@ -10,12 +10,19 @@ type Course = {
     ranks: object
 }
 
+enum EntryVisiblity {
+    Production,
+    Testing,
+    ComingSoon,
+    None
+}
+
 type Activity = {
     id: string
     created_at: string
     external_title: string
     internal_title: string
-    status: string
+    status: EntryVisiblity
     time_est: string
     time_est_num: string
     about_text: string
@@ -25,6 +32,7 @@ type Activity = {
     qr_url: string
     icon_url: string
     title_asset_url: string
+    dir_name: string
 }
 
 type CourseActivityWithDetails = {
