@@ -162,6 +162,20 @@ export async function updateInfoText(infoText: { id: string; text_en_uk: { title
 
     return data;
 }
+export async function updateInfoTextFull(infoText: InfoText) {
+    const { data, error } = await supabase
+    .from('info_texts')
+    .update(infoText)
+    .eq('id', infoText.id)
+    .select();
+
+    if (error) {
+        console.error('Error updating info text:', error);
+        throw error;
+    }
+
+    return data;
+}
 export async function insertInfoTexts(rows: { heading: string; body: string; sheetId: number}[], batchId: string) {
     const validRows = rows.filter(r => r.body.trim().length > 0);
 

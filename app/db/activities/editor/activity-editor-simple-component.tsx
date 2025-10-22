@@ -36,7 +36,7 @@ import {
   Edit3,
 } from "lucide-react"
 
-import { fetchActivities, updateActivity, fetchStagesByIds,showConfetti } from "../../general/utils"
+import { fetchActivities, updateActivity, fetchStagesByIds, fetchInfoTextById, showConfetti, updateInfoTextFull } from "../../general/utils"
 import { PostgrestError } from "@supabase/supabase-js"
 
 // CONTEXT
@@ -246,38 +246,52 @@ export function StageList(){
             {/* display a list of stage here, each should have an edit button*/}
             {stages.length === 0 ? (
                 <div>No stages found for this activity.</div>
-            ) : (stages.map((stage) => (
-                StageDetailsEditor(stage)
+            ) : (stages.map((s: Stage) => (
+                <StageDetailsEditor stage={s} key={s.id} />
             )))}
         </div>
     )
 }
-export function StageDetailsEditor(stage: Stage){
+export function StageDetailsEditor({ stage }: {stage: Stage}){
+    const saveBtnRef = useRef<HTMLButtonElement>(null);
+    const saveChanges = async () => {
+
+        showConfetti(saveBtnRef);
+    }
+
     return(
         <Card key={stage.id} className="mb-4">
             <CardHeader>
-                <CardTitle className="text-md">Stage ID: {stage.id}</CardTitle>
-                <p>Type: {stage.type}</p>
+                <CardTitle className="text-md">
+                    Stage ID: {stage.id}<br/>
+                    Type: {stage.type}
+                </CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="space-y-2">
                     <div>
                         <Label>Assets:</Label>
-                        {/* <pre className="bg-gray-100 p-2 rounded">{JSON.stringify(stage.assets, null, 2)}</pre> */}
                         <Textarea 
                         className="editable-textarea" 
                         rows={10} 
                         defaultValue={JSON.stringify(stage.assets, null, 2)} />
                     </div>
+                    <br/>
                     <div>
                         <Label>Params:</Label>
-                        {/* <pre className="bg-gray-100 p-2 rounded">{JSON.stringify(stage.params, null, 2)}</pre> */}
                         <Textarea 
                         className="editable-textarea" 
                         rows={10} 
                         defaultValue={JSON.stringify(stage.params, null, 2)} />
                     </div>
+                    <Button ref={saveBtnRef} onClick={saveChanges} className="w-full md:w-auto">Save Stage Changes</Button>
+                    <br />
+                    {stage.type === 'info' ? 
+                        <InfoTextEditor infoTextId={stage.params.infoTextId} />
+                    : null
+                    }
                 </div>
+                
             </CardContent>
         </Card>
     )
@@ -331,6 +345,53 @@ export function ActivityStagesEditor(){
                 </CardContent>
             )}
         </Card>
+    )
+}
+
+// INFO TEXT EDITOR COMPONENTS
+export function InfoTextEditor({ infoTextId }: {infoTextId: string}){
+    const [infoText, setInfoText] = useState<InfoText | PostgrestError>();
+    const [textValue, setTextValue] = useState("");
+
+    const saveBtnRef = useRef<HTMLButtonElement>(null);
+    const saveChanges = async () => {
+        const updatedInfoText: InfoText = JSON.parse(textValue);
+        setInfoText(updatedInfoText);
+        await updateInfoTextFull(updatedInfoText);
+        showConfetti(saveBtnRef);
+    }
+
+
+    useEffect(() => {
+        // load info text by id
+        const loadInfoText = async () => {
+            if (infoTextId) {
+                const tmpInfoText = await fetchInfoTextById(infoTextId);
+                if(!tmpInfoText || 'message' in tmpInfoText){
+                    console.error("Error fetching info text:", tmpInfoText);
+                    return;
+                }
+                setInfoText(tmpInfoText);
+                setTextValue(JSON.stringify(tmpInfoText, null, 2));
+            }
+        }
+        loadInfoText();
+    }, [infoTextId]);
+
+    if (!infoText || "message" in infoText) return <p>Loading...</p>;
+
+    return(
+        <div>
+            <b>Info Text Editor</b>
+            <Textarea 
+                className="editable-textarea" 
+                rows={20}
+                value={textValue}
+                onChange={(e) => setTextValue(e.target.value)}
+            />
+            <br />
+            <Button ref={saveBtnRef} onClick={saveChanges} className="w-full md:w-auto">Save Info Text Changes</Button>
+        </div>
     )
 }
 
