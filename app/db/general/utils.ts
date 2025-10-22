@@ -314,6 +314,11 @@ export async function fetchStages() {
     return data as Stage[];
 }
 //
+export async function insertActivity(activity: Activity){
+    const { data, error } = await supabase.from('activities').insert(activity).select();
+    const output = {data: data, error: error};
+    return output;
+} 
 export async function fetchActivities() {
     const { data, error } = await supabase.from('activities').select('*');
 

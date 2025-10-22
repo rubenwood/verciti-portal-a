@@ -38,6 +38,7 @@ import {
 
 import { showConfetti,
     fetchActivities,
+    insertActivity,
     updateActivity,
     fetchStagesByIds,
     updateStage,
@@ -165,33 +166,36 @@ export function ActivityDetailsEditor(){
             <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setActivityDetailsMinimized(!activityDetailsMinimized)}
-                    className="gap-2 p-2"
-                >
-                    {activityDetailsMinimized ? (
-                    <ChevronDown className="h-4 w-4" />
-                    ) : (
-                    <ChevronUp className="h-4 w-4" />
-                    )}
-                </Button>
-                <div>
-                    <CardTitle className="text-lg">Activity Details</CardTitle>
-                    <CardDescription>
-                    {activityDetailsMinimized
-                        ? "Click to expand activity editor"
-                        : "Update the basic information for this activity"}
-                    </CardDescription>
-                </div>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setActivityDetailsMinimized(!activityDetailsMinimized)}
+                        className="gap-2 p-2"
+                    >
+                        {activityDetailsMinimized ? (
+                            <ChevronDown className="h-4 w-4" />
+                        ) : (
+                            <ChevronUp className="h-4 w-4" />
+                        )}
+                    </Button>
+                    <div>
+                        <CardTitle className="text-lg">Activity Details - {editingActivity.external_title}</CardTitle>
+                        <div className="flex gap-1 mb-1">
+                            <Badge className="text-xs bg-blue-500">{editingActivity.id}</Badge>
+                            <Badge className="text-xs bg-blue-500">{editingActivity.type}</Badge>
+                        </div>                    
+                        <CardDescription>
+                        {activityDetailsMinimized
+                            ? "Click to expand activity editor"
+                            : "Update the basic information for this activity"}
+                        </CardDescription>
+                    </div>
                 </div>
             </div>
             </CardHeader>
             {!activityDetailsMinimized && (
             <CardContent className="pt-0 space-y-4">
-                <div className="grid gap-4 md:grid-cols-2">
-                <p>ID: {editingActivity.id}</p><br/>
+                <div className="grid gap-4 md:grid-cols-2">                
                 <ActivityDetailElement 
                 detailName="title"
                 colName="external_title"
@@ -375,13 +379,6 @@ export function ActivityStagesEditor(){
             </CardHeader>
             {!stageDetailsMinimized && (
                 <CardContent className="pt-0 space-y-4">
-                {/* 
-                TODO:
-                    Display list of stages associated with this activity
-                    Reordering stages
-                    Display stage details (edit stage)
-                    Adding/removing stages
-                */}
                     <StageList />
                 </CardContent>
             )}
@@ -445,15 +442,31 @@ export default function ActivityEditorSimple() {
     setActivities(temp);
     };
 
-    const showActivityCreator = () => {
-
+    const showActivityCreator = async () => {
+        const newAct: Activity = {
+            external_title: "New Activity",
+            internal_title: "New Activity Internal",
+            time_est: "10 mins~",
+            time_est_num: "600",
+            about_text: "This is a new activity.",
+            learning_objectives: "Learn about something new.",
+            params: { assets: [], stage_ids: [] },
+            type: "lesson",
+            qr_url: "",
+            icon_url: "",
+            title_asset_url: "",
+            dir_name: "Dev"
+        };
+        const tmp = await insertActivity(newAct);
+        console.log("Inserted activity:", tmp);
+        await getActivities();
     }
 
     return (
     <div className="space-y-6">
         <div className="space-x-4">
-            <Button onClick={getActivities}>Edit Existing</Button>
-            <Button onClick={showActivityCreator}>Create New</Button>
+            <Button onClick={getActivities}><Edit />Edit Existing</Button>
+            <Button onClick={showActivityCreator}><Plus />Create New</Button>
         </div>
 
         <EditingActivityContext.Provider value={{ editingActivity, setEditingActivity }}>

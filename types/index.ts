@@ -18,11 +18,11 @@ enum EntryVisiblity {
 }
 
 type Activity = {
-    id: string
-    created_at: string
+    id?: string
+    created_at?: string
     external_title: string
     internal_title: string
-    status: EntryVisiblity
+    status?: EntryVisiblity
     time_est: string
     time_est_num: string
     about_text: string
