@@ -366,13 +366,13 @@ export function InfoTextEditor({ infoTextId }: {infoTextId: string}){
         // load info text by id
         const loadInfoText = async () => {
             if (infoTextId) {
-                const tmpInfoText = await fetchInfoTextById(infoTextId);
-                if(!tmpInfoText || 'message' in tmpInfoText){
-                    console.error("Error fetching info text:", tmpInfoText);
+                const fetchedInfoText = await fetchInfoTextById(infoTextId);
+                if(!fetchedInfoText || 'message' in fetchedInfoText){
+                    console.error("Error fetching info text:", fetchedInfoText);
                     return;
                 }
-                setInfoText(tmpInfoText);
-                setTextValue(JSON.stringify(tmpInfoText, null, 2));
+                setInfoText(fetchedInfoText);
+                setTextValue(JSON.stringify(fetchedInfoText, null, 2));
             }
         }
         loadInfoText();
