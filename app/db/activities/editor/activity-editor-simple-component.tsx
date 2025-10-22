@@ -62,12 +62,20 @@ export function ActivityBrowser({ activities }: { activities: Activity[] }) {
   );
 }
 export function ActivityCard({ activity }: { activity: Activity }){
+    // establish the context
     const context = useContext(EditingActivityContext);
+    if (!context) { return null; }
+    const { editingActivity, setEditingActivity } = context;
+
+    const isSelected = editingActivity?.id === activity.id;
+    const cardClassName = isSelected
+        ? "border-3 border-blue-600"
+        : "shadow-md border-2 border-gray-400 hover:border-blue-500";
 
     return(
         <Card
         key={activity.id}
-        className="shadow-md border-2 border-gray-400 hover:border-blue-500"
+        className={cardClassName}
         >
         <CardHeader className="pb-3">
             <div className="flex items-start justify-between">
@@ -93,7 +101,7 @@ export function ActivityCard({ activity }: { activity: Activity }){
                 className="gap-1 h-8"
                 onClick={(e) => {
                     e.stopPropagation();
-                    context?.setEditingActivity(activity);
+                    setEditingActivity(activity);
                 }}
             >
                 <Edit3 className="h-3 w-3" />
@@ -380,7 +388,6 @@ export function InfoTextEditor({ infoTextId }: {infoTextId: string}){
         await updateInfoTextFull(updatedInfoText);
         showConfetti(saveBtnRef);
     }
-
 
     useEffect(() => {
         // load info text by id
