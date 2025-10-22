@@ -159,9 +159,7 @@ export function ActivityDetailsEditor(){
         showConfetti(saveBtnRef);
     }
 
-    useEffect(() => {
-        console.log("Editing activity changed:", editingActivity);
-    }, [editingActivity]);
+    useEffect(() => {}, [editingActivity]);
     
     return (
         <Card className="border-gray-400">
