@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase'
-import { PostgrestError } from '@supabase/supabase-js';
+import { createClient, PostgrestError } from '@supabase/supabase-js';
 import confetti from 'canvas-confetti';
 import type { RefObject } from 'react';
 
@@ -45,7 +45,6 @@ export async function getInfoTextsByBatchId(batchId: string) {
 
     return data;
 }
-
 // Delete by batch id from any table
 export async function deleteByBatchId(batchId: string, tableName: string) {
     const { data, error } = await supabase
@@ -56,49 +55,6 @@ export async function deleteByBatchId(batchId: string, tableName: string) {
 
     if (error) {
         console.error('Error deleting info texts:', error);
-        throw error;
-    }
-
-    return data;
-}
-
-// TODO: test & use this to update patch-batches
-export async function updateInfoText(infoText: { id: string; text_en_uk: { title: string; body: string }; media_en_uk?: string;}) {
-    const { data, error } = await supabase
-    .from('info_texts')
-    .update({
-        text_en_uk: infoText.text_en_uk,
-    })
-    .eq('id', infoText.id)
-    .select();
-
-    if (error) {
-        console.error('Error updating info text:', error);
-        throw error;
-    }
-
-    return data;
-}
-export async function insertInfoTexts(rows: { heading: string; body: string; sheetId: number}[], batchId: string) {
-    const validRows = rows.filter(r => r.body.trim().length > 0);
-
-    const insertData = validRows.map(r => ({
-        text_en_uk: { title: r.heading, body: r.body.trim() },
-        text_en_us: null,
-        text_fr: null,
-        text_es: null,
-        text_de: null,
-        text_ar: null,
-        media_en_uk: null,
-        media_en_us: null,
-        batch_id: batchId,
-        sheet_id: r.sheetId
-    }));
-
-    const { data, error } = await supabase.from('info_texts').insert(insertData).select();
-
-    if (error) {
-        console.error('Insert info text error:', error);
         throw error;
     }
 
@@ -158,7 +114,7 @@ export async function fetchQuizStagesByBatchId(batchId: string): Promise<StageWi
 
     return results; 
 }
-
+//
 export async function fetchAllInfoText() {
     const { data, error } = await supabase.from('info_texts').select('*');
 
@@ -189,6 +145,49 @@ export async function fetchInfoTextById(infoTextId: string) {
 
     return data as InfoText;
 }
+// TODO: test & use this to update patch-batches
+export async function updateInfoText(infoText: { id: string; text_en_uk: { title: string; body: string }; media_en_uk?: string;}) {
+    const { data, error } = await supabase
+    .from('info_texts')
+    .update({
+        text_en_uk: infoText.text_en_uk,
+    })
+    .eq('id', infoText.id)
+    .select();
+
+    if (error) {
+        console.error('Error updating info text:', error);
+        throw error;
+    }
+
+    return data;
+}
+export async function insertInfoTexts(rows: { heading: string; body: string; sheetId: number}[], batchId: string) {
+    const validRows = rows.filter(r => r.body.trim().length > 0);
+
+    const insertData = validRows.map(r => ({
+        text_en_uk: { title: r.heading, body: r.body.trim() },
+        text_en_us: null,
+        text_fr: null,
+        text_es: null,
+        text_de: null,
+        text_ar: null,
+        media_en_uk: null,
+        media_en_us: null,
+        batch_id: batchId,
+        sheet_id: r.sheetId
+    }));
+
+    const { data, error } = await supabase.from('info_texts').insert(insertData).select();
+
+    if (error) {
+        console.error('Insert info text error:', error);
+        throw error;
+    }
+
+    return data;
+}
+//
 export async function insertStages(rows: { stageType: string, stageAssets: object, stageParams: Record<string, any>, stageBatchId: string }[]) {
     const insertData = rows.map( r => ({
         type: r.stageType,
@@ -277,7 +276,7 @@ export async function fetchStages() {
 
     return data as Stage[];
 }
-
+//
 export async function fetchActivities() {
     const { data, error } = await supabase.from('activities').select('*');
 
@@ -296,7 +295,6 @@ export async function fetchActivityById(activityId: string) {
     }
     return data as Activity;
 }
-
 export async function updateActivity(activity: Activity){
     const { data, error } = await supabase
       .from('activities')
@@ -308,7 +306,7 @@ export async function updateActivity(activity: Activity){
 
       return output;
 }
-
+//
 export async function fetchCourses() {
     const { data, error } = await supabase.from('courses').select('*');
 
@@ -319,7 +317,52 @@ export async function fetchCourses() {
 
     return data as Course[];
 }
+//
+export async function copyDataBetweenTables(
+    rowCount: number,
+    randomize: boolean,
+    fromSchema: string, 
+    toSchema: string,
+    fromTable: string, 
+    toTable: string) {
 
+    const fromClient = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        { db: { schema: fromSchema } })
+    const toClient = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        { db: { schema: toSchema } })
+
+    console.log("From: " + fromTable + " To: " + toTable);
+
+    const { data: rows, error: selectError } = await fromClient
+    .from(fromTable)
+    .select('*')
+    .limit(rowCount);
+
+    if (selectError) {
+        console.error('Error fetching rows:', selectError);
+        throw selectError;
+    }
+
+    if (!rows || rows.length === 0) {
+        console.warn('No rows found to copy.');
+        return;
+    }
+
+    const { error: insertError } = await toClient
+    .from(toTable)
+    .insert(rows);
+
+    if (insertError) {
+        console.error('Error inserting rows:', insertError);
+        throw insertError;
+    }
+
+    console.log(`Copied ${rows.length} rows from ${fromSchema}.${fromTable} → ${toSchema}.${toTable}`);
+}
 
 
 export function showConfetti<T extends HTMLElement = HTMLElement>(ref: RefObject<T | null>){
