@@ -45,6 +45,7 @@
 
 body {
   font-family: var(--font-lexend), Arial, Helvetica, sans-serif;
+  font-size: 14px;
 }
 
 .page-break {
@@ -53,13 +54,13 @@ body {
   break-before: page !important;
 }
 .button {
-  @apply mt-2 px-4 py-2 bg-[#97fb57] text-[#121212] rounded-lg  hover:bg-[#83d84d];
+  @apply mt-2 px-4 py-2 bg-[#97fb57] text-[#121212] rounded-lg  hover:bg-[#83d84d] text-sm
 }
 .green-shadcn-button {
-  @apply bg-[#97fb57] hover:bg-[#83d84d] text-[#121212]
+  @apply bg-[#97fb57] hover:bg-[#83d84d] text-[#121212] text-sm
 }
 .green-shadcn-button-fw {
-  @apply bg-[#97fb57] hover:bg-[#83d84d] text-[#121212] w-full
+  @apply bg-[#97fb57] hover:bg-[#83d84d] text-[#121212] w-full 
 }
 .red-shadcn-button {
   @apply bg-[#ff000d] hover:bg-[#cc000a] text-[#121212]

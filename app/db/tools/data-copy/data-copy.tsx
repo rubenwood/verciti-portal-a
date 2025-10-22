@@ -79,6 +79,10 @@ export function DataCopyTool() {
         setTableFunc(data.map((t: any, i: number) => ({ id: i, name: t.table_name })));
     }
 
+    async function copyData(params: any) {
+        
+    }
+
 
     useEffect(() => {
         fetchSchemas();
@@ -96,7 +100,7 @@ export function DataCopyTool() {
 
     return (
     <div>
-        <h1 className="text-2xl font-bold mb-4">Data Copy Tool</h1>
+        <h2 className="text-2xl font-bold mb-4">Data Copy Tool</h2>
         <p>This tool will help you copy data between different database tables.</p>
         <br/>
         <b>Branches:</b>
@@ -116,7 +120,7 @@ export function DataCopyTool() {
             From: <BSTDropdown items={tablesInFromSchema} placeholder="Select table" setSelectedFunc={setSelectedFromTable}/>
             To: <BSTDropdown items={tablesInToSchema} placeholder="Select table" setSelectedFunc={setSelectedToTable}/>
         </div>
-        <Button className="green-shadcn-button mt-4">Copy</Button>
+        <Button className="green-shadcn-button mt-4" onClick={copyData}>Copy</Button>
     </div>
     );
 }
