@@ -39,7 +39,7 @@ import {
 import { fetchActivities, updateActivity, fetchStagesByIds,showConfetti } from "../../general/utils"
 import { PostgrestError } from "@supabase/supabase-js"
 
-/* CONTEXT */
+// CONTEXT
 const EditingActivityContext = createContext<{ editingActivity: Activity | null; setEditingActivity: (a: Activity | null) => void;} | null>(null);
 
 export function ActivityBrowser({ activities }: { activities: Activity[] }) {
@@ -61,6 +61,7 @@ export function ActivityCard({ activity }: { activity: Activity }){
     return(
         <Card
         key={activity.id}
+        className="shadow-md border-2 border-gray-400 hover:border-blue-500"
         >
         <CardHeader className="pb-3">
             <div className="flex items-start justify-between">
@@ -145,7 +146,7 @@ export function ActivityDetailsEditor(){
     }
     
     return (
-        <Card>
+        <Card className="border-gray-400">
             <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -214,7 +215,7 @@ export function ActivityDetailsEditor(){
     )
 }
 
-
+// STAGE EDITOR COMPONENTS
 export function StageList(){
     // establish the context
     const context = useContext(EditingActivityContext);
@@ -235,7 +236,6 @@ export function StageList(){
                 }
 
                 setStages(tmpStages);
-                console.log("Fetched stages:", tmpStages);
             }
         };
         loadStages();
@@ -247,12 +247,12 @@ export function StageList(){
             {stages.length === 0 ? (
                 <div>No stages found for this activity.</div>
             ) : (stages.map((stage) => (
-                StageDetails(stage)
+                StageDetailsEditor(stage)
             )))}
         </div>
     )
 }
-export function StageDetails(stage: Stage){
+export function StageDetailsEditor(stage: Stage){
     return(
         <Card key={stage.id} className="mb-4">
             <CardHeader>
@@ -282,7 +282,6 @@ export function StageDetails(stage: Stage){
         </Card>
     )
 }
-
 export function ActivityStagesEditor(){
     // establish the context
     const context = useContext(EditingActivityContext);
@@ -292,7 +291,7 @@ export function ActivityStagesEditor(){
     const [stageDetailsMinimized, setStageDetailsMinimized] = useState(true);
 
     return (
-        <Card>
+        <Card className="border-gray-400">
             <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -335,7 +334,7 @@ export function ActivityStagesEditor(){
     )
 }
 
-
+// MAIN COMPONENT
 export default function ActivityEditorSimple() {
   const [activities, setActivities] = useState<PostgrestError | Activity[]>();
   const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
