@@ -219,6 +219,18 @@ export async function insertStages(rows: { stageType: string, stageAssets: objec
 
     return data; // Contains id and created_at from Supabase
 }
+export async function updateStage(stage: Stage) {
+    const { data, error } = await supabase
+    .from('stages')
+    .update(stage)
+    .eq('id', stage.id)
+    .select();
+    if (error) {
+        console.error('Error updating stage:', error);
+        throw error;
+    }
+    return data;
+}
 export async function fetchStagesWithInfoTexts(batchId: string): Promise<StageWithInfoText[] | PostgrestError> {
    const { data: stages, error: stagesError } = await supabase
         .from('stages')
