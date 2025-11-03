@@ -12,6 +12,15 @@ import { checkUser } from "../../db/general/get-user"
 
 import Login from '../../login/login-component'
 
+const formatUKDate = (dateString: string) => {
+  const date = new Date(dateString);
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+};
 
 const normalize = (str: string) => str?.trim().toLowerCase();
 const getMarker = (userInput: string, option: string) => {
@@ -24,7 +33,7 @@ const ApplicantInfoSection = ({ data }: any) => (
             <b>Skills Bootcamp</b>
         </p>
         <p style={{ fontSize:'14pt' }}>
-            <b>Date of application: {data["Completion time"].split(" ")[0]}</b>
+            <b>Date of application: {formatUKDate(data["Completion time"].split(" ")[0])}</b>
         </p>
 
         <table style={{ borderCollapse: 'collapse', width: '100%', border: '1px solid black' }}>

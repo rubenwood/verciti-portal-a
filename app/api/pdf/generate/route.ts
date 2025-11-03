@@ -13,7 +13,15 @@ import {
   ShadingType,
 } from 'docx';
 
+const formatUKDate = (dateString: string) => {
+  const date = new Date(dateString);
 
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+};
 const normalize = (str: string) => str?.trim().toLowerCase();
 const getMarker = (userInput: string, option: string) => {
     return normalize(userInput) === normalize(option) ? "☒" : "☐";
@@ -800,7 +808,7 @@ function constructWordDoc(data: any) {
           new Paragraph({
             children: [
               new TextRun({
-                text: `Date of application: ${data['Completion time']?.split(' ')[0] || ''}`,
+                text: `Date of application: ${formatUKDate(data['Completion time']?.split(' ')[0]) || ''}`,
                 bold: true,
                 size: 56,
                 font: 'Arial',
