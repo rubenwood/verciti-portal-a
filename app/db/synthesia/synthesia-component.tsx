@@ -156,6 +156,12 @@ export default function BatchSynthesia() {
             <Button className="green-shadcn-button" onClick={listAllVideos}>List all videos</Button>
             <br/>
             <br/>
+            <i>
+            Once Synthesias are created use this to copy them from synthesia to S3<br/>
+            Enter the S3 folder path (not trailing / at beginning nor end).<br/>
+            You must specify the path including "dev/"
+            </i>
+            <br />
             <input 
                 type='text' 
                 placeholder='S3 Folder' 
