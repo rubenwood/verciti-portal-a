@@ -67,7 +67,7 @@ const ApplicantInfoSection = ({ data }: any) => (
         <table  style={{ borderCollapse: 'collapse', width: '100%', border: '1px solid black' }}>
             <tbody style={{fontSize: '12pt'}}>
                 <tr>
-                    <td style={{ width:'30%', border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>Date of Birth (dd/mm/yyyy): {data["Date of Birth"]}</td>
+                    <td style={{ width:'30%', border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>Date of Birth (dd/mm/yyyy): {formatUKDate(data["Date of Birth"])}</td>
                     <td style={{ width:'10%', border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>Age:</td>
                     <td style={{ width:'10%', border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>{data["Age"]}</td>
                     <td style={{ width:'50%', border: '1px solid black', padding: '5px', paddingBottom:'10px' }}></td>

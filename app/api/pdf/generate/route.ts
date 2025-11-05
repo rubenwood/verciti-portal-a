@@ -180,7 +180,7 @@ function ApplicantTable(data: any): Table {
   rows.push(
     new TableRow({
       children: [
-        createTableCell(`Date of Birth: ${data['Date of Birth']}`, false, undefined, 2),
+        createTableCell(`Date of Birth: ${formatUKDate(data['Date of Birth'])}`, false, undefined, 2),
         createTableCell(`Age:`),
         createTableCell(`${data['Age']}`, false, undefined),
       ],
