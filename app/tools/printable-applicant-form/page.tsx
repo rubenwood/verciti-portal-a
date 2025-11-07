@@ -538,6 +538,8 @@ export default function PrintableApplicantFormTool() {
     const [csvUrl, setCsvUrl] = useState("");
     const formRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+    const [emailList, setEmailList] = useState<string[]>();
+
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
@@ -605,6 +607,14 @@ export default function PrintableApplicantFormTool() {
         }
     };
 
+    const emailListChanged = (inputEmails: string) => {
+        if (!inputEmails.trim()) return;
+
+        const emails = inputEmails.split('\n').map(e => e.trim()).filter(e => e);
+        setEmailList(emails);
+        console.log("Parsed Emails:", emails);
+    }
+
     useEffect(() => {
         const init = async () => {
             const user = await checkUser();
@@ -635,8 +645,16 @@ export default function PrintableApplicantFormTool() {
                     />
                     <Button type="button" onClick={handleFetchFromUrl}>
                         Load
-                    </Button>
+                    </Button>                    
                 </div>
+                <br/><br/>
+                <p>Enter list of emails here, line separated</p>
+                <textarea
+                    id="emailList"
+                    className="mt-2 w-full h-24 p-2 border rounded"
+                    value={emailList || ''}
+                    onChange={(e) => emailListChanged(e.target.value)}
+                />
             </div>
 
             <Button className="mt-4" onClick={generateAndDownloadDocx}>
