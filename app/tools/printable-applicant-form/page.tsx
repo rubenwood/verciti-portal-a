@@ -538,7 +538,8 @@ export default function PrintableApplicantFormTool() {
     const [csvUrl, setCsvUrl] = useState("");
     const formRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-    const [emailList, setEmailList] = useState<string[]>();
+    const [emailListText, setEmailListText] = useState("");
+    const [emailList, setEmailList] = useState<string[]>([]);
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -575,7 +576,14 @@ export default function PrintableApplicantFormTool() {
 
     const generateAndDownloadDocx = async () => {
         for (let i = 0; i < entries.length; i++) {
+            console.log(entries[i]);
             const data = entries[i];
+            const emailAddress = data["Email Address"]?.toLowerCase().trim();
+
+            if (emailList.length > 0 && !emailList.includes(emailAddress)) {
+                console.log(`Skipping entry ${i + 1} with email ${emailAddress} not in email list\n${data}`);
+                continue;
+            }
 
             const response = await fetch("/api/pdf/generate", {
                 method: "POST",
@@ -608,12 +616,17 @@ export default function PrintableApplicantFormTool() {
     };
 
     const emailListChanged = (inputEmails: string) => {
-        if (!inputEmails.trim()) return;
+        setEmailListText(inputEmails);
 
-        const emails = inputEmails.split('\n').map(e => e.trim()).filter(e => e);
+        const emails = inputEmails
+            .split("\n")
+            .map(e => e.trim())
+            .filter(e => e);
+
         setEmailList(emails);
+
         console.log("Parsed Emails:", emails);
-    }
+    };
 
     useEffect(() => {
         const init = async () => {
@@ -652,7 +665,8 @@ export default function PrintableApplicantFormTool() {
                 <textarea
                     id="emailList"
                     className="mt-2 w-full h-24 p-2 border rounded"
-                    value={emailList || ''}
+                    wrap="soft"
+                    value={emailListText}
                     onChange={(e) => emailListChanged(e.target.value)}
                 />
             </div>
