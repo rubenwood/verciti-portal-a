@@ -18,6 +18,12 @@ export async function updateMediaPaths(uploaded: { title: string; key: string }[
         const batchId = match[1];
         const sheetId = match[2];
 
+        let synthesiaPath = key;
+        if (synthesiaPath.startsWith("dev/"))
+        { // TODO: test this
+            synthesiaPath = synthesiaPath.replace(/^\/?dev\//, '');
+        }
+
         const { error } = await supabase
             .from('info_texts')
             .update({ media_en_uk: key })
