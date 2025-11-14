@@ -32,9 +32,15 @@ export default function ActivitiesTable(){
     }
 
     const handleEditClick = (activity: Activity) => {
-      setEditingId(activity.id);
+      if (activity.id !== undefined){
+        setEditingId(activity.id);
+      }
+
       setEditForm(activity);
-      setParamsInput(JSON.stringify(activity.params, null, 2));
+      
+      if(activity.params !== undefined){
+        setParamsInput(JSON.stringify(activity.params, null, 2));
+      }
     }
     
       const handleCancel = () => {
