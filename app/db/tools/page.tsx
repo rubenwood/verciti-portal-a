@@ -2,21 +2,24 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { checkUser } from "../general/get-user";
-import { User } from "@supabase/supabase-js";
 import { DataCopyTool } from "./data-copy/data-copy";
+import { getUserProfile } from "../general/utils";
 
 export default function ToolsPage(){
-    const [user, setUser] = useState<User | null>(null);
+    const [role, setRole] = useState<string | null>(null);
 
     useEffect(() => {
         const init = async () => {
             const user = await checkUser();
-            if (user) { setUser(user); }
+            if (user) { 
+                const profile = await getUserProfile(user);
+                setRole(profile?.data?.role || null);
+            }
         };
         init();
     }, []);
 
-    if(!user){ return <p>Not logged in</p> }
+    if(role !== "admin"){ return <p>Not logged in</p> }
         
     return (
         <div className="grid items-center justify-items-center">

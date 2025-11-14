@@ -1,8 +1,22 @@
 import { supabase } from '@/lib/supabase'
-import { createClient, PostgrestError } from '@supabase/supabase-js';
+import { createClient, PostgrestError, User } from '@supabase/supabase-js';
 import confetti from 'canvas-confetti';
 import type { RefObject } from 'react';
 
+
+export async function getUserProfile(user: User) {
+    const { data, error } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('id', user.id);
+
+    if (error) {
+        console.error('Error fetching info texts:', error);
+        throw error;
+    }
+
+    return data[0];
+}
 
 // updates the media_en_uk field to be a filepath from the s3 upload,
 // matching on batch_id and sheet_id extracted from the video file title
