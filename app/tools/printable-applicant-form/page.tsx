@@ -620,7 +620,7 @@ export default function PrintableApplicantFormTool() {
 
         const emails = inputEmails
             .split("\n")
-            .map(e => e.trim())
+            .map(e => e.toLowerCase().trim())
             .filter(e => e);
 
         setEmailList(emails);
