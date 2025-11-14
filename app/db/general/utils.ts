@@ -26,7 +26,7 @@ export async function updateMediaPaths(uploaded: { title: string; key: string }[
 
         const { error } = await supabase
             .from('info_texts')
-            .update({ media_en_uk: key })
+            .update({ media_en_uk: synthesiaPath })
             .eq('batch_id', batchId)
             .eq('sheet_id', sheetId);
 
