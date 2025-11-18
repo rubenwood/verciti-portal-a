@@ -2,8 +2,9 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { checkUser } from "../general/get-user";
-import { DataCopyTool } from "./data-copy/data-copy";
+import { DownloadTablesTool } from "./download-tables/download-tables";
 import { getUserProfile } from "../general/utils";
+import { DataCopyTool } from "./data-copy/data-copy";
 
 export default function ToolsPage(){
     const [role, setRole] = useState<string | null>(null);
@@ -22,6 +23,7 @@ export default function ToolsPage(){
     if(role !== "admin"){ return <p>Not logged in</p> }
         
     return (
+        <>
         <div className="grid items-center justify-items-center">
             <Image
                 className="dark:invert"
@@ -32,7 +34,12 @@ export default function ToolsPage(){
                 priority
             />
             <h1 className="mt-10 text-2xl font-bold">Tools</h1>
-            <DataCopyTool />
-        </div>       
+
+            <br/>
+            {/* <DataCopyTool /> */}
+            <br/>
+            <DownloadTablesTool />
+        </div>
+        </>
     )
 }
