@@ -19,7 +19,7 @@ export async function getUserProfile(user: User) {
 }
 
 
-//
+// gets all the table names in a given schema (and client)
 export async function fetchTablesInSchema(client: SupabaseClient, schema: string) {
     if(!schema) return;
 
@@ -37,7 +37,7 @@ export async function fetchTablesInSchema(client: SupabaseClient, schema: string
 
     return data.map((t: any, i: number) => ({ id: i, name: t.table_name }));
 }
-
+// downloads the specified tables as CSV files
 export async function fetchTablesAsCSV(client: SupabaseClient, tables: string[]) {
     if (!tables || tables.length === 0) return [];
 
@@ -428,7 +428,7 @@ export async function fetchCourses() {
 
     return data as Course[];
 }
-//
+// copies data from a table in one Supabase client to another (assuming identical schemas and table names)
 export async function copyDataBetweenTables(fromClient: SupabaseClient, toClient: SupabaseClient, tables: string[]) {
 
     for (const table of tables) {
