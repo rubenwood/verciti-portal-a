@@ -1,16 +1,6 @@
 "use client"
-import { useEffect, useRef, useState } from 'react'
-import { supabase } from '@/lib/supabase';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-
+import { useState } from 'react'
+import { supabase, supabaseTest } from '@/lib/supabase';
 import {
   ToggleGroup,
   ToggleGroupItem,
@@ -18,6 +8,7 @@ import {
 
 import { fetchTablesInSchema, fetchTablesAsCSV } from '../../general/utils';
 import { Button } from '@/components/ui/button';
+import { SupabaseClient } from '@supabase/supabase-js';
 
 export function CreateTableToggleGroup(props: any){
     return (
@@ -39,46 +30,66 @@ export function CreateTableToggleGroup(props: any){
     )
 }
 
-async function downloadAll(tables: string[]) {
-    console.log("Downloading tables:", tables);
-    const files = await fetchTablesAsCSV(tables);
+async function downloadTables(client: SupabaseClient, tables: string[], suffix: string) {
+    const files = await fetchTablesAsCSV(client, tables);
 
     for (const { table, blob } of files) {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
 
         link.href = url;
-        link.download = `${table}.csv`;
+        link.download = `${table}-${suffix}.csv`;
         link.click();
 
         URL.revokeObjectURL(url);
     }
 }
 
-export function DownloadTablesTool() {  
+export function DownloadTablesTool() {
+    const [selectedClientString, setSelectedClientString] = useState<string>('test');
+    const [selectedClient, setSelectedClient] = useState<SupabaseClient>(supabaseTest);
     const [tables, setTables] = useState([]);
     const [selectedTables, setSelectedTables] = useState<string[]>([]);
 
-    async function fetchTables() {
-        const temp = await fetchTablesInSchema('public');
-        console.log(temp);
-        setTables(temp);
+    function setClient(input: string) {
+        setSelectedClientString(input.toLowerCase());
+        if (input == 'test') {
+            setSelectedClient(supabaseTest);
+        } else {
+            setSelectedClient(supabase);
+        }
+
+        fetchTables();
     }
 
-    useEffect(() => {
-        fetchTables();
-    }, []);
+    async function fetchTables() {
+        const temp = await fetchTablesInSchema(selectedClient, 'public');
+        setTables(temp);
+    }
 
     return (
         <>
         <h1 className='header'>Download Tables as CSV</h1><br/>
         <div>
-            <p>Select which tables you wish to download</p>
+            <p>First select either Test or Live database</p>
+        </div>
+        <br/>
+        <select onChange={(e) => { setClient(e.target.value); }} value={selectedClientString}>
+            <option value="test">Test</option>
+            <option value="live">Live</option>
+        </select>
+        <br/>
+        <div>
+            <p>Then select the tables you wish to download</p>
         </div>
         <br/>
         <CreateTableToggleGroup tables={tables} setSelectedFunc={setSelectedTables} />
         <br/>
-        <Button className='green-shadcn-button' onClick={async () => {downloadAll(selectedTables)} }>Download</Button>
+        <Button 
+            className='green-shadcn-button' 
+            onClick={async () => {downloadTables(selectedClient, selectedTables, selectedClientString)} }>
+            Download
+        </Button>
         </>
     )
 }

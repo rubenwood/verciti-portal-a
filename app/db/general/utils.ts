@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase'
-import { createClient, PostgrestError, User } from '@supabase/supabase-js';
+import { createClient, PostgrestError, SupabaseClient, User } from '@supabase/supabase-js';
 import confetti from 'canvas-confetti';
 import type { RefObject } from 'react';
 
@@ -20,11 +20,10 @@ export async function getUserProfile(user: User) {
 
 
 //
-export async function fetchTablesInSchema(schema: string) {
+export async function fetchTablesInSchema(client: SupabaseClient, schema: string) {
     if(!schema) return;
 
-    console.log("schema" + schema);
-    const { data, error } = await supabase.rpc('list_tables', { schema_name: schema.toLowerCase() });
+    const { data, error } = await client.rpc('list_tables', { schema_name: schema.toLowerCase() });
 
     if (error) {
         console.error('Error fetching tables:', error);
@@ -36,17 +35,16 @@ export async function fetchTablesInSchema(schema: string) {
         return;
     }
 
-    console.log('Tables:', data);
     return data.map((t: any, i: number) => ({ id: i, name: t.table_name }));
 }
 
-export async function fetchTablesAsCSV(tables: string[]) {
+export async function fetchTablesAsCSV(client: SupabaseClient, tables: string[]) {
     if (!tables || tables.length === 0) return [];
 
     const results: { table: string; blob: Blob }[] = [];
 
     for (const table of tables) {
-        const { data, error } = await supabase
+        const { data, error } = await client
             .from(table)
             .select('*')
             .csv();
