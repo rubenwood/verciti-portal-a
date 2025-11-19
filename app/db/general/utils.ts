@@ -429,48 +429,30 @@ export async function fetchCourses() {
     return data as Course[];
 }
 //
-export async function copyDataBetweenTables(
-    rowCount: number,
-    randomize: boolean,
-    fromSchema: string, 
-    toSchema: string,
-    fromTable: string, 
-    toTable: string) {
+export async function copyDataBetweenTables(fromClient: SupabaseClient, toClient: SupabaseClient, tables: string[]) {
 
-    const fromClient = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        { db: { schema: fromSchema } })
-    const toClient = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        { db: { schema: toSchema } })
+    for (const table of tables) {
+        const { data, error } = await fromClient
+            .from(table)
+            .select('*');
 
-    const { data: rows, error: selectError } = await fromClient
-    .from(fromTable)
-    .select('*')
-    .limit(rowCount);
+        if (error) {
+            console.error(`Error fetching data from table "${table}":`, error);
+            continue; // skip this table but continue processing others
+        }
+        if (data && data.length > 0) {
+            const { error: insertError } = await toClient
+                .from(table)
+                .insert(data);
 
-    if (selectError) {
-        console.error('Error fetching rows:', selectError);
-        throw selectError;
+            if (insertError) {
+                console.error(`Error inserting data into table "${table}":`, insertError);
+                continue; // skip this table but continue processing others
+            }
+
+            console.log(`Successfully copied ${data.length} records to table "${table}"`);
+        }
     }
-
-    if (!rows || rows.length === 0) {
-        console.warn('No rows found to copy.');
-        return;
-    }
-
-    const { error: insertError } = await toClient
-    .from(toTable)
-    .upsert(rows);
-
-    if (insertError) {
-        console.error('Error inserting rows:', insertError);
-        throw insertError;
-    }
-
-    console.log(`Copied ${rows.length} rows from ${fromSchema}.${fromTable} → ${toSchema}.${toTable}`);
 }
 
 

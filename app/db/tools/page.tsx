@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { checkUser } from "../general/get-user";
 import { DownloadTablesTool } from "./download-tables/download-tables";
 import { getUserProfile } from "../general/utils";
-import { DataCopyTool } from "./data-copy/data-copy";
 
 export default function ToolsPage(){
     const [role, setRole] = useState<string | null>(null);

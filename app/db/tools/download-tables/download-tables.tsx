@@ -6,7 +6,7 @@ import {
   ToggleGroupItem,
 } from "@/components/ui/toggle-group"
 
-import { fetchTablesInSchema, fetchTablesAsCSV } from '../../general/utils';
+import { fetchTablesInSchema, fetchTablesAsCSV, copyDataBetweenTables } from '../../general/utils';
 import { Button } from '@/components/ui/button';
 import { SupabaseClient } from '@supabase/supabase-js';
 
@@ -43,6 +43,17 @@ async function downloadTables(client: SupabaseClient, tables: string[], suffix: 
 
         URL.revokeObjectURL(url);
     }
+}
+
+
+async function copyData(fromClient: SupabaseClient, tables: string[], clientString: string){
+    let toClient; 
+    if(clientString === 'test'){
+        toClient = supabase;
+    } else{
+        toClient = supabaseTest;
+    }
+    copyDataBetweenTables(fromClient, toClient, tables);
 }
 
 export function DownloadTablesTool() {
@@ -85,10 +96,11 @@ export function DownloadTablesTool() {
         <br/>
         <CreateTableToggleGroup tables={tables} setSelectedFunc={setSelectedTables} />
         <br/>
+        <Button onClick={async ()=> { copyData(selectedClient, selectedTables, selectedClientString) } } className='green-shadcn-button mb-4'>Copy data </Button>
         <Button 
             className='green-shadcn-button' 
             onClick={async () => {downloadTables(selectedClient, selectedTables, selectedClientString)} }>
-            Download
+            Download CSV
         </Button>
         </>
     )
