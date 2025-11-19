@@ -21,24 +21,53 @@ export async function getUserProfile(user: User) {
 
 //
 export async function fetchTablesInSchema(schema: string) {
-        if(!schema) return;
+    if(!schema) return;
 
-        console.log("schema" + schema);
-        const { data, error } = await supabase.rpc('list_tables', { schema_name: schema.toLowerCase() });
+    console.log("schema" + schema);
+    const { data, error } = await supabase.rpc('list_tables', { schema_name: schema.toLowerCase() });
+
+    if (error) {
+        console.error('Error fetching tables:', error);
+        return;
+    }
+
+    if (!data) {
+        console.log('No tables returned');
+        return;
+    }
+
+    console.log('Tables:', data);
+    return data.map((t: any, i: number) => ({ id: i, name: t.table_name }));
+}
+
+export async function fetchTablesAsCSV(tables: string[]) {
+    if (!tables || tables.length === 0) return [];
+
+    const results: { table: string; blob: Blob }[] = [];
+
+    for (const table of tables) {
+        const { data, error } = await supabase
+            .from(table)
+            .select('*')
+            .csv();
 
         if (error) {
-            console.error('Error fetching tables:', error);
-            return;
+            console.error(`Error fetching data from table "${table}":`, error);
+            continue; // skip this table but continue processing others
         }
 
-        if (!data) {
-            console.log('No tables returned');
-            return;
-        }
+        if (data) {
+            const blob = new Blob([data], {
+                type: 'text/csv;charset=utf-8;',
+            });
 
-        console.log('Tables:', data);
-        return data.map((t: any, i: number) => ({ id: i, name: t.table_name }));
+            results.push({ table, blob });
+        }
     }
+
+    return results;
+}
+
 
 // updates the media_en_uk field to be a filepath from the s3 upload,
 // matching on batch_id and sheet_id extracted from the video file title
