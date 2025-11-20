@@ -1,7 +1,7 @@
 "use client"
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase'
+import { supabase, supabaseTest } from '@/lib/supabase'
 
 export default function Login(props: any){
     const router = useRouter();
@@ -23,7 +23,26 @@ export default function Login(props: any){
             if(props.setUserFunc){ props.setUserFunc(data.user); }
             if(props.path){ router.push(props.path); }
         }
+
+        //handleLoginTest();
     };
+
+    const handleLoginTest = async () => {
+        const { data, error } = await supabaseTest.auth.signInWithPassword({
+            email,
+            password,
+        });
+
+        if (error) {
+            setError(error.message);
+            console.error('Login error (test):', error.message);
+        } else {
+            console.log('Login successful (test):', data);
+            if(props.setTestUserFunc){ props.setTestUserFunc(data.user); }
+            if(props.path){ router.push(props.path); }
+        }
+    };
+
 
     const handleLoginWithGoogle = async () => {
         const { data, error } = await supabase.auth.signInWithOAuth({
