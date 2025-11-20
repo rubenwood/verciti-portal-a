@@ -1,5 +1,5 @@
 'use client';
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -551,9 +551,36 @@ const PrintableApplication = ({data}: any) => (
     </div>
 );
 
+const CohortSelect = (props: any) =>{
+  const uniqueCohorts = useMemo<string[]>(() => {
+    const cohorts = (props.entries || [])
+      .map((entry: any) => String(entry?.["Cohort"] ?? ""))
+      .filter((cohort: string) => cohort !== "");
+    return Array.from(new Set(cohorts));
+  }, [props.entries]);
+
+  return (
+    <select
+      value={props.selectedCohort}
+      onChange={(e) => props.setSelectedCohort(e.target.value)}
+      className="w-full p-2 border rounded"
+    >
+      <option value="" disabled>
+        Select a cohort
+      </option>
+      {uniqueCohorts.map((cohort, index) => (
+        <option key={index} value={String(cohort)}>
+          {`Cohort ${String(cohort)}`}
+        </option>
+      ))}
+    </select>
+  );
+}
+
 export default function PrintableApplicantFormTool() {
     const [user, setUser] = useState<User | null>(null);
     const [entries, setEntries] = useState<any[]>([]);
+    const [selectedCohort, setSelectedCohort] = useState("");
     const [csvUrl, setCsvUrl] = useState("");
     const formRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -596,8 +623,9 @@ export default function PrintableApplicantFormTool() {
 
     const generateAndDownloadDocx = async () => {
         for (let i = 0; i < entries.length; i++) {
-            console.log(entries[i]);
             const data = entries[i];
+            if(data['Cohort'] !== selectedCohort){ continue; }
+            console.log(data);
             const emailAddress = data["Email Address"]?.toLowerCase().trim();
 
             if (emailList.length > 0 && !emailList.includes(emailAddress)) {
@@ -635,18 +663,6 @@ export default function PrintableApplicantFormTool() {
         }
     };
 
-    const emailListChanged = (inputEmails: string) => {
-        setEmailListText(inputEmails);
-
-        const emails = inputEmails
-            .split("\n")
-            .map(e => e.toLowerCase().trim())
-            .filter(e => e);
-
-        setEmailList(emails);
-
-        console.log("Parsed Emails:", emails);
-    };
 
     useEffect(() => {
         const init = async () => {
@@ -663,16 +679,11 @@ export default function PrintableApplicantFormTool() {
             <div className="grid w-full max-w-sm items-center gap-3">
                 <label>Upload CSV File</label>
                 <Input type="file" accept=".csv" onChange={handleFileUpload} />
-
-                <br/><br/>
-                <p>Enter list of emails here, line separated</p>
-                <textarea
-                    id="emailList"
-                    className="mt-2 w-full h-24 p-2 border rounded"
-                    wrap="soft"
-                    value={emailListText}
-                    onChange={(e) => emailListChanged(e.target.value)}
-                />
+                <br/>
+                <p>Select a cohort from the list below</p>
+                <CohortSelect entries={entries} selectedCohort={selectedCohort} setSelectedCohort={setSelectedCohort} />
+                <br/>
+                <p>You have selected <b>cohort {selectedCohort}</b> for printing</p>
             </div>
 
             <Button className="green-shadcn-button mt-4" onClick={generateAndDownloadDocx}>
