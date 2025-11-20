@@ -14,17 +14,35 @@ import {
 } from 'docx';
 
 const formatUKDate = (dateString: string) => {
-  const date = new Date(dateString);
+  const [datePart] = dateString.split(" ");
+  const [day, month, year] = datePart.split("/").map(Number);
 
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
-
-  return `${day}/${month}/${year}`;
+  return `${String(day).padStart(2, "0")}/${String(month).padStart(2, "0")}/${year}`;
 };
 const normalize = (str: string) => str?.trim().toLowerCase();
-const getMarker = (userInput: string, option: string) => {
-    return normalize(userInput) === normalize(option) ? "☒" : "☐";
+const getMarker = (userInput: string, options: string | string[]) => {
+    const optionArray = Array.isArray(options) ? options : [options];
+    const isMatch = optionArray.some(option => normalize(userInput) === normalize(option));
+
+    return isMatch ? "☒" : "☐";
+};
+const getMultiMarker = (userInput: string, option: string) => {
+    if (!userInput) return "☐";
+
+    let selections: string[] = [];
+
+    // Try to parse as JSON array
+    try {
+        const parsed = JSON.parse(userInput);
+        if (Array.isArray(parsed)) {
+            selections = parsed.map(s => String(s).trim());
+        }
+    } catch {
+        // If JSON.parse fails, assume semicolon-delimited string
+        selections = userInput.split(";").map(s => s.trim()).filter(Boolean);
+    }
+
+    return selections.includes(option) ? "☒" : "☐";
 };
 
 function createText(text: string, bold = false, size = 24) {
@@ -545,7 +563,7 @@ function EmploymentTable(data: any) : Table {
   const col1Lines = [
     `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[0])} ${col1Texts[0]}`,
     `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[1])} ${col1Texts[1]}`,
-    `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[2])} ${col1Texts[2]}`,
+    `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], [col1Texts[2], "Employed - zero-hour contract"])} ${col1Texts[2]}`,
     `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[3])} ${col1Texts[3]}`,
     `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[4])} ${col1Texts[4]}`,
     `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[5])} ${col1Texts[5]}`,
@@ -553,8 +571,8 @@ function EmploymentTable(data: any) : Table {
     `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[7])} ${col1Texts[7]}`,
     `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[8])} ${col1Texts[8]}`,
     `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[9])} ${col1Texts[9]}`,
-    `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[10])} ${col1Texts[10]}`,
-    `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[11])} ${col1Texts[11]}`,
+    `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], [col1Texts[10], "Not working - long term sickness"])} ${col1Texts[10]}`,
+    `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], [col1Texts[11], "Not working - caring responsibilities"])} ${col1Texts[11]}`,
     `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[12])} ${col1Texts[12]}`,
     `${getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], col1Texts[13])} ${col1Texts[13]}`
   ];
@@ -617,14 +635,14 @@ function DisabilityTable(data: any) : Table {
       }),
       new TableRow({
         children: [
-            createTableCell(`Do you consider that you have a learning difficulty, disability or long term health condition?\nYes ${getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "Yes")}	*No ${getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "No")}	Prefer not to say ${getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "Prefer Not to Say")}`, false, undefined, 3)
+            createTableCell(`Do you consider that you have a learning difficulty, disability or long term health condition?\nYes ${getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "Yes")}	*No ${getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "No")}	Prefer not to say ${getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], ["Prefer Not to Say", "Prefer not to say"])}`, false, undefined, 3)
         ]
     }),
     new TableRow({
       children: [
-        createTableCell(`${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Allergy;")} Allergy\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Asperger’s Syndrome;")} Asperger’s Syndrome\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Asthma;")} Asthma\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Autism Spectrum Condition;")} Autism Spectrum Condition\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Cystic Fibrosis;")} Cystic Fibrosis\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Diabetes;")} Diabetes\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Disability Affecting Mobility;")} Disability Affecting Mobility\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Dyscalculia;")} Dyscalculia\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Dyslexia;")} Dyslexia\n`),
-        createTableCell(`${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Epilepsy;")} Epilepsy\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Hearing Impairment;")} Hearing Impairment\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Diagnosed mental health condition;")} Diagnosed mental health condition\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Moderate Learning Difficulty;")} Moderate Learning Difficulty\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Physical Disability;")} Physical Disability\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Other Specific Learning Difficulty e.g. Dyspraxia;")} Other Specific Learning Difficulty e.g. Dyspraxia\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Profound/Complex Disabilities;")} Profound/Complex Disabilities\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Severe Learning Difficulty;")} Severe Learning Difficulty\n`),
-        createTableCell(`${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Social, Emotional & Behavioural Difficulties;")} Social, Emotional & Behavioural Difficulties\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Speech, Language and Communication needs;")} Speech, Language and Communication needs\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Temporary Disability after Illness or accident;")} Temporary Disability after Illness or accident\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Visual Impairment-excluding glasses/contact lenses;")} Visual Impairment-excluding glasses/contact lenses\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Prefer not to say;")} Prefer not to say\n${getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Are you a wheelchair user?;")} Are you a wheelchair user?\n`)
+        createTableCell(`${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Allergy")} Allergy\n${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Asperger’s Syndrome")} Asperger’s Syndrome\n${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Asthma")} Asthma\n${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Autism Spectrum Condition")} Autism Spectrum Condition\n${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Cystic Fibrosis")} Cystic Fibrosis\n${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Diabetes")} Diabetes\n${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Disability Affecting Mobility")} Disability Affecting Mobility\n${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Dyscalculia")} Dyscalculia\n${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Dyslexia")} Dyslexia\n`),
+        createTableCell(`${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Epilepsy")} Epilepsy\n${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Hearing Impairment")} Hearing Impairment\n${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Diagnosed mental health condition")} Diagnosed mental health condition\n${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Moderate Learning Difficulty")} Moderate Learning Difficulty\n${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Physical Disability")} Physical Disability\n${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Other Specific Learning Difficulty e.g. Dyspraxia")} Other Specific Learning Difficulty e.g. Dyspraxia\n${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Profound/Complex Disabilities")} Profound/Complex Disabilities\n${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Severe Learning Difficulty")} Severe Learning Difficulty\n`),
+        createTableCell(`${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Social, Emotional & Behavioural Difficulties")} Social, Emotional & Behavioural Difficulties\n${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Speech, Language and Communication needs")} Speech, Language and Communication needs\n${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Temporary Disability after Illness or accident")} Temporary Disability after Illness or accident\n${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Visual Impairment-excluding glasses/contact lenses")} Visual Impairment-excluding glasses/contact lenses\n${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Prefer not to say")} Prefer not to say\n${getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Are you a wheelchair user?")} Are you a wheelchair user?\n`)
       ]
     }),
     new TableRow({
@@ -843,7 +861,7 @@ function constructWordDoc(data: any) {
 export async function POST(req: NextRequest) {
   const { data } = await req.json();
 
-  if (!data) {
+  if (!data || data['Completion time'] === "") {
     return new Response(JSON.stringify({ error: 'Missing form data' }), { status: 400 });
   }
 

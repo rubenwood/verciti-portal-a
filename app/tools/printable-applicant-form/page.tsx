@@ -13,18 +13,36 @@ import { checkUser } from "../../db/general/get-user"
 import Login from '../../login/login-component'
 
 const formatUKDate = (dateString: string) => {
-  const date = new Date(dateString);
+  const [datePart] = dateString.split(" ");
+  const [day, month, year] = datePart.split("/").map(Number);
 
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
-
-  return `${day}/${month}/${year}`;
+  return `${String(day).padStart(2, "0")}/${String(month).padStart(2, "0")}/${year}`;
 };
 
 const normalize = (str: string) => str?.trim().toLowerCase();
-const getMarker = (userInput: string, option: string) => {
-    return normalize(userInput) === normalize(option) ? "☒" : "☐";
+const getMarker = (userInput: string, options: string | string[]) => {
+    const optionArray = Array.isArray(options) ? options : [options];
+    const isMatch = optionArray.some(option => normalize(userInput) === normalize(option));
+
+    return isMatch ? "☒" : "☐";
+};
+const getMultiMarker = (userInput: string, option: string) => {
+    if (!userInput) return "☐";
+
+    let selections: string[] = [];
+
+    // Try to parse as JSON array
+    try {
+        const parsed = JSON.parse(userInput);
+        if (Array.isArray(parsed)) {
+            selections = parsed.map(s => String(s).trim());
+        }
+    } catch {
+        // If JSON.parse fails, assume semicolon-delimited string
+        selections = userInput.split(";").map(s => s.trim()).filter(Boolean);
+    }
+
+    return selections.includes(option) ? "☒" : "☐";
 };
 
 const ApplicantInfoSection = ({ data }: any) => (
@@ -150,7 +168,8 @@ const ApplicantEthnicSection = ({ data }: any) => (
                         {getMarker(data["Do you have a criminal conviction (excluding minor motoring offences)?"], "No")} No
                     </td>
                 </tr>
-                <br/>
+                {/* <br/> */}
+                <tr style={{ height: 10 }}></tr>
                 <tr>
                     <td style={{ padding: '5px', paddingBottom:'10px' }}>
                         Are you currently caring for children or other adults? - please tick ONE box
@@ -288,7 +307,7 @@ const ApplicantEmploymentSection = ({ data }: any) => (
                     <td style={{ width:"33%", border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>
                         {getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], "in full-time employment")} in full-time employment<br/>
                         {getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], "in part-time employment")} in part-time employment<br/>
-                        {getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], "Employed – zero-hour contract")} Employed – zero-hour contract<br/>
+                        {getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], ["Employed – zero-hour contract", "Employed - zero-hour contract"])} Employed – zero-hour contract<br/>
                         {getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], "Self-employed")} Self-employed<br/>
                         {getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], "Unemployed less than 6 months")} Unemployed less than 6 months<br/>
                         {getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], "Unemployed for 6-11 months")} Unemployed for 6-11 months<br/>
@@ -296,8 +315,8 @@ const ApplicantEmploymentSection = ({ data }: any) => (
                         {getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], "Unemployed for 24-35 months")} Unemployed for 24-35 months<br/>
                         {getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], "Unemployed for 36 months or over")} Unemployed for 36 months or over<br/>
                         {getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], "In full-time education or training")} In full-time education or training<br/>
-                        {getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], "Not working – long term sickness")} Not working – long term sickness<br/>
-                        {getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], "Not working – caring responsibilities")} Not working – caring responsibilities<br/>
+                        {getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], ["Not working – long term sickness", "Not working - long term sickness"])} Not working – long term sickness<br/>
+                        {getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], ["Not working – caring responsibilities", "Not working - caring responsibilities"])} Not working – caring responsibilities<br/>
                         {getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], "Prisoner")} Prisoner<br/>
                         {getMarker(data["On the day prior to this course, what is your employment status? (please select one)"], "Retired")} Retired<br/>
                     </td>
@@ -360,38 +379,38 @@ const ApplicantDisabilitySection = ({ data }: any) => (
                     <td colSpan={3} style={{ border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>
                         Do you consider that you have a learning difficulty, disability or long term health condition?
                         <br />
-                        Yes {getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition? "], "Yes")}	*No {getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "No")}	Prefer not to say {getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "Prefer Not to Say")}
+                        Yes {getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "Yes")}	*No {getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], "No")}	Prefer not to say {getMarker(data["Do you consider that you have a learning difficulty, disability or long term health condition?"], ["Prefer Not to Say", "Prefer not to say"])}
                     </td>
                 </tr>
                 <tr>
                     <td style={{ border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Allergy;")} Allergy<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Asperger’s Syndrome;")} Asperger’s Syndrome<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Asthma;")} Asthma<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Autism Spectrum Condition;")} Autism Spectrum Condition<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Cystic Fibrosis;")} Cystic Fibrosis<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Diabetes;")} Diabetes<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Disability Affecting Mobility;")} Disability Affecting Mobility<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Dyscalculia;")} Dyscalculia<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Dyslexia;")} Dyslexia<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Allergy")} Allergy<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Asperger’s Syndrome")} Asperger’s Syndrome<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Asthma")} Asthma<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Autism Spectrum Condition")} Autism Spectrum Condition<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Cystic Fibrosis")} Cystic Fibrosis<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Diabetes")} Diabetes<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Disability Affecting Mobility")} Disability Affecting Mobility<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Dyscalculia")} Dyscalculia<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Dyslexia")} Dyslexia<br/>
                     </td>
                     <td style={{ border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Epilepsy;")} Epilepsy<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Hearing Impairment;")} Hearing Impairment<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Diagnosed mental health condition;")} Diagnosed mental health condition<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Moderate Learning Difficulty;")} Moderate Learning Difficulty<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Physical Disability;")} Physical Disability<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Other Specific Learning Difficulty e.g. Dyspraxia;")} Other Specific Learning Difficulty e.g. Dyspraxia<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Profound/Complex Disabilities;")} Profound/Complex Disabilities<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Severe Learning Difficulty;")} Severe Learning Difficulty<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Epilepsy")} Epilepsy<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Hearing Impairment")} Hearing Impairment<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Diagnosed mental health condition")} Diagnosed mental health condition<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Moderate Learning Difficulty")} Moderate Learning Difficulty<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Physical Disability")} Physical Disability<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Other Specific Learning Difficulty e.g. Dyspraxia")} Other Specific Learning Difficulty e.g. Dyspraxia<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Profound/Complex Disabilities")} Profound/Complex Disabilities<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Severe Learning Difficulty")} Severe Learning Difficulty<br/>
                     </td>
                     <td style={{ border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Social, Emotional & Behavioural Difficulties;")} Social, Emotional & Behavioural Difficulties<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Speech, Language and Communication needs;")} Speech, Language and Communication needs<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Temporary Disability after Illness or accident;")} Temporary Disability after Illness or accident<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Visual Impairment-excluding glasses/contact lenses;")} Visual Impairment-excluding glasses/contact lenses<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Prefer not to say;")} Prefer not to say<br/>
-                        {getMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Are you a wheelchair user?;")} Are you a wheelchair user?<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Social, Emotional & Behavioural Difficulties")} Social, Emotional & Behavioural Difficulties<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Speech, Language and Communication needs")} Speech, Language and Communication needs<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Temporary Disability after Illness or accident")} Temporary Disability after Illness or accident<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Visual Impairment-excluding glasses/contact lenses")} Visual Impairment-excluding glasses/contact lenses<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Prefer not to say")} Prefer not to say<br/>
+                        {getMultiMarker(data["If yes to previous question, please list the learning difficulty, disability or long term health condition you have (Please select all that apply)"], "Are you a wheelchair user?")} Are you a wheelchair user?<br/>
                     </td>
                 </tr>
                 <tr style={{ border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>
@@ -549,6 +568,7 @@ export default function PrintableApplicantFormTool() {
             header: true,
             skipEmptyLines: true,
             complete: (results) => {
+                console.log("Parsed Results:", results.data);
                 setEntries(results.data);
             },
         });
@@ -633,11 +653,7 @@ export default function PrintableApplicantFormTool() {
             const user = await checkUser();
             if (user) { setUser(user); }
         };
-        init();
-
-        if (entries.length > 0) {
-            console.log("Parsed CSV entries:", entries);
-        }
+        init();        
     }, [entries, user]);
 
     if(!user){ return <Login setUserFunc={setUser} user={user} /> }
@@ -648,18 +664,6 @@ export default function PrintableApplicantFormTool() {
                 <label>Upload CSV File</label>
                 <Input type="file" accept=".csv" onChange={handleFileUpload} />
 
-                <label>Or Paste CSV URL</label>
-                <div className="flex gap-2">
-                    <Input
-                        type="url"
-                        placeholder="https://example.com/data.csv"
-                        value={csvUrl}
-                        onChange={(e) => setCsvUrl(e.target.value)}
-                    />
-                    <Button type="button" onClick={handleFetchFromUrl}>
-                        Load
-                    </Button>                    
-                </div>
                 <br/><br/>
                 <p>Enter list of emails here, line separated</p>
                 <textarea
@@ -671,12 +675,13 @@ export default function PrintableApplicantFormTool() {
                 />
             </div>
 
-            <Button className="mt-4" onClick={generateAndDownloadDocx}>
+            <Button className="green-shadcn-button mt-4" onClick={generateAndDownloadDocx}>
                 Create DOCX Files
             </Button>
 
             {entries.map((entry, index) => (
-                <div
+                entry["Completion time"] != "" && entry["Completion time"] != null ?
+                (<div
                     key={index}
                     className="printable-form my-4 p-4 border rounded"
                     style={{
@@ -689,7 +694,7 @@ export default function PrintableApplicantFormTool() {
                     }}
                 >
                     <PrintableApplication data={entry} index={index} />
-                </div>
+                </div>) : null
             ))}
         </>
     );
