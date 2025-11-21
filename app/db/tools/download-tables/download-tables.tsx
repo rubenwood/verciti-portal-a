@@ -1,12 +1,11 @@
 "use client"
-import { useState } from 'react'
-import { supabase, supabaseTest } from '@/lib/supabase';
+import { useEffect, useState } from 'react';
 import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/ui/toggle-group"
 
-import { fetchTablesInSchema, fetchTablesAsCSV, copyDataBetweenTables } from '../../general/utils';
+import { fetchTablesAsCSV } from '../../general/utils';
 import { Button } from '@/components/ui/button';
 import { SupabaseClient } from '@supabase/supabase-js';
 
@@ -46,37 +45,42 @@ async function downloadTables(client: SupabaseClient, tables: string[], suffix: 
 }
 
 
-async function copyData(fromClient: SupabaseClient, tables: string[], clientString: string){
-    let toClient; 
-    if(clientString === 'test'){
-        toClient = supabase;
-    } else{
-        toClient = supabaseTest;
-    }
-    copyDataBetweenTables(fromClient, toClient, tables);
+async function copyData(selectedClientString: string, tables: string[]){
+    let toClientString = selectedClientString === "test" ? "live" : "test";
+    await fetch("/api/db/copy-data", {
+        method: "POST",
+        body: JSON.stringify({
+            from: selectedClientString,
+            to: toClientString,
+            tables: tables
+        })
+    });
 }
+
+
+
 
 export function DownloadTablesTool() {
     const [selectedClientString, setSelectedClientString] = useState<string>('test');
-    const [selectedClient, setSelectedClient] = useState<SupabaseClient>(supabaseTest);
     const [tables, setTables] = useState([]);
     const [selectedTables, setSelectedTables] = useState<string[]>([]);
 
-    function setClient(input: string) {
-        setSelectedClientString(input.toLowerCase());
-        if (input == 'test') {
-            setSelectedClient(supabaseTest);
-        } else {
-            setSelectedClient(supabase);
-        }
-
-        fetchTables();
-    }
-
     async function fetchTables() {
-        const temp = await fetchTablesInSchema(selectedClient, 'public');
-        setTables(temp);
+        const res = await fetch("/api/db/get-tables", {
+            method: "POST",
+            body: JSON.stringify({
+                branch: selectedClientString,
+                schema: "public",
+            }),
+        });
+
+        const data = await res.json();
+        setTables(data);
     }
+
+    useEffect(() => {
+        fetchTables();
+    }, [selectedClientString]);
 
     return (
         <>
@@ -85,7 +89,7 @@ export function DownloadTablesTool() {
             <p>First select either Test or Live database</p>
         </div>
         <br/>
-        <select onChange={(e) => { setClient(e.target.value); }} value={selectedClientString}>
+        <select onChange={(e) => { setSelectedClientString(e.target.value); }} value={selectedClientString}>
             <option value="test">Test</option>
             <option value="live">Live</option>
         </select>
@@ -96,12 +100,17 @@ export function DownloadTablesTool() {
         <br/>
         <CreateTableToggleGroup tables={tables} setSelectedFunc={setSelectedTables} />
         <br/>
-        <Button onClick={async ()=> { copyData(selectedClient, selectedTables, selectedClientString) } } className='green-shadcn-button mb-4'>Copy data </Button>
         <Button 
+            onClick={async ()=> { copyData(selectedClientString, selectedTables) } } 
+            className='green-shadcn-button mb-4'>
+            Copy data 
+        </Button>
+        <br/>
+        {/* <Button 
             className='green-shadcn-button' 
             onClick={async () => {downloadTables(selectedClient, selectedTables, selectedClientString)} }>
             Download CSV
-        </Button>
+        </Button> */}
         </>
     )
 }
