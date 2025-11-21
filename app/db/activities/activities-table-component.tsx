@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { supabasePublicMain } from '@/lib/supabase'
 
 export default function ActivitiesTable(){
     const [activities, setActivities] = useState<Activity[]>([]);
@@ -10,7 +10,7 @@ export default function ActivitiesTable(){
     const [paramsInput, setParamsInput] = useState<string>('');
 
     const addActivity = async () => {
-        const { data, error } = await supabase.from('activities').insert([
+        const { data, error } = await supabasePublicMain.from('activities').insert([
             {
                 external_title: 'New Activity',
                 internal_title: 'New Activity',
@@ -69,7 +69,7 @@ export default function ActivitiesTable(){
           params: parsedParams,
         };
 
-        const { error } = await supabase
+        const { error } = await supabasePublicMain
           .from('activities')
           .update(updatedData)
           .eq('id', editingId);
@@ -90,7 +90,7 @@ export default function ActivitiesTable(){
     useEffect(() => {
         const fetchActivities = async () => {
             setLoading(true);
-            const { data, error } = await supabase.from('activities').select('*');
+            const { data, error } = await supabasePublicMain.from('activities').select('*');
 
             if (error) {
                 console.error('Error fetching activities:', error);

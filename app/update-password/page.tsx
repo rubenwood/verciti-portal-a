@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { supabasePublicMain } from "@/lib/supabase";
 import Image from 'next/image'
 
 export default function UpdatePasswordPage() {
@@ -8,7 +8,7 @@ export default function UpdatePasswordPage() {
   const [status, setStatus] = useState("");
 
   const updatePassword = async () => {
-    const { error } = await supabase.auth.updateUser({ password });
+    const { error } = await supabasePublicMain.auth.updateUser({ password });
 
     if (error) {
       setStatus("Error updating password.");

@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { supabasePublicMain } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
 import { checkUser } from '../general/get-user' // TODO: move check user up a level
 import CAJJoiner from './caj-joiner-component'
@@ -26,7 +26,7 @@ export default function CourseActivityJoinTable(){
         const fetchCAJs = async () => {
             setLoading(true);
             
-            const { data, error } = await supabase
+            const { data, error } = await supabasePublicMain
                 .from('courses_activities_join')
                 .select(`
                     id,
@@ -62,7 +62,7 @@ export default function CourseActivityJoinTable(){
         fetchCAJs();
 
         const fetchCourses = async () => {
-            const { data, error } = await supabase.from('courses').select('*');
+            const { data, error } = await supabasePublicMain.from('courses').select('*');
             if(data){
                 setCourses(
                     data.map((course: any) => ({
@@ -72,7 +72,7 @@ export default function CourseActivityJoinTable(){
             }
         }
         const fetchActivities = async () => {
-            const { data, error } = await supabase.from('activities').select('*');
+            const { data, error } = await supabasePublicMain.from('activities').select('*');
             if(data){
                 setActivities(
                     data.map((activity: any) => ({

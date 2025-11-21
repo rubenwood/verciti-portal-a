@@ -1,11 +1,11 @@
-import { supabase } from '@/lib/supabase'
+import { supabasePublicMain } from '@/lib/supabase'
 import { createClient, PostgrestError, SupabaseClient, User } from '@supabase/supabase-js';
 import confetti from 'canvas-confetti';
 import type { RefObject } from 'react';
 
 
 export async function getUserProfile(user: User) {
-    const { data, error } = await supabase
+    const { data, error } = await supabasePublicMain
         .from('user_profiles')
         .select('*')
         .eq('id', user.id);
@@ -87,7 +87,7 @@ export async function updateMediaPaths(uploaded: { title: string; key: string }[
             synthesiaPath = synthesiaPath.replace(/^\/?dev\//, '');
         }
 
-        const { error } = await supabase
+        const { error } = await supabasePublicMain
             .from('info_texts')
             .update({ media_en_uk: synthesiaPath })
             .eq('batch_id', batchId)
@@ -102,7 +102,7 @@ export async function updateMediaPaths(uploaded: { title: string; key: string }[
 }
 
 export async function getInfoTextsByBatchId(batchId: string) {
-    const { data, error } = await supabase
+    const { data, error } = await supabasePublicMain
         .from('info_texts')
         .select('*')
         .eq('batch_id', batchId);
@@ -116,7 +116,7 @@ export async function getInfoTextsByBatchId(batchId: string) {
 }
 // Delete by batch id from any table
 export async function deleteByBatchId(batchId: string, tableName: string) {
-    const { data, error } = await supabase
+    const { data, error } = await supabasePublicMain
         .from(tableName)
         .delete()
         .eq('batch_id', batchId)
@@ -131,7 +131,7 @@ export async function deleteByBatchId(batchId: string, tableName: string) {
 }
 
 export async function fetchQuizStagesByBatchId(batchId: string): Promise<StageWithQuestions[] | PostgrestError> {
-    const { data: stages, error: stagesError } = await supabase
+    const { data: stages, error: stagesError } = await supabasePublicMain
         .from('stages')
         .select('*')
         .eq('batch_id', batchId)
@@ -153,7 +153,7 @@ export async function fetchQuizStagesByBatchId(batchId: string): Promise<StageWi
     
     const uniqueQuestionIds = Array.from(new Set(questionsIds));
 
-    const { data: questions, error: questionsError } = await supabase
+    const { data: questions, error: questionsError } = await supabasePublicMain
         .from('quiz_questions')
         .select('*')
         .in('id', uniqueQuestionIds);
@@ -185,7 +185,7 @@ export async function fetchQuizStagesByBatchId(batchId: string): Promise<StageWi
 }
 //
 export async function fetchAllInfoText() {
-    const { data, error } = await supabase.from('info_texts').select('*');
+    const { data, error } = await supabasePublicMain.from('info_texts').select('*');
 
     if (error) {
         console.error('Error fetching info texts:', error);
@@ -195,7 +195,7 @@ export async function fetchAllInfoText() {
     return data as InfoText[];
 }
 export async function fetchInfoTextByBatchId(batchId: string) {
-    const { data, error } = await supabase.from('info_texts').select('*').eq('batch_id', batchId);
+    const { data, error } = await supabasePublicMain.from('info_texts').select('*').eq('batch_id', batchId);
 
     if (error) {
         console.error('Error fetching info text (by id):', error);
@@ -205,7 +205,7 @@ export async function fetchInfoTextByBatchId(batchId: string) {
     return data as InfoText[];
 }
 export async function fetchInfoTextById(infoTextId: string) {
-    const { data, error } = await supabase.from('info_texts').select('*').eq('id', infoTextId).single();
+    const { data, error } = await supabasePublicMain.from('info_texts').select('*').eq('id', infoTextId).single();
 
     if (error) {
         console.error('Error fetching info text (by id):', error);
@@ -216,7 +216,7 @@ export async function fetchInfoTextById(infoTextId: string) {
 }
 // TODO: test & use this to update patch-batches
 export async function updateInfoText(infoText: { id: string; text_en_uk: { title: string; body: string }; media_en_uk?: string;}) {
-    const { data, error } = await supabase
+    const { data, error } = await supabasePublicMain
     .from('info_texts')
     .update({
         text_en_uk: infoText.text_en_uk,
@@ -232,7 +232,7 @@ export async function updateInfoText(infoText: { id: string; text_en_uk: { title
     return data;
 }
 export async function updateInfoTextFull(infoText: InfoText) {
-    const { data, error } = await supabase
+    const { data, error } = await supabasePublicMain
     .from('info_texts')
     .update(infoText)
     .eq('id', infoText.id)
@@ -261,7 +261,7 @@ export async function insertInfoTexts(rows: { heading: string; body: string; she
         sheet_id: r.sheetId
     }));
 
-    const { data, error } = await supabase.from('info_texts').insert(insertData).select();
+    const { data, error } = await supabasePublicMain.from('info_texts').insert(insertData).select();
 
     if (error) {
         console.error('Insert info text error:', error);
@@ -279,7 +279,7 @@ export async function insertStages(rows: { stageType: string, stageAssets: objec
         batch_id: r.stageBatchId
     }));
 
-    const { data, error } = await supabase.from('stages').insert(insertData).select();
+    const { data, error } = await supabasePublicMain.from('stages').insert(insertData).select();
 
     if (error) {
         console.error('Insert stage error:', error);
@@ -289,7 +289,7 @@ export async function insertStages(rows: { stageType: string, stageAssets: objec
     return data; // Contains id and created_at from Supabase
 }
 export async function updateStage(stage: Stage) {
-    const { data, error } = await supabase
+    const { data, error } = await supabasePublicMain
     .from('stages')
     .update(stage)
     .eq('id', stage.id)
@@ -301,7 +301,7 @@ export async function updateStage(stage: Stage) {
     return data;
 }
 export async function fetchStagesWithInfoTexts(batchId: string): Promise<StageWithInfoText[] | PostgrestError> {
-   const { data: stages, error: stagesError } = await supabase
+   const { data: stages, error: stagesError } = await supabasePublicMain
         .from('stages')
         .select('*')
         .eq('batch_id', batchId);
@@ -324,7 +324,7 @@ export async function fetchStagesWithInfoTexts(batchId: string): Promise<StageWi
 
     const uniqueInfoTextIds = Array.from(new Set(infoTextIds));
 
-    const { data: infoTexts, error: infoTextError } = await supabase
+    const { data: infoTexts, error: infoTextError } = await supabasePublicMain
         .from('info_texts')
         .select('*')
         .in('id', uniqueInfoTextIds);
@@ -362,7 +362,7 @@ export async function fetchStagesWithInfoTexts(batchId: string): Promise<StageWi
     return results;
 }
 export async function fetchStagesByIds(stageIds: string[]): Promise<Stage[] | PostgrestError> {
-    const { data, error } = await supabase
+    const { data, error } = await supabasePublicMain
         .from('stages')
         .select('*')
         .in('id', stageIds);
@@ -373,7 +373,7 @@ export async function fetchStagesByIds(stageIds: string[]): Promise<Stage[] | Po
     return data as Stage[];
 }
 export async function fetchStages() {
-    const { data, error } = await supabase.from('stages').select('*');
+    const { data, error } = await supabasePublicMain.from('stages').select('*');
 
     if (error) {
         console.error('Error fetching stages:', error);
@@ -384,12 +384,12 @@ export async function fetchStages() {
 }
 //
 export async function insertActivity(activity: Activity){
-    const { data, error } = await supabase.from('activities').insert(activity).select();
+    const { data, error } = await supabasePublicMain.from('activities').insert(activity).select();
     const output = {data: data, error: error};
     return output;
 } 
 export async function fetchActivities() {
-    const { data, error } = await supabase.from('activities').select('*');
+    const { data, error } = await supabasePublicMain.from('activities').select('*');
 
     if (error) {
         console.error('Error fetching activities:', error);
@@ -399,7 +399,7 @@ export async function fetchActivities() {
     return data as Activity[];
 }
 export async function fetchActivityById(activityId: string) {
-    const { data, error } = await supabase.from('activities').select('*').eq('id', activityId).single();
+    const { data, error } = await supabasePublicMain.from('activities').select('*').eq('id', activityId).single();
     if (error) {
         console.error('Error fetching activity (by id):', error);
         return error;
@@ -407,7 +407,7 @@ export async function fetchActivityById(activityId: string) {
     return data as Activity;
 }
 export async function updateActivity(activity: Activity){
-    const { data, error } = await supabase
+    const { data, error } = await supabasePublicMain
       .from('activities')
       .update(activity)
       .eq('id', activity.id)
@@ -419,7 +419,7 @@ export async function updateActivity(activity: Activity){
 }
 //
 export async function fetchCourses() {
-    const { data, error } = await supabase.from('courses').select('*');
+    const { data, error } = await supabasePublicMain.from('courses').select('*');
 
     if (error) {
         console.error('Error fetching courses:', error);

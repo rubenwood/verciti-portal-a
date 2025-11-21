@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabaseTest } from "@/lib/supabase-test";
-import { supabase } from "@/lib/supabase";
+import { supabaseTest, supabasePrivateMain } from "@/lib/supabase-test";
 
 import { copyDataBetweenTables } from "../../../db/general/utils";
 
@@ -9,8 +8,10 @@ export async function POST(request: Request) {
 
     console.log("Copying data from ", from, " to: ", to, " for tables: ", tables);
 
-    const fromClient = from === "test" ? supabaseTest : supabase;
-    const toClient   = to === "test" ? supabaseTest : supabase;
+    const fromClient = from === "test" ? supabaseTest : supabasePrivateMain;
+    const toClient   = to === "test" ? supabaseTest : supabasePrivateMain;
+
+    console.log((await toClient.auth.getUser()))
 
     await copyDataBetweenTables(fromClient, toClient, tables);
 

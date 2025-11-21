@@ -58,10 +58,9 @@ async function copyData(selectedClientString: string, tables: string[]){
 }
 
 
-
-
 export function DownloadTablesTool() {
-    const [selectedClientString, setSelectedClientString] = useState<string>('test');
+    const [selectedFromClientString, setSelectedFromClientString] = useState<string>('test');
+    const [selectedToClientString, setSelectedToClientString] = useState<string>('live');
     const [tables, setTables] = useState([]);
     const [selectedTables, setSelectedTables] = useState<string[]>([]);
 
@@ -69,7 +68,7 @@ export function DownloadTablesTool() {
         const res = await fetch("/api/db/get-tables", {
             method: "POST",
             body: JSON.stringify({
-                branch: selectedClientString,
+                branch: selectedFromClientString,
                 schema: "public",
             }),
         });
@@ -80,7 +79,7 @@ export function DownloadTablesTool() {
 
     useEffect(() => {
         fetchTables();
-    }, [selectedClientString]);
+    }, [selectedFromClientString]);
 
     return (
         <>
@@ -89,7 +88,14 @@ export function DownloadTablesTool() {
             <p>First select either Test or Live database</p>
         </div>
         <br/>
-        <select onChange={(e) => { setSelectedClientString(e.target.value); }} value={selectedClientString}>
+        <label>From:</label>
+        <select onChange={(e) => { setSelectedFromClientString(e.target.value); }} value={selectedFromClientString}>
+            <option value="test">Test</option>
+            <option value="live">Live</option>
+        </select>
+        <br/>
+        <label> To:</label>
+        <select onChange={(e) => { setSelectedToClientString(e.target.value); }} value={selectedToClientString}>
             <option value="test">Test</option>
             <option value="live">Live</option>
         </select>
@@ -101,7 +107,7 @@ export function DownloadTablesTool() {
         <CreateTableToggleGroup tables={tables} setSelectedFunc={setSelectedTables} />
         <br/>
         <Button 
-            onClick={async ()=> { copyData(selectedClientString, selectedTables) } } 
+            onClick={async ()=> { copyData(selectedFromClientString, selectedTables) } } 
             className='green-shadcn-button mb-4'>
             Copy data 
         </Button>

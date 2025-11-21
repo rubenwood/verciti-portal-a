@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from '@/lib/supabase';
+import { supabasePublicMain } from '@/lib/supabase';
 
 export default function ResetPassword() {
   const [loading, setLoading] = useState(true);
@@ -29,7 +29,7 @@ export default function ResetPassword() {
         return;
       }
 
-      const { error: recoveryError } = await supabase.auth.setSession({
+      const { error: recoveryError } = await supabasePublicMain.auth.setSession({
         access_token,
         refresh_token,
       });
@@ -40,7 +40,7 @@ export default function ResetPassword() {
         return;
       }
 
-      const { data, error: sessionError } = await supabase.auth.getSession();
+      const { data, error: sessionError } = await supabasePublicMain.auth.getSession();
 
       if (sessionError || !data.session) {
         setError("Session not found after recovery.");

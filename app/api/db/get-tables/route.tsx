@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
-import { supabaseTest } from "@/lib/supabase-test";
-import { supabase } from "@/lib/supabase";
+import { supabaseTest, supabasePrivateMain } from "@/lib/supabase-test";
 
 export async function POST(request: Request) {
   const { branch, schema } = await request.json();
 
-  const client = branch === "test" ? supabaseTest : supabase;
+  const client = branch === "test" ? supabaseTest : supabasePrivateMain;
 
   const { data, error } = await client.rpc("list_tables", {
     schema_name: schema.toLowerCase(),

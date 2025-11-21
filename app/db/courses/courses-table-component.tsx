@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { supabasePublicMain } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
 import { checkUser } from '../general/get-user' // TODO: move check user up a level
 
@@ -12,7 +12,7 @@ export default function CoursesTable(){
     const [user, setUser] = useState<User | null>(null);
 
     const addCourse = async () => {
-        const { data, error } = await supabase.from('courses').insert([
+        const { data, error } = await supabasePublicMain.from('courses').insert([
             {
                 external_title: 'New Course',
                 internal_title: 'New Course',
@@ -43,7 +43,7 @@ export default function CoursesTable(){
     
       const handleSave = async () => {
         if (!editingId) return
-        const { error } = await supabase
+        const { error } = await supabasePublicMain
           .from('courses')
           .update(editForm)
           .eq('id', editingId)
@@ -69,7 +69,7 @@ export default function CoursesTable(){
 
         const fetchCourses = async () => {
             setLoading(true);
-            const { data, error } = await supabase.from('courses').select('*');
+            const { data, error } = await supabasePublicMain.from('courses').select('*');
 
             if (error) {
                 console.error('Error fetching courses:', error);
