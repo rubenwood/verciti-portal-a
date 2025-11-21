@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase, supabaseTest } from '@/lib/supabase'
+import { SupabaseClient } from '@supabase/supabase-js';
 
 export default function Login(props: any){
     const router = useRouter();
@@ -10,25 +11,12 @@ export default function Login(props: any){
     const [error, setError] = useState('');
 
     const handleLogin = async () => {
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        });
-
-        if (error) {
-            setError(error.message);
-            console.error('Login error:', error.message);
-        } else {
-            console.log('Login successful');
-            if(props.setUserFunc){ props.setUserFunc(data.user); }
-            if(props.path){ router.push(props.path); }
-        }
-
-        handleLoginTest();
+        await doLogin(supabase);
+        await doLogin(supabaseTest);
     };
 
-    const handleLoginTest = async () => {
-        const { data, error } = await supabaseTest.auth.signInWithPassword({
+    const doLogin = async (client: SupabaseClient) => {
+        const { data, error } = await client.auth.signInWithPassword({
             email,
             password,
         });
