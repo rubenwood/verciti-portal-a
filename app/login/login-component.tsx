@@ -19,12 +19,12 @@ export default function Login(props: any){
             setError(error.message);
             console.error('Login error:', error.message);
         } else {
-            console.log('Login successful:', data);
+            console.log('Login successful');
             if(props.setUserFunc){ props.setUserFunc(data.user); }
             if(props.path){ router.push(props.path); }
         }
 
-        //handleLoginTest();
+        handleLoginTest();
     };
 
     const handleLoginTest = async () => {
@@ -37,7 +37,7 @@ export default function Login(props: any){
             setError(error.message);
             console.error('Login error (test):', error.message);
         } else {
-            console.log('Login successful (test):', data);
+            console.log('Login successful (test)');
             if(props.setTestUserFunc){ props.setTestUserFunc(data.user); }
             if(props.path){ router.push(props.path); }
         }

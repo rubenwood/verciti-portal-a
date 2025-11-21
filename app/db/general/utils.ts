@@ -428,6 +428,7 @@ export async function fetchCourses() {
 
     return data as Course[];
 }
+
 // copies data from a table in one Supabase client to another (assuming identical schemas and table names)
 export async function copyDataBetweenTables(fromClient: SupabaseClient, toClient: SupabaseClient, tables: string[]) {
 
@@ -438,16 +439,16 @@ export async function copyDataBetweenTables(fromClient: SupabaseClient, toClient
 
         if (error) {
             console.error(`Error fetching data from table "${table}":`, error);
-            continue; // skip this table but continue processing others
+            continue;
         }
         if (data && data.length > 0) {
             const { error: insertError } = await toClient
                 .from(table)
-                .insert(data);
+                .upsert(data);
 
             if (insertError) {
                 console.error(`Error inserting data into table "${table}":`, insertError);
-                continue; // skip this table but continue processing others
+                continue;
             }
 
             console.log(`Successfully copied ${data.length} records to table "${table}"`);

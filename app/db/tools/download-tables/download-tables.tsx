@@ -46,35 +46,41 @@ async function downloadTables(client: SupabaseClient, tables: string[], suffix: 
 }
 
 
-async function copyData(fromClient: SupabaseClient, tables: string[], clientString: string){
-    let toClient; 
-    if(clientString === 'test'){
-        toClient = supabase;
-    } else{
-        toClient = supabaseTest;
-    }
+async function copyData(fromClient: SupabaseClient, toClient: SupabaseClient, tables: string[]){
     copyDataBetweenTables(fromClient, toClient, tables);
 }
 
 export function DownloadTablesTool() {
-    const [selectedClientString, setSelectedClientString] = useState<string>('test');
-    const [selectedClient, setSelectedClient] = useState<SupabaseClient>(supabaseTest);
+    const [selectedFromClientString, setSelectedFromClientString] = useState<string>('test');
+    const [selectedToClientString, setSelectedToClientString] = useState<string>('live');
+    const [selectedFromClient, setSelectedFromClient] = useState<SupabaseClient>(supabaseTest);
+    const [selectedToClient, setSelectedToClient] = useState<SupabaseClient>(supabase);
     const [tables, setTables] = useState([]);
     const [selectedTables, setSelectedTables] = useState<string[]>([]);
 
-    function setClient(input: string) {
-        setSelectedClientString(input.toLowerCase());
+    function setFromClient(input: string) {
+        setSelectedFromClientString(input.toLowerCase());
         if (input == 'test') {
-            setSelectedClient(supabaseTest);
+            setSelectedFromClient(supabaseTest);
         } else {
-            setSelectedClient(supabase);
+            setSelectedFromClient(supabase);
         }
 
         fetchTables();
     }
 
+    function setToClient(input: string) {
+        setSelectedToClientString(input.toLowerCase());
+        if (input == 'test') {
+            setSelectedToClient(supabaseTest);
+        } else {
+            setSelectedToClient(supabase);
+        }
+    }
+
+
     async function fetchTables() {
-        const temp = await fetchTablesInSchema(selectedClient, 'public');
+        const temp = await fetchTablesInSchema(selectedFromClient, 'public');
         setTables(temp);
     }
 
@@ -85,7 +91,14 @@ export function DownloadTablesTool() {
             <p>First select either Test or Live database</p>
         </div>
         <br/>
-        <select onChange={(e) => { setClient(e.target.value); }} value={selectedClientString}>
+        <label>From:</label>
+        <select onChange={(e) => { setFromClient(e.target.value); }} value={selectedFromClientString}>
+            <option value="test">Test</option>
+            <option value="live">Live</option>
+        </select>
+        <br/>
+        <label>To:</label>
+        <select onChange={(e) => { setToClient(e.target.value); }} value={selectedToClientString}>
             <option value="test">Test</option>
             <option value="live">Live</option>
         </select>
@@ -96,12 +109,16 @@ export function DownloadTablesTool() {
         <br/>
         <CreateTableToggleGroup tables={tables} setSelectedFunc={setSelectedTables} />
         <br/>
-        <Button onClick={async ()=> { copyData(selectedClient, selectedTables, selectedClientString) } } className='green-shadcn-button mb-4'>Copy data </Button>
         <Button 
+            onClick={async ()=> { copyData(selectedFromClient, selectedToClient, selectedTables) } } 
+            className='green-shadcn-button mb-4'>
+            Copy data
+        </Button>
+        {/* <Button 
             className='green-shadcn-button' 
             onClick={async () => {downloadTables(selectedClient, selectedTables, selectedClientString)} }>
             Download CSV
-        </Button>
+        </Button> */}
         </>
     )
 }
