@@ -38,7 +38,7 @@ async function downloadTables(client: SupabaseClient, tables: string[], suffix: 
         const link = document.createElement('a');
 
         link.href = url;
-        link.download = `${table}-${suffix}.csv`;
+        link.download = `${table}-${suffix}-${new Date(Date.now()).toISOString()}.csv`;
         link.click();
 
         URL.revokeObjectURL(url);
@@ -78,7 +78,6 @@ export function DownloadTablesTool() {
         }
     }
 
-
     async function fetchTables() {
         const temp = await fetchTablesInSchema(selectedFromClient, 'public');
         setTables(temp);
@@ -86,18 +85,18 @@ export function DownloadTablesTool() {
 
     return (
         <>
-        <h1 className='header'>Download Tables as CSV</h1><br/>
+        <h1 className='header'>Copy data between tables</h1><br/>
         <div>
-            <p>First select either Test or Live database</p>
+            <p>First select the databases to copy between</p>
         </div>
         <br/>
-        <label>From:</label>
+        <label className='bold-label'>From:</label>
         <select onChange={(e) => { setFromClient(e.target.value); }} value={selectedFromClientString}>
             <option value="test">Test</option>
             <option value="live">Live</option>
         </select>
         <br/>
-        <label>To:</label>
+        <label className='bold-label'>To:</label>
         <select onChange={(e) => { setToClient(e.target.value); }} value={selectedToClientString}>
             <option value="test">Test</option>
             <option value="live">Live</option>
@@ -116,7 +115,7 @@ export function DownloadTablesTool() {
         </Button>
         <Button 
             className='green-shadcn-button' 
-            onClick={async () => {await downloadTables(selectedFromClient, selectedTables, `${selectedFromClientString}-${new Date(Date.now()).toISOString()}`)} }>
+            onClick={async () => {await downloadTables(selectedFromClient, selectedTables, `${selectedFromClientString}`)} }>
             Download CSV
         </Button>
         </>

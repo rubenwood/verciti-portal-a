@@ -113,6 +113,10 @@ body {
   @apply absolute top-4 left-4 z-10 max-w-[900px];
 }
 
+.bold-label {
+  @apply font-bold;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
