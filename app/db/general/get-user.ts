@@ -1,8 +1,13 @@
-import { supabase } from '@/lib/supabase'
+import { supabase, supabaseTest } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
 
 export async function checkUser(){
     const { data: { user }, error } = await supabase.auth.getUser();
+    const { data: { user: testUser }, error: testError } = await supabaseTest.auth.getUser();
+
+    if(testError){
+        console.error('Error fetching test user:', testError);
+    }
 
     if (error) {
         console.error('Error fetching user:', error);
