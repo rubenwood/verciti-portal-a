@@ -45,9 +45,17 @@ async function downloadTables(client: SupabaseClient, tables: string[], suffix: 
     }
 }
 
-
 async function copyData(fromClient: SupabaseClient, toClient: SupabaseClient, tables: string[]){
     copyDataBetweenTables(fromClient, toClient, tables);
+}
+
+export function ClientSelect(props: any) {
+    return (
+        <select onChange={(e) => { props.setClient(e.target.value); }} value={props.inValue}>
+            <option value="test">Test</option>
+            <option value="live">Live</option>
+        </select>
+    )
 }
 
 export function DownloadTablesTool() {
@@ -91,16 +99,18 @@ export function DownloadTablesTool() {
         </div>
         <br/>
         <label className='bold-label'>From:</label>
-        <select onChange={(e) => { setFromClient(e.target.value); }} value={selectedFromClientString}>
+        <ClientSelect inValue={selectedFromClientString} setClient={setFromClient} />
+        {/* <select onChange={(e) => { setFromClient(e.target.value); }} value={selectedFromClientString}>
             <option value="test">Test</option>
             <option value="live">Live</option>
-        </select>
+        </select> */}
         <br/>
         <label className='bold-label'>To:</label>
-        <select onChange={(e) => { setToClient(e.target.value); }} value={selectedToClientString}>
+        <ClientSelect inValue={selectedToClientString} setClient={setToClient} />
+        {/* <select onChange={(e) => { setToClient(e.target.value); }} value={selectedToClientString}>
             <option value="test">Test</option>
             <option value="live">Live</option>
-        </select>
+        </select> */}
         <br/>
         <div>
             <p>Then select the tables you wish to copy</p>
