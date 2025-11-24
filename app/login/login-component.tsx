@@ -23,9 +23,9 @@ export default function Login(props: any){
 
         if (error) {
             setError(error.message);
-            console.error('Login error (test):', error.message);
+            console.error('Login error:', client, "\n", error.message);
         } else {
-            console.log('Login successful (test)');
+            console.log('Login successful:', client);
             if(props.setTestUserFunc){ props.setTestUserFunc(data.user); }
             if(props.path){ router.push(props.path); }
         }

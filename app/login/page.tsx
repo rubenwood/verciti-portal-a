@@ -12,6 +12,8 @@ export default function LoginPage(){
     });
 
     return(
-        <Login path='/lms' />
+        <>
+            <Login path='/lms' />
+        </>
     )
 }
