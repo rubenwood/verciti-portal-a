@@ -104,21 +104,21 @@ export function DownloadTablesTool() {
         </select>
         <br/>
         <div>
-            <p>Then select the tables you wish to download</p>
+            <p>Then select the tables you wish to copy</p>
         </div>
         <br/>
         <CreateTableToggleGroup tables={tables} setSelectedFunc={setSelectedTables} />
         <br/>
         <Button 
-            onClick={async ()=> { copyData(selectedFromClient, selectedToClient, selectedTables) } } 
+            onClick={()=> { copyData(selectedFromClient, selectedToClient, selectedTables) } } 
             className='green-shadcn-button mb-4'>
             Copy data
         </Button>
-        {/* <Button 
+        <Button 
             className='green-shadcn-button' 
-            onClick={async () => {downloadTables(selectedClient, selectedTables, selectedClientString)} }>
+            onClick={async () => {await downloadTables(selectedFromClient, selectedTables, `${selectedFromClientString}-${new Date(Date.now()).toISOString()}`)} }>
             Download CSV
-        </Button> */}
+        </Button>
         </>
     )
 }
