@@ -10,7 +10,7 @@ import { fetchTablesInSchema, fetchTablesAsCSV, copyDataBetweenTables, showConfe
 import { Button } from '@/components/ui/button';
 import { SupabaseClient } from '@supabase/supabase-js';
 
-export function CreateTableToggleGroup(props: any){
+export function TableToggleGroup(props: any){
     return (
         <ToggleGroup 
             type="multiple"
@@ -50,15 +50,17 @@ async function copyData(fromClient: SupabaseClient, toClient: SupabaseClient, ta
 }
 
 export function ClientSelect(props: any) {
-    return (
+    return (        
         <select onChange={(e) => { props.setClient(e.target.value); }} value={props.inValue}>
-            <option value="test">Test</option>
-            <option value="live">Live</option>
-        </select>
+            {props.branches.map((branch: any) => (
+                <option key={branch.name} value={branch.name}>{branch.name}</option>
+            ))}
+        </select>        
     )
 }
 
-export function DownloadTablesTool() {
+export function CopyTablesTool() {
+    const [branches, setBranches] = useState([]);
     const [selectedFromClientString, setSelectedFromClientString] = useState<string>('test');
     const [selectedToClientString, setSelectedToClientString] = useState<string>('live');
     const [selectedFromClient, setSelectedFromClient] = useState<SupabaseClient>(supabaseTest);
@@ -67,6 +69,17 @@ export function DownloadTablesTool() {
     const [selectedTables, setSelectedTables] = useState<string[]>([]);
 
     const copyBtn = useRef<HTMLButtonElement | null>(null);
+
+    async function mapClients() {
+        const clients = [supabase, supabaseTest];
+        const mapping = await fetch(`/api/db/map-branches-clients`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ clients })
+        });
+        const mappingData = await mapping.json();
+        console.log('Mapping data:', mappingData);
+    }
 
     function setFromClient(input: string) {
         setSelectedFromClientString(input.toLowerCase());
@@ -88,6 +101,16 @@ export function DownloadTablesTool() {
         }
     }
 
+    async function fetchBranches() {
+        const branches = await fetch(`/api/db/get-branches`);
+        const branchData = await branches.json();
+        setBranches(branchData);
+        console.log(branchData);
+        console.log(supabase);
+        console.log(supabaseTest);
+        mapClients();
+    }
+
     async function fetchTables() {
         const temp = await fetchTablesInSchema(selectedFromClient, 'public');
         setTables(temp);
@@ -96,37 +119,41 @@ export function DownloadTablesTool() {
     return (
         <>
         <h1 className='header'>Copy data between tables</h1><br/>
-        <div>
+        <Button className='green-shadcn-button' onClick={fetchBranches}>Click here to begin</Button>
+        <br/>
+        {branches.length <= 0 ? null : (
+            <>
             <p>First select the databases to copy between</p>
-        </div>
-        <br/>
-        <label className='bold-label'>From:</label>
-        <ClientSelect inValue={selectedFromClientString} setClient={setFromClient} />
-        <br/>
-        <label className='bold-label'>To:</label>
-        <ClientSelect inValue={selectedToClientString} setClient={setToClient} />
-        <br/>
-        <div>
-            <p>Then select the tables you wish to copy</p>
-        </div>
-        <br/>
-        <CreateTableToggleGroup tables={tables} setSelectedFunc={setSelectedTables} />
-        <br/>
-        <Button 
-            ref={copyBtn}
-            onClick={async () => { 
-                    await copyData(selectedFromClient, selectedToClient, selectedTables) 
-                    showConfetti(copyBtn);
+            <label className='bold-label'>From:</label>
+            <ClientSelect branches={branches} inValue={selectedFromClientString} setClient={setFromClient} />
+            <br/>
+            <label className='bold-label'>To:</label>
+            <ClientSelect branches={branches} inValue={selectedToClientString} setClient={setToClient} />
+            <br/>
+            <div>
+                <p>Then select the tables you wish to copy</p>
+            </div>
+            <br/>
+            <TableToggleGroup tables={tables} setSelectedFunc={setSelectedTables} />
+            <br/>
+            <Button 
+                ref={copyBtn}
+                onClick={async () => { 
+                        console.log('Copying from', selectedFromClientString, 'to', selectedToClientString);
+                        await copyData(selectedFromClient, selectedToClient, selectedTables) 
+                        showConfetti(copyBtn);
+                    } 
                 } 
-            } 
-            className='green-shadcn-button mb-4'>
-            Copy data
-        </Button>
-        <Button 
-            className='green-shadcn-button' 
-            onClick={async () => {await downloadTables(selectedFromClient, selectedTables, `${selectedFromClientString}`)} }>
-            Download CSV
-        </Button>
+                className='green-shadcn-button mb-4'>
+                Copy data
+            </Button>
+            <Button 
+                className='green-shadcn-button' 
+                onClick={async () => {await downloadTables(selectedFromClient, selectedTables, `${selectedFromClientString}`)} }>
+                Download CSV
+            </Button>
+            </>
+        )}
         </>
     )
 }

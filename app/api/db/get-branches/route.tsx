@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export async function GET() {
   try {
     const response = await fetch(
-      `https://api.supabase.io/v1/projects/${process.env.SUPABASE_PROJECT_REF}/branches`,
+      `https://api.supabase.com/v1/projects/${process.env.SUPABASE_PROJECT_REF}/branches`,
       {
         headers: {
           'Authorization': `Bearer ${process.env.SUPABASE_PAT_KEY}`,

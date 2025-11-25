@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { checkUser } from "../general/get-user";
-import { DownloadTablesTool } from "./download-tables/download-tables";
+import { CopyTablesTool } from "./download-tables/download-tables";
 import { getUserProfile } from "../general/utils";
 
 export default function ToolsPage(){
@@ -37,7 +37,7 @@ export default function ToolsPage(){
             <br/>
             {/* <DataCopyTool /> */}
             <br/>
-            <DownloadTablesTool />
+            <CopyTablesTool />
         </div>
         </>
     )
