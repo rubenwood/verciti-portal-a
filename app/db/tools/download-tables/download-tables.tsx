@@ -1,12 +1,12 @@
 "use client"
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { supabase, supabaseTest } from '@/lib/supabase';
 import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/ui/toggle-group"
 
-import { fetchTablesInSchema, fetchTablesAsCSV, copyDataBetweenTables } from '../../general/utils';
+import { fetchTablesInSchema, fetchTablesAsCSV, copyDataBetweenTables, showConfetti } from '../../general/utils';
 import { Button } from '@/components/ui/button';
 import { SupabaseClient } from '@supabase/supabase-js';
 
@@ -46,7 +46,7 @@ async function downloadTables(client: SupabaseClient, tables: string[], suffix: 
 }
 
 async function copyData(fromClient: SupabaseClient, toClient: SupabaseClient, tables: string[]){
-    copyDataBetweenTables(fromClient, toClient, tables);
+    await copyDataBetweenTables(fromClient, toClient, tables);;
 }
 
 export function ClientSelect(props: any) {
@@ -65,6 +65,8 @@ export function DownloadTablesTool() {
     const [selectedToClient, setSelectedToClient] = useState<SupabaseClient>(supabase);
     const [tables, setTables] = useState([]);
     const [selectedTables, setSelectedTables] = useState<string[]>([]);
+
+    const copyBtn = useRef<HTMLButtonElement | null>(null);
 
     function setFromClient(input: string) {
         setSelectedFromClientString(input.toLowerCase());
@@ -100,17 +102,9 @@ export function DownloadTablesTool() {
         <br/>
         <label className='bold-label'>From:</label>
         <ClientSelect inValue={selectedFromClientString} setClient={setFromClient} />
-        {/* <select onChange={(e) => { setFromClient(e.target.value); }} value={selectedFromClientString}>
-            <option value="test">Test</option>
-            <option value="live">Live</option>
-        </select> */}
         <br/>
         <label className='bold-label'>To:</label>
         <ClientSelect inValue={selectedToClientString} setClient={setToClient} />
-        {/* <select onChange={(e) => { setToClient(e.target.value); }} value={selectedToClientString}>
-            <option value="test">Test</option>
-            <option value="live">Live</option>
-        </select> */}
         <br/>
         <div>
             <p>Then select the tables you wish to copy</p>
@@ -119,7 +113,12 @@ export function DownloadTablesTool() {
         <CreateTableToggleGroup tables={tables} setSelectedFunc={setSelectedTables} />
         <br/>
         <Button 
-            onClick={()=> { copyData(selectedFromClient, selectedToClient, selectedTables) } } 
+            ref={copyBtn}
+            onClick={async () => { 
+                    await copyData(selectedFromClient, selectedToClient, selectedTables) 
+                    showConfetti(copyBtn);
+                } 
+            } 
             className='green-shadcn-button mb-4'>
             Copy data
         </Button>
