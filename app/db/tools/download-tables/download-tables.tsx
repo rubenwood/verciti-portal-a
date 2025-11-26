@@ -9,6 +9,7 @@ import {
 import { fetchTablesInSchema, fetchTablesAsCSV, copyDataBetweenTables, showConfetti } from '../../general/utils';
 import { Button } from '@/components/ui/button';
 import { SupabaseClient } from '@supabase/supabase-js';
+import { SupabaseClientWithKey } from '@/types/supabase-ext';
 
 export function TableToggleGroup(props: any){
     return (
@@ -46,74 +47,96 @@ async function downloadTables(client: SupabaseClient, tables: string[], suffix: 
 }
 
 async function copyData(fromClient: SupabaseClient, toClient: SupabaseClient, tables: string[]){
-    await copyDataBetweenTables(fromClient, toClient, tables);;
+    await copyDataBetweenTables(fromClient, toClient, tables);
 }
 
 export function ClientSelect(props: any) {
     return (        
+        <>
         <select onChange={(e) => { props.setClient(e.target.value); }} value={props.inValue}>
             {props.branches.map((branch: any) => (
                 <option key={branch.name} value={branch.name}>{branch.name}</option>
             ))}
-        </select>        
+        </select>
+        </>
     )
 }
 
+const allClients: SupabaseClientWithKey[] = [
+  { key: "live", client: supabase },
+  { key: "test", client: supabaseTest },
+];
+
 export function CopyTablesTool() {
     const [branches, setBranches] = useState([]);
-    const [selectedFromClientString, setSelectedFromClientString] = useState<string>('test');
-    const [selectedToClientString, setSelectedToClientString] = useState<string>('live');
-    const [selectedFromClient, setSelectedFromClient] = useState<SupabaseClient>(supabaseTest);
-    const [selectedToClient, setSelectedToClient] = useState<SupabaseClient>(supabase);
+    const [selectedFromClientString, setSelectedFromClientString] = useState("test");
+    const [selectedToClientString, setSelectedToClientString] = useState("live");
+    const [selectedFromClient, setSelectedFromClient] =
+        useState<SupabaseClient>(supabaseTest);
+
+    const [selectedToClient, setSelectedToClient] =
+        useState<SupabaseClient>(supabase);
+
+    const [mappedClients, setMappedClients] = useState<{ branch: string, clientKey: string }[]>([]);
+
     const [tables, setTables] = useState([]);
     const [selectedTables, setSelectedTables] = useState<string[]>([]);
 
     const copyBtn = useRef<HTMLButtonElement | null>(null);
 
     async function mapClients() {
-        const clients = [supabase, supabaseTest];
-        const mapping = await fetch(`/api/db/map-branches-clients`, {
+        const minimalClients = allClients.map(c => ({ key: c.key }));
+
+        const res = await fetch(`/api/db/map-branches-clients`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ clients })
+            body: JSON.stringify({ clients: minimalClients })
         });
-        const mappingData = await mapping.json();
-        console.log('Mapping data:', mappingData);
+
+        const { mapping } = await res.json();
+        setMappedClients(mapping);
     }
 
-    function setFromClient(input: string) {
-        setSelectedFromClientString(input.toLowerCase());
-        if (input == 'test') {
-            setSelectedFromClient(supabaseTest);
-        } else {
-            setSelectedFromClient(supabase);
-        }
+    function setFromClient(branchName: string) {
+        setSelectedFromClientString(branchName);
 
-        fetchTables();
+        const mapping = mappedClients.find(
+            m => m.branch.toLowerCase() === branchName.toLowerCase()
+        );
+        if (!mapping) return;
+
+        const client = allClients.find(c => c.key === mapping.clientKey);
+        if (!client) return;
+
+        setSelectedFromClient(client.client);
+        fetchTables(client.client);
     }
 
-    function setToClient(input: string) {
-        setSelectedToClientString(input.toLowerCase());
-        if (input == 'test') {
-            setSelectedToClient(supabaseTest);
-        } else {
-            setSelectedToClient(supabase);
-        }
+    function setToClient(branchName: string) {
+        setSelectedToClientString(branchName);
+
+        const mapping = mappedClients.find(
+            m => m.branch.toLowerCase() === branchName.toLowerCase()
+        );
+        if (!mapping) return;
+
+        const client = allClients.find(c => c.key === mapping.clientKey);
+        if (!client) return;
+
+        setSelectedToClient(client.client);
     }
 
     async function fetchBranches() {
         const branches = await fetch(`/api/db/get-branches`);
         const branchData = await branches.json();
         setBranches(branchData);
-        console.log(branchData);
-        console.log(supabase);
-        console.log(supabaseTest);
-        mapClients();
+        await mapClients();
     }
 
-    async function fetchTables() {
-        const temp = await fetchTablesInSchema(selectedFromClient, 'public');
+    async function fetchTables(client: SupabaseClient) {
+        const temp = await fetchTablesInSchema(client, 'public');
         setTables(temp);
+        console.log('Fetched tables:', temp);
     }
 
     return (
@@ -121,7 +144,7 @@ export function CopyTablesTool() {
         <h1 className='header'>Copy data between tables</h1><br/>
         <Button className='green-shadcn-button' onClick={fetchBranches}>Click here to begin</Button>
         <br/>
-        {branches.length <= 0 ? null : (
+        {branches.length <= 0 && mappedClients.length <= 0 ? null : (
             <>
             <p>First select the databases to copy between</p>
             <label className='bold-label'>From:</label>

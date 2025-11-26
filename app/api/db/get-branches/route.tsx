@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
+  const projectRef = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace('https://','').split('.')[0];
   try {
     const response = await fetch(
-      `https://api.supabase.com/v1/projects/${process.env.SUPABASE_PROJECT_REF}/branches`,
+      `https://api.supabase.com/v1/projects/${projectRef}/branches`,
       {
         headers: {
           'Authorization': `Bearer ${process.env.SUPABASE_PAT_KEY}`,
