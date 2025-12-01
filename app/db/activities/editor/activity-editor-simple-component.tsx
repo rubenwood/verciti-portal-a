@@ -45,6 +45,7 @@ import { showConfetti,
     fetchInfoTextById,
     updateInfoTextFull } from "../../general/utils"
 import { PostgrestError } from "@supabase/supabase-js"
+import { supabaseTest } from "@/lib/supabase";
 
 // CONTEXT
 const EditingActivityContext = createContext<{ editingActivity: Activity | null; setEditingActivity: (a: Activity | null) => void;} | null>(null);
@@ -155,7 +156,7 @@ export function ActivityDetailsEditor(){
     }
 
     const saveChanges = async () => {
-        await updateActivity(editingActivity);
+        await updateActivity(supabaseTest, editingActivity);
         showConfetti(saveBtnRef);
     }
 
@@ -259,7 +260,7 @@ export function StageList(){
         console.log("Editing activity changed, load stages...");
         const loadStages = async () => {
             if (editingActivity && editingActivity.params.stage_ids) {
-                const tmpStages = await fetchStagesByIds(editingActivity.params.stage_ids);
+                const tmpStages = await fetchStagesByIds(supabaseTest, editingActivity.params.stage_ids);
 
                 if(!Array.isArray(tmpStages)){
                     console.error("Error fetching stages:", tmpStages);
@@ -293,7 +294,7 @@ export function StageDetailsEditor({ stage, index }: {stage: Stage, index: numbe
     const saveChanges = async () => {
         const updatedStage: Stage = JSON.parse(stageValue);
         setStage(updatedStage);
-        await updateStage(updatedStage);
+        await updateStage(supabaseTest, updatedStage);
         showConfetti(saveBtnRef);
     }
 
@@ -395,7 +396,7 @@ export function InfoTextEditor({ infoTextId }: {infoTextId: string}){
     const saveChanges = async () => {
         const updatedInfoText: InfoText = JSON.parse(infoTextValue);
         setInfoText(updatedInfoText);
-        await updateInfoTextFull(updatedInfoText);
+        await updateInfoTextFull(supabaseTest, updatedInfoText);
         showConfetti(saveBtnRef);
     }
 
@@ -403,7 +404,7 @@ export function InfoTextEditor({ infoTextId }: {infoTextId: string}){
         // load info text by id
         const loadInfoText = async () => {
             if (infoTextId) {
-                const fetchedInfoText = await fetchInfoTextById(infoTextId);
+                const fetchedInfoText = await fetchInfoTextById(supabaseTest, infoTextId);
                 if(!fetchedInfoText || 'message' in fetchedInfoText){
                     console.error("Error fetching info text:", fetchedInfoText);
                     return;
@@ -438,7 +439,7 @@ export default function ActivityEditorSimple() {
     const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
 
     const getActivities = async () => {
-    let temp = await fetchActivities();
+    let temp = await fetchActivities(supabaseTest);
     setActivities(temp);
     };
 
@@ -457,7 +458,7 @@ export default function ActivityEditorSimple() {
             title_asset_url: "",
             dir_name: "Dev"
         };
-        const tmp = await insertActivity(newAct);
+        const tmp = await insertActivity(supabaseTest, newAct);
         console.log("Inserted activity:", tmp);
         await getActivities();
     }

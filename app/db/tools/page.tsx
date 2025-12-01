@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { checkUser } from "../general/get-user";
 import { CopyTablesTool } from "./download-tables/download-tables";
 import { getUserProfile } from "../general/utils";
+import { supabaseTest } from "@/lib/supabase";
 
 export default function ToolsPage(){
     const [role, setRole] = useState<string | null>(null);
@@ -13,7 +14,7 @@ export default function ToolsPage(){
         const init = async () => {
             const user = await checkUser();
             if (user) { 
-                const profile = await getUserProfile(user);
+                const profile = await getUserProfile(supabaseTest, user);
                 setRole(profile?.data?.role || null);
             }
         };

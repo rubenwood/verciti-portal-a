@@ -5,6 +5,7 @@ import Papa from 'papaparse';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { insertInfoTexts, insertStages } from '../../general/utils';
+import { supabaseTest } from '@/lib/supabase';
 
 
 type ParsedRow = {
@@ -84,7 +85,7 @@ export default function InfoTextUploader() {
       setStatus('Uploading to Supabase...');
       console.log(file?.name);
       // inster info texts
-      const infoTexts = await insertInfoTexts(parsedRows, parsedRows[0].batchId);
+      const infoTexts = await insertInfoTexts(supabaseTest, parsedRows, parsedRows[0].batchId);
       const stageRows = infoTexts.map((infoText: InfoText) => ({
         stageType: 'info',
         stageAssets: [],
@@ -92,7 +93,7 @@ export default function InfoTextUploader() {
         stageBatchId: infoText.batch_id
       }));
       // insert a new stage for each info text
-      const insertedStages = await insertStages(stageRows);
+      const insertedStages = await insertStages(supabaseTest, stageRows);
 
       setStatus(`✅ Successfully inserted ${infoTexts.length} records!`);
     } catch (error: any) {

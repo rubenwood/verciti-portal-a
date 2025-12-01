@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { insertInfoTexts } from '../../general/utils';
+import { supabaseTest } from '@/lib/supabase';
 
 export function InfoTextAdder() {
   const [isAdding, setIsAdding] = useState(false);
@@ -20,7 +21,7 @@ export function InfoTextAdder() {
       setLoading(true);
       setError(null);
 
-      await insertInfoTexts(
+      await insertInfoTexts(supabaseTest,
         [
           {
             heading: row.heading,

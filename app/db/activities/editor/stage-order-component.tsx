@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PostgrestError } from '@supabase/supabase-js';
 import { fetchActivityById, updateActivity } from '../../general/utils';
+import { supabaseTest } from '@/lib/supabase';
+
 import { Card, CardContent } from '@/components/ui/card';
 import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -51,7 +53,7 @@ export function ActivityParamsEditor({ activity }: any) {
   const saveOrder = async () => {
     const updatedActivity = { ...tempActivity, params: { ...tempActivity.params, stage_ids: stageIds } };
 
-    const resp = await updateActivity(updatedActivity);
+    const resp = await updateActivity(supabaseTest, updatedActivity);
     console.log('Update response:', resp);
     if(resp.error == null){
         alert('Activity updated successfully');
@@ -88,7 +90,7 @@ export default function StageOrderer() {
             setStagesResults(null);
             return;
         }
-        const activityResponse = await fetchActivityById(activityId);
+        const activityResponse = await fetchActivityById(supabaseTest, activityId);
         setActivity(activityResponse as Activity);
     }
 

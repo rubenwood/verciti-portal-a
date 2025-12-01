@@ -14,7 +14,7 @@ export default function QuizEditor(){
     const [editedQuestions, setEditedQuestions] = useState<Record<string, Partial<QuizQuestion>>>({});
 
     const searchClicked = async () => {
-        const quizStages = await fetchQuizStagesByBatchId(searchTerm);
+        const quizStages = await fetchQuizStagesByBatchId(supabaseTest, searchTerm);
         if ('message' in quizStages) {
             console.error('Error fetching quiz stages:', quizStages.message);
             setError(quizStages);

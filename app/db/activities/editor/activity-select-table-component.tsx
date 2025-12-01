@@ -2,12 +2,13 @@
 import { fetchActivities } from "../../general/utils";
 import { useEffect, useState,  } from "react";
 import { Button } from "@/components/ui/button";
+import { supabaseTest } from "@/lib/supabase";
 
 export default function ActivitySelectTable(props:any){
     const [activities, setActivities] = useState<Activity[]>([]);    
 
     const init = async () => {
-        const activitiesArr = await fetchActivities();
+        const activitiesArr = await fetchActivities(supabaseTest);
         setActivities(activitiesArr as Activity[]);
     }
 

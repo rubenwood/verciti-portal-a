@@ -5,6 +5,7 @@ import { Background } from "@xyflow/react";
 import { useRef, useState } from "react";
 
 import { getInfoTextsByBatchId, updateMediaPaths, showConfetti } from "../../db/general/utils";
+import { supabaseTest } from "@/lib/supabase";
 
 
 async function createSynthesiaVideo(infoText: InfoText,videoTitle: string, testMode: boolean = false) {
@@ -70,7 +71,7 @@ export default function BatchSynthesia() {
     const copyVideosBtnRef = useRef<HTMLButtonElement | null>(null);
 
     const createSynthesia = async () => {
-        const infoTexts = await getInfoTextsByBatchId(batchId);
+        const infoTexts = await getInfoTextsByBatchId(supabaseTest, batchId);
         if (!infoTexts || infoTexts.length === 0) {
             console.error("No info texts found for the given batch ID.");
             return;
@@ -125,7 +126,7 @@ export default function BatchSynthesia() {
         const data = await response.json();
         console.log("Videos copied to S3:", data);
         // update info text to have the S3 URL
-        updateMediaPaths(data.uploaded);
+        updateMediaPaths(supabaseTest, data.uploaded);
         console.log("Media paths updated in the database.");
         showConfetti(copyVideosBtnRef);
     }

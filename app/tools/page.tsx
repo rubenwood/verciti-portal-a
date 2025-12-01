@@ -6,6 +6,7 @@ import { User } from '@supabase/supabase-js'
 import { checkUser } from "../db/general/get-user";
 import Login from '../login/login-component'
 import { getUserProfile } from "../db/general/utils";    
+import { supabaseTest } from "@/lib/supabase";
         
 
 export default function ToolsDashboard(){
@@ -17,7 +18,7 @@ export default function ToolsDashboard(){
             const user = await checkUser();
             if (user) { 
                 setUser(user);
-                const profile = await getUserProfile(user);
+                const profile = await getUserProfile(supabaseTest, user);
                 setRole(profile?.data?.role || null);
             }
         };

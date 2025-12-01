@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { fetchStagesWithInfoTexts, updateInfoText } from '../../general/utils';
 import { PostgrestError } from '@supabase/supabase-js';
+import { supabaseTest } from '@/lib/supabase';
 
 import { InfoTextAdder } from './info-text-adder-component';
 
@@ -20,7 +21,7 @@ export default function InfoTextEditor() {
     });
 
     const searchClicked = async () => {
-        const stagesWithInfoText = await fetchStagesWithInfoTexts(searchTerm);
+        const stagesWithInfoText = await fetchStagesWithInfoTexts(supabaseTest, searchTerm);
         //const output = await fetchInfoTextByBatchId(searchTerm);
 
         if ('message' in stagesWithInfoText) {
@@ -53,7 +54,7 @@ export default function InfoTextEditor() {
             if(row == null) { console.error("no row!"); return; }
             if(row.related_info_text == null) { console.error("no related info text"); return; }
             
-            await updateInfoText({
+            await updateInfoText(supabaseTest, {
                 id: row.related_info_text.id,
                 text_en_uk: {
                     title: editFields.title,

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { deleteByBatchId } from "../../general/utils";
 import { Button } from "@/components/ui/button";
+import { supabaseTest } from "@/lib/supabase";
 
 export default function BatchDelete(){
     const [infoTextBatchId, setInfoBatchId] = useState<string>("");
@@ -13,10 +14,10 @@ export default function BatchDelete(){
         }
 
         try {
-            await deleteByBatchId(infoTextBatchId, 'info_texts');
-            await deleteByBatchId(infoTextBatchId, 'stages');
-            await deleteByBatchId(quizBatchId, 'quiz_questions');
-            await deleteByBatchId(quizBatchId, 'stages');
+            await deleteByBatchId(supabaseTest, infoTextBatchId, 'info_texts');
+            await deleteByBatchId(supabaseTest, infoTextBatchId, 'stages');
+            await deleteByBatchId(supabaseTest, quizBatchId, 'quiz_questions');
+            await deleteByBatchId(supabaseTest, quizBatchId, 'stages');
             alert("Batch deleted successfully");
         } catch (error) {
             console.error("Error deleting batch:", error);

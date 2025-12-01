@@ -1,11 +1,11 @@
-import { supabaseMain } from '@/lib/supabase'
+//import { supabaseTest, supabaseMain } from '@/lib/supabase'
 import { PostgrestError, SupabaseClient, User } from '@supabase/supabase-js';
 import confetti from 'canvas-confetti';
 import type { RefObject } from 'react';
 
 
-export async function getUserProfile(user: User) {
-    const { data, error } = await supabaseMain
+export async function getUserProfile(client: SupabaseClient, user: User) {
+    const { data, error } = await client
         .from('user_profiles')
         .select('*')
         .eq('id', user.id);
@@ -69,7 +69,7 @@ export async function fetchTablesAsCSV(client: SupabaseClient, tables: string[])
 
 // updates the media_en_uk field to be a filepath from the s3 upload,
 // matching on batch_id and sheet_id extracted from the video file title
-export async function updateMediaPaths(uploaded: { title: string; key: string }[]) {
+export async function updateMediaPaths(client: SupabaseClient, uploaded: { title: string; key: string }[]) {
     for (const { title, key } of uploaded) {
         // Extract batch_id and sheet_id from the title
         const match = title.match(/^([^_]+)_([^_]+)_info_[0-9a-f-]{36}_/i);
@@ -87,7 +87,7 @@ export async function updateMediaPaths(uploaded: { title: string; key: string }[
             synthesiaPath = synthesiaPath.replace(/^\/?dev\//, '');
         }
 
-        const { error } = await supabaseMain
+        const { error } = await client
             .from('info_texts')
             .update({ media_en_uk: synthesiaPath })
             .eq('batch_id', batchId)
@@ -101,8 +101,8 @@ export async function updateMediaPaths(uploaded: { title: string; key: string }[
     }
 }
 
-export async function getInfoTextsByBatchId(batchId: string) {
-    const { data, error } = await supabaseMain
+export async function getInfoTextsByBatchId(client: SupabaseClient, batchId: string) {
+    const { data, error } = await client
         .from('info_texts')
         .select('*')
         .eq('batch_id', batchId);
@@ -115,8 +115,8 @@ export async function getInfoTextsByBatchId(batchId: string) {
     return data;
 }
 // Delete by batch id from any table
-export async function deleteByBatchId(batchId: string, tableName: string) {
-    const { data, error } = await supabaseMain
+export async function deleteByBatchId(client: SupabaseClient, batchId: string, tableName: string) {
+    const { data, error } = await client
         .from(tableName)
         .delete()
         .eq('batch_id', batchId)
@@ -130,8 +130,8 @@ export async function deleteByBatchId(batchId: string, tableName: string) {
     return data;
 }
 
-export async function fetchQuizStagesByBatchId(batchId: string): Promise<StageWithQuestions[] | PostgrestError> {
-    const { data: stages, error: stagesError } = await supabaseMain
+export async function fetchQuizStagesByBatchId(client: SupabaseClient, batchId: string): Promise<StageWithQuestions[] | PostgrestError> {
+    const { data: stages, error: stagesError } = await client
         .from('stages')
         .select('*')
         .eq('batch_id', batchId)
@@ -153,7 +153,7 @@ export async function fetchQuizStagesByBatchId(batchId: string): Promise<StageWi
     
     const uniqueQuestionIds = Array.from(new Set(questionsIds));
 
-    const { data: questions, error: questionsError } = await supabaseMain
+    const { data: questions, error: questionsError } = await client
         .from('quiz_questions')
         .select('*')
         .in('id', uniqueQuestionIds);
@@ -184,8 +184,8 @@ export async function fetchQuizStagesByBatchId(batchId: string): Promise<StageWi
     return results; 
 }
 //
-export async function fetchAllInfoText() {
-    const { data, error } = await supabaseMain.from('info_texts').select('*');
+export async function fetchAllInfoText(client: SupabaseClient) {
+    const { data, error } = await client.from('info_texts').select('*');
 
     if (error) {
         console.error('Error fetching info texts:', error);
@@ -194,8 +194,8 @@ export async function fetchAllInfoText() {
 
     return data as InfoText[];
 }
-export async function fetchInfoTextByBatchId(batchId: string) {
-    const { data, error } = await supabaseMain.from('info_texts').select('*').eq('batch_id', batchId);
+export async function fetchInfoTextByBatchId(client: SupabaseClient, batchId: string) {
+    const { data, error } = await client.from('info_texts').select('*').eq('batch_id', batchId);
 
     if (error) {
         console.error('Error fetching info text (by id):', error);
@@ -204,8 +204,8 @@ export async function fetchInfoTextByBatchId(batchId: string) {
 
     return data as InfoText[];
 }
-export async function fetchInfoTextById(infoTextId: string) {
-    const { data, error } = await supabaseMain.from('info_texts').select('*').eq('id', infoTextId).single();
+export async function fetchInfoTextById(client: SupabaseClient, infoTextId: string) {
+    const { data, error } = await client.from('info_texts').select('*').eq('id', infoTextId).single();
 
     if (error) {
         console.error('Error fetching info text (by id):', error);
@@ -215,8 +215,8 @@ export async function fetchInfoTextById(infoTextId: string) {
     return data as InfoText;
 }
 // TODO: test & use this to update patch-batches
-export async function updateInfoText(infoText: { id: string; text_en_uk: { title: string; body: string }; media_en_uk?: string;}) {
-    const { data, error } = await supabaseMain
+export async function updateInfoText(client: SupabaseClient, infoText: { id: string; text_en_uk: { title: string; body: string }; media_en_uk?: string;}) {
+    const { data, error } = await client
     .from('info_texts')
     .update({
         text_en_uk: infoText.text_en_uk,
@@ -231,8 +231,8 @@ export async function updateInfoText(infoText: { id: string; text_en_uk: { title
 
     return data;
 }
-export async function updateInfoTextFull(infoText: InfoText) {
-    const { data, error } = await supabaseMain
+export async function updateInfoTextFull(client: SupabaseClient, infoText: InfoText) {
+    const { data, error } = await client
     .from('info_texts')
     .update(infoText)
     .eq('id', infoText.id)
@@ -245,7 +245,7 @@ export async function updateInfoTextFull(infoText: InfoText) {
 
     return data;
 }
-export async function insertInfoTexts(rows: { heading: string; body: string; sheetId: number}[], batchId: string) {
+export async function insertInfoTexts(client: SupabaseClient, rows: { heading: string; body: string; sheetId: number}[], batchId: string) {
     const validRows = rows.filter(r => r.body.trim().length > 0);
 
     const insertData = validRows.map(r => ({
@@ -261,7 +261,7 @@ export async function insertInfoTexts(rows: { heading: string; body: string; she
         sheet_id: r.sheetId
     }));
 
-    const { data, error } = await supabaseMain.from('info_texts').insert(insertData).select();
+    const { data, error } = await client.from('info_texts').insert(insertData).select();
 
     if (error) {
         console.error('Insert info text error:', error);
@@ -271,7 +271,7 @@ export async function insertInfoTexts(rows: { heading: string; body: string; she
     return data;
 }
 //
-export async function insertStages(rows: { stageType: string, stageAssets: object, stageParams: Record<string, any>, stageBatchId: string }[]) {
+export async function insertStages(client: SupabaseClient, rows: { stageType: string, stageAssets: object, stageParams: Record<string, any>, stageBatchId: string }[]) {
     const insertData = rows.map( r => ({
         type: r.stageType,
         assets: r.stageAssets,
@@ -279,7 +279,7 @@ export async function insertStages(rows: { stageType: string, stageAssets: objec
         batch_id: r.stageBatchId
     }));
 
-    const { data, error } = await supabaseMain.from('stages').insert(insertData).select();
+    const { data, error } = await client.from('stages').insert(insertData).select();
 
     if (error) {
         console.error('Insert stage error:', error);
@@ -288,8 +288,8 @@ export async function insertStages(rows: { stageType: string, stageAssets: objec
 
     return data; // Contains id and created_at from Supabase
 }
-export async function updateStage(stage: Stage) {
-    const { data, error } = await supabaseMain
+export async function updateStage(client: SupabaseClient, stage: Stage) {
+    const { data, error } = await client
     .from('stages')
     .update(stage)
     .eq('id', stage.id)
@@ -300,8 +300,8 @@ export async function updateStage(stage: Stage) {
     }
     return data;
 }
-export async function fetchStagesWithInfoTexts(batchId: string): Promise<StageWithInfoText[] | PostgrestError> {
-   const { data: stages, error: stagesError } = await supabaseMain
+export async function fetchStagesWithInfoTexts(client: SupabaseClient, batchId: string): Promise<StageWithInfoText[] | PostgrestError> {
+   const { data: stages, error: stagesError } = await client
         .from('stages')
         .select('*')
         .eq('batch_id', batchId);
@@ -324,7 +324,7 @@ export async function fetchStagesWithInfoTexts(batchId: string): Promise<StageWi
 
     const uniqueInfoTextIds = Array.from(new Set(infoTextIds));
 
-    const { data: infoTexts, error: infoTextError } = await supabaseMain
+    const { data: infoTexts, error: infoTextError } = await client
         .from('info_texts')
         .select('*')
         .in('id', uniqueInfoTextIds);
@@ -361,8 +361,8 @@ export async function fetchStagesWithInfoTexts(batchId: string): Promise<StageWi
     });
     return results;
 }
-export async function fetchStagesByIds(stageIds: string[]): Promise<Stage[] | PostgrestError> {
-    const { data, error } = await supabaseMain
+export async function fetchStagesByIds(client: SupabaseClient, stageIds: string[]): Promise<Stage[] | PostgrestError> {
+    const { data, error } = await client
         .from('stages')
         .select('*')
         .in('id', stageIds);
@@ -372,8 +372,8 @@ export async function fetchStagesByIds(stageIds: string[]): Promise<Stage[] | Po
     }
     return data as Stage[];
 }
-export async function fetchStages() {
-    const { data, error } = await supabaseMain.from('stages').select('*');
+export async function fetchStages(client: SupabaseClient) {
+    const { data, error } = await client.from('stages').select('*');
 
     if (error) {
         console.error('Error fetching stages:', error);
@@ -383,13 +383,13 @@ export async function fetchStages() {
     return data as Stage[];
 }
 //
-export async function insertActivity(activity: Activity){
-    const { data, error } = await supabaseMain.from('activities').insert(activity).select();
+export async function insertActivity(client: SupabaseClient, activity: Activity){
+    const { data, error } = await client.from('activities').insert(activity).select();
     const output = {data: data, error: error};
     return output;
 } 
-export async function fetchActivities() {
-    const { data, error } = await supabaseMain.from('activities').select('*');
+export async function fetchActivities(client: SupabaseClient) {
+    const { data, error } = await client.from('activities').select('*');
 
     if (error) {
         console.error('Error fetching activities:', error);
@@ -398,16 +398,16 @@ export async function fetchActivities() {
 
     return data as Activity[];
 }
-export async function fetchActivityById(activityId: string) {
-    const { data, error } = await supabaseMain.from('activities').select('*').eq('id', activityId).single();
+export async function fetchActivityById(client: SupabaseClient, activityId: string) {
+    const { data, error } = await client.from('activities').select('*').eq('id', activityId).single();
     if (error) {
         console.error('Error fetching activity (by id):', error);
         return error;
     }
     return data as Activity;
 }
-export async function updateActivity(activity: Activity){
-    const { data, error } = await supabaseMain
+export async function updateActivity(client: SupabaseClient, activity: Activity){
+    const { data, error } = await client
       .from('activities')
       .update(activity)
       .eq('id', activity.id)
@@ -418,8 +418,8 @@ export async function updateActivity(activity: Activity){
       return output;
 }
 //
-export async function fetchCourses() {
-    const { data, error } = await supabaseMain.from('courses').select('*');
+export async function fetchCourses(client: SupabaseClient) {
+    const { data, error } = await client.from('courses').select('*');
 
     if (error) {
         console.error('Error fetching courses:', error);

@@ -14,6 +14,7 @@ import {
     Connection, 
     Position} from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
+import { supabaseTest } from "@/lib/supabase";
 
 import { ActivityNode, StageNode, InfoTextNode } from "./flow-nodes";
 import ActivitySelectTable from "./activity-select-table-component";
@@ -156,7 +157,7 @@ export default function ActivityEditor(){
     const createNewStageFromContext = async () => {
         if (!selectedActivity) return;
         
-        const inserted = await insertStages([{
+        const inserted = await insertStages(supabaseTest, [{
             stageType: "",
             stageAssets: {},
             stageParams: {}, 
@@ -201,7 +202,7 @@ export default function ActivityEditor(){
             return;
         }
         
-        const infoTextData = await fetchInfoTextById(stageParams.infoTextId);
+        const infoTextData = await fetchInfoTextById(supabaseTest, stageParams.infoTextId);
         
         if('message' in infoTextData){ console.error(infoTextData.message); return;}
 
@@ -312,7 +313,7 @@ export default function ActivityEditor(){
     };
 
     const init = async () => {
-        const tempStages = await fetchStages();
+        const tempStages = await fetchStages(supabaseTest);
         setStages(tempStages as Stage[]);
     }
     useEffect(() => {
