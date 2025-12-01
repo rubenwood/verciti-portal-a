@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { supabaseTest } from '@/lib/supabase'
 import {
   Select,
   SelectContent,
@@ -44,7 +44,7 @@ export default function CAJJoiner(props: any){
     const [selectedActivity, setSelectedActivity] = useState<Activity>();
 
     const addCourseActivityJoin = async () => {
-        const { data, error } = await supabase.from('courses_activities_join').insert([
+        const { data, error } = await supabaseTest.from('courses_activities_join').insert([
             {
                 course_id: selectedCourse,
                 activity_id: selectedActivity,

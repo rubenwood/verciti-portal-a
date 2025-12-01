@@ -1,7 +1,7 @@
 "use client"
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase, supabaseTest } from '@/lib/supabase'
+import { supabaseMain, supabaseTest } from '@/lib/supabase'
 import { SupabaseClient } from '@supabase/supabase-js';
 
 export default function Login(props: any){
@@ -11,7 +11,7 @@ export default function Login(props: any){
     const [error, setError] = useState('');
 
     const handleLogin = async () => {
-        await doLogin(supabase);
+        await doLogin(supabaseMain);
         await doLogin(supabaseTest);
     };
 
@@ -33,7 +33,7 @@ export default function Login(props: any){
 
 
     const handleLoginWithGoogle = async () => {
-        const { data, error } = await supabase.auth.signInWithOAuth({
+        const { data, error } = await supabaseMain.auth.signInWithOAuth({
             provider: 'google',
             options: {
                 redirectTo: 'https://vertciti-portal.vercel.app/google-login'

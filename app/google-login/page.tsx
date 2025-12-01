@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from "react";
-import { supabase } from '@/lib/supabase'
+import { supabaseMain } from '@/lib/supabase'
 
 export default function GoogleLogin(){
     const [deeplink, setDeeplink] = useState<string | null>(null);
@@ -33,7 +33,7 @@ export default function GoogleLogin(){
     }
 
     const handleLoginWithGoogle = async () => {
-            const { data, error } = await supabase.auth.signInWithOAuth({
+            const { data, error } = await supabaseMain.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
                     redirectTo: 'https://vertciti-portal.vercel.app/google-login'

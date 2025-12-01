@@ -4,7 +4,7 @@ import { Canvas } from "@react-three/fiber"
 import { GizmoHelper, GizmoViewport, Gltf, OrbitControls, PivotControls, Stage } from '@react-three/drei'
 import { DefaultStage, InteractiveScene, ModelBrowser } from '../../model-browser/model-browser-component'
 
-import { supabase } from '@/lib/supabase'
+import { supabaseMain } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
 
 export const SelectedModelContext = createContext<any>(null) 

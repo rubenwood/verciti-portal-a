@@ -1,6 +1,6 @@
 "use client"
 import { useRef, useState } from 'react'
-import { supabase, supabaseTest } from '@/lib/supabase';
+import { supabaseMain, supabaseTest } from '@/lib/supabase';
 import {
   ToggleGroup,
   ToggleGroupItem,
@@ -63,7 +63,7 @@ export function ClientSelect(props: any) {
 }
 
 const allClients: SupabaseClientWithKey[] = [
-  { key: "live", client: supabase },
+  { key: "live", client: supabaseMain },
   { key: "test", client: supabaseTest },
 ];
 
@@ -75,7 +75,7 @@ export function CopyTablesTool() {
         useState<SupabaseClient>(supabaseTest);
 
     const [selectedToClient, setSelectedToClient] =
-        useState<SupabaseClient>(supabase);
+        useState<SupabaseClient>(supabaseMain);
 
     const [mappedClients, setMappedClients] = useState<{ branch: string, clientKey: string }[]>([]);
 

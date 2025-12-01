@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { fetchQuizStagesByBatchId } from "../../general/utils";
 import { PostgrestError } from "@supabase/supabase-js";
-import { supabase } from '@/lib/supabase'
+import { supabaseTest } from '@/lib/supabase'
 
 export default function QuizEditor(){
     const [searchTerm, setSearchTerm] = useState('');
@@ -42,7 +42,7 @@ export default function QuizEditor(){
         const updates = editedQuestions[question.id];
         if (!updates) return;
 
-        const { error } = await supabase
+        const { error } = await supabaseTest
             .from("quiz_questions")
             .update(updates)
             .eq("id", question.id);
