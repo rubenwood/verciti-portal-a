@@ -46,10 +46,6 @@ async function downloadTables(client: SupabaseClient, tables: string[], suffix: 
     }
 }
 
-async function copyData(fromClient: SupabaseClient, toClient: SupabaseClient, tables: string[]){
-    await copyDataBetweenTables(fromClient, toClient, tables);
-}
-
 export function ClientSelect(props: any) {
     return (        
         <>
@@ -163,7 +159,7 @@ export function CopyTablesTool() {
                 ref={copyBtn}
                 onClick={async () => { 
                         console.log('Copying from', selectedFromClientString, 'to', selectedToClientString);
-                        await copyData(selectedFromClient, selectedToClient, selectedTables) 
+                        await copyDataBetweenTables(selectedFromClient, selectedToClient, selectedTables) 
                         showConfetti(copyBtn);
                     } 
                 } 
