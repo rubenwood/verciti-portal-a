@@ -53,7 +53,7 @@ body {
   page-break-before: always !important;
   break-before: page !important;
 }
-.button {
+.link-button {
   @apply mt-2 px-4 py-2 bg-[#97fb57] text-[#121212] rounded-lg  hover:bg-[#83d84d] text-sm
 }
 .green-shadcn-button {

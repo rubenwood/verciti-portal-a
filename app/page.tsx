@@ -26,7 +26,7 @@ export default function Home() {
             priority
           />
           <br/>
-          <Link href="/login" className="button">
+          <Link href="/login" className="link-button">
             Login
           </Link>
           <br/>

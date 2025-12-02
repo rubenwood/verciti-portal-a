@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabaseMain, supabaseTest } from '@/lib/supabase'
 import { SupabaseClient } from '@supabase/supabase-js';
+import { Button } from '@/components/ui/button';
 
 export default function Login(props: any){
     const router = useRouter();
@@ -25,7 +26,6 @@ export default function Login(props: any){
             setError(error.message);
             console.error('Login error:', client, "\n", error.message);
         } else {
-            console.log('Login successful:', client);
             if(props.setTestUserFunc){ props.setTestUserFunc(data.user); }
             if(props.path){ router.push(props.path); }
         }
@@ -66,13 +66,13 @@ export default function Login(props: any){
                     placeholder="Password"
                     className="border p-2 mb-2 w-full"
                 />
-                <button className="button" onClick={handleLogin}>
+                <Button className="green-shadcn-button" onClick={handleLogin}>
                     Login
-                </button>
+                </Button>
                 <br />
-                <button className="button mt-2" onClick={handleLoginWithGoogle}>
+                <Button className="green-shadcn-button mt-2" onClick={handleLoginWithGoogle}>
                     Login with Google
-                </button>
+                </Button>
                 {error && <p className="text-red-500 mt-2">{error}</p>}
             </div>
         </div>

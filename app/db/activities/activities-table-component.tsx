@@ -196,7 +196,7 @@ export default function ActivitiesTable(){
                           </td>
                           <td className="px-4 py-2 space-x-2">
                             <button
-                              className="button"
+                              className="green-shadcn-button"
                               onClick={handleSave}
                             >
                               Save
