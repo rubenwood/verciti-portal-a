@@ -42,6 +42,9 @@ export default function GoogleLogin(){
         if(deeplink == null) return;
         window.location.href = deeplink;
     }
+    const openApp2 = () =>{
+        window.location.href = 'verciti://app';
+    }
 
     const handleLoginWithGoogle = async () => {
         const { data, error } = await supabaseMain.auth.signInWithOAuth({
@@ -76,7 +79,10 @@ export default function GoogleLogin(){
                         Return to Verciti App
                     </Button>
                 </>
-            }            
+            }
+            <Button className="green-shadcn-button" onClick={openApp2}>
+                Test
+            </Button>
         </div>
     );
 }
