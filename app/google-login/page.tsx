@@ -13,7 +13,8 @@ export default function GoogleLogin(){
         if (typeof window === "undefined") return;
         
         const stored = localStorage.getItem("verciti_deeplink");
-        if (stored == null){ handleLoginWithGoogle(); return; }
+        if (stored == null){ return; }
+
         setDeeplink(stored);
 
         const hashParams = new URLSearchParams(window.location.hash.slice(1));
