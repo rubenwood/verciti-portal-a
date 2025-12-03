@@ -7,7 +7,7 @@ export default function GoogleLogin(){
     const [error, setError] = useState('');
 
     useEffect(() => {
-        if(deeplink == null){ handleLoginWithGoogle(); }
+        if(localStorage.getItem("verciti_deeplink") == null){ handleLoginWithGoogle(); }
         if (typeof window === "undefined") return;
 
         const hashParams = new URLSearchParams(window.location.hash.slice(1));
@@ -23,6 +23,7 @@ export default function GoogleLogin(){
             
             const deeplink = `verciti://app?glogin${atStr}${rtStr}${ttStr}`;
             console.log("Deeplink:", deeplink);
+            localStorage.setItem('verciti_deeplink', deeplink);
             setDeeplink(deeplink);
             window.location.href = deeplink;            
         }
