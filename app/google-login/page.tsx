@@ -53,14 +53,14 @@ export default function GoogleLogin(){
             {deeplink == null ?
                 <>
                     <p className="text-center">Logging in with Google...</p>
-                    <button className="button mt-2" onClick={handleLoginWithGoogle}>
+                    <button className="green-shadcn-button" onClick={handleLoginWithGoogle}>
                         Login with Google
                     </button>
                 </>
             :
                 <>
                     <p className="text-center">If you are not redirected automatically, please click the button below to return to the Verciti App.</p>
-                    <button className="button mt-2" onClick={openApp}>
+                    <button className="green-shadcn-button" onClick={openApp}>
                         Return to Verciti App
                     </button>
                 </>
