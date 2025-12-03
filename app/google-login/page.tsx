@@ -14,6 +14,7 @@ export default function GoogleLogin(){
         const accessToken = hashParams.get("access_token");
         const refreshToken = hashParams.get("refresh_token");
         const tokenType = hashParams.get("token_type");
+        console.log("OAuth Tokens:", { accessToken, refreshToken, tokenType });
         
         if (accessToken) {
             let atStr = accessToken != null ? `&at=${encodeURIComponent(accessToken)}` : '';
@@ -21,6 +22,7 @@ export default function GoogleLogin(){
             let ttStr = tokenType != null ? `&tt=${encodeURIComponent(tokenType)}` : '';
             
             const deeplink = `verciti://app?glogin${atStr}${rtStr}${ttStr}`;
+            console.log("Deeplink:", deeplink);
             setDeeplink(deeplink);
             window.location.href = deeplink;            
         }

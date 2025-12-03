@@ -2,6 +2,7 @@
 import { useRef } from "react";
 import { updateActivity, showConfetti } from "../../general/utils";
 import { Button } from "@/components/ui/button";
+import { supabaseTest } from "@/lib/supabase";
 
 export default function EditorSaveButton(props: any){
     const saveButtonRef = useRef<any>(null);
@@ -9,7 +10,7 @@ export default function EditorSaveButton(props: any){
     const saveChanges = async (selectedActivity: any) => {
         if(selectedActivity == undefined){ return; }
         // save the modified params back to supabase
-        const result = await updateActivity(selectedActivity);
+        const result = await updateActivity(supabaseTest, selectedActivity);
         if(result.error){
             console.log(result.error);
         } else {
