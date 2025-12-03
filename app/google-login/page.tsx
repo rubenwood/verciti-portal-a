@@ -11,26 +11,30 @@ export default function GoogleLogin(){
     useEffect(() => {
         setReady(true);
         if (typeof window === "undefined") return;
-        
-        const stored = localStorage.getItem("verciti_deeplink");
-        if (stored == null){ return; }
 
-        setDeeplink(stored);
-
-        const hashParams = new URLSearchParams(window.location.hash.slice(1));
+        const hash = window.location.hash;
+        const hashParams = new URLSearchParams(hash.replace("#", ""));
         const accessToken = hashParams.get("access_token");
         const refreshToken = hashParams.get("refresh_token");
         const tokenType = hashParams.get("token_type");
-        
+
         if (accessToken) {
-            let atStr = accessToken != null ? `&at=${encodeURIComponent(accessToken)}` : '';
-            let rtStr = refreshToken != null ? `&rt=${encodeURIComponent(refreshToken)}` : '';
-            let ttStr = tokenType != null ? `&tt=${encodeURIComponent(tokenType)}` : '';
-            
-            const deeplink = `verciti://app?glogin${atStr}${rtStr}${ttStr}`;
-            localStorage.setItem('verciti_deeplink', deeplink);
-            setDeeplink(deeplink);
-            window.location.href = deeplink;            
+            const atStr = `&at=${encodeURIComponent(accessToken)}`;
+            const rtStr = refreshToken ? `&rt=${encodeURIComponent(refreshToken)}` : "";
+            const ttStr = tokenType ? `&tt=${encodeURIComponent(tokenType)}` : "";
+
+            const newDeeplink = `verciti://app?glogin${atStr}${rtStr}${ttStr}`;
+
+            localStorage.setItem("verciti_deeplink", newDeeplink);
+            setDeeplink(newDeeplink);
+
+            window.location.href = newDeeplink;
+            return;
+        }
+
+        const stored = localStorage.getItem("verciti_deeplink");
+        if (stored) {
+            setDeeplink(stored);
         }
     }, []);
 
