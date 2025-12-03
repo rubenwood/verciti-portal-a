@@ -7,14 +7,6 @@ import { Input } from '@/components/ui/input';
 import { insertInfoTexts, insertStages } from '../../general/utils';
 import { supabaseTest } from '@/lib/supabase';
 
-
-type ParsedRow = {
-  heading: string;
-  body: string;
-  batchId: string;
-  sheetId: number;
-};
-
 export default function InfoTextUploader() {
   const headingRowTitle = 'Heading Text';
   const bodyRowTitle = 'Body Text';

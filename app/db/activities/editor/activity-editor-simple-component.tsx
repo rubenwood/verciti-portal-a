@@ -54,7 +54,7 @@ export function ActivityBrowser({ activities }: { activities: Activity[] }) {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {activities
-        .filter((act) => act.params.stage_ids != null)
+        .filter((act) => act.params.stage_ids != null) // change this, sometimes we'll want o modify activities without stages
         .map((act) => (
           <div key={act.id}>
             <ActivityCard activity={act} />
@@ -439,8 +439,8 @@ export default function ActivityEditorSimple() {
     const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
 
     const getActivities = async () => {
-    let temp = await fetchActivities(supabaseTest);
-    setActivities(temp);
+        let temp = await fetchActivities(supabaseTest);
+        setActivities(temp);
     };
 
     const showActivityCreator = async () => {
@@ -466,8 +466,8 @@ export default function ActivityEditorSimple() {
     return (
     <div className="space-y-6">
         <div className="space-x-4">
-            <Button onClick={getActivities}><Edit />Edit Existing</Button>
-            <Button onClick={showActivityCreator}><Plus />Create New</Button>
+            <Button className="green-shadcn-button" onClick={getActivities}><Edit />Edit Existing</Button>
+            <Button className="green-shadcn-button" onClick={showActivityCreator}><Plus />Create New</Button>
         </div>
 
         <EditingActivityContext.Provider value={{ editingActivity, setEditingActivity }}>

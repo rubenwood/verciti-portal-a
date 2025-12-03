@@ -40,12 +40,13 @@ export default function LMSDashboard(){
                 <h1 className="text-2xl">Verciti Content Dashboard</h1>
             </div>
             <br/>
-            <Link href="/model-browser" className="button">
+            <Link href="/model-browser" className="link-button">
                 Browse Models
             </Link>
             <br/>
             <Button className="green-shadcn-button" onClick={() => setCourseConfigVisible(!courseConfigVisible)}>
                 {courseConfigVisible ? "Hide Course Config" : "Show Course Config"}</Button>
+            <br/>
             <Button className="green-shadcn-button" onClick={() => setbatchToolsVisible(!batchToolsVisible)}>
                 {batchToolsVisible? "Hide Batch Tools" : "Show Batch Tools"}</Button>
             

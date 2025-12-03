@@ -1,3 +1,10 @@
+type ParsedRow = {
+  heading: string;
+  body: string;
+  batchId: string;
+  sheetId: number;
+};
+
 type Course = {
     id: string
     created_at: string
