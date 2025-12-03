@@ -7,14 +7,13 @@ export default function GoogleLogin(){
     const [error, setError] = useState('');
 
     useEffect(() => {
-        if(localStorage.getItem("verciti_deeplink") == null){ handleLoginWithGoogle(); }
+        if (localStorage.getItem("verciti_deeplink") == null){ handleLoginWithGoogle(); return; }
         if (typeof window === "undefined") return;
 
         const hashParams = new URLSearchParams(window.location.hash.slice(1));
         const accessToken = hashParams.get("access_token");
         const refreshToken = hashParams.get("refresh_token");
         const tokenType = hashParams.get("token_type");
-        console.log("OAuth Tokens:", { accessToken, refreshToken, tokenType });
         
         if (accessToken) {
             let atStr = accessToken != null ? `&at=${encodeURIComponent(accessToken)}` : '';
@@ -22,7 +21,6 @@ export default function GoogleLogin(){
             let ttStr = tokenType != null ? `&tt=${encodeURIComponent(tokenType)}` : '';
             
             const deeplink = `verciti://app?glogin${atStr}${rtStr}${ttStr}`;
-            console.log("Deeplink:", deeplink);
             localStorage.setItem('verciti_deeplink', deeplink);
             setDeeplink(deeplink);
             window.location.href = deeplink;            
@@ -30,7 +28,7 @@ export default function GoogleLogin(){
     }, []);
 
     const openApp = () =>{
-        if(deeplink == null) return;
+        if(deeplink == null || localStorage.getItem("verciti_deeplink") == null) return;
         console.log(deeplink);
         window.location.href = deeplink;
     }
