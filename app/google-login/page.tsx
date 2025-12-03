@@ -29,9 +29,8 @@ export default function GoogleLogin(){
     }, []);
 
     const openApp = () =>{
-        if(deeplink == null || localStorage.getItem("verciti_deeplink") == null) return;
-        console.log(deeplink);
-        window.location.href = deeplink;
+        if(localStorage.getItem("verciti_deeplink") == null) return;
+        window.location.href = localStorage.getItem("verciti_deeplink") as string;
     }
 
     const handleLoginWithGoogle = async () => {
@@ -51,7 +50,7 @@ export default function GoogleLogin(){
 
     return(
         <div className="grid items-center justify-items-center min-h-screen">
-            {deeplink == null ?
+            {localStorage.getItem("verciti_deeplink") == null ?
                 <>
                     <p className="text-center">Logging in with Google...</p>
                     <Button className="green-shadcn-button" onClick={handleLoginWithGoogle}>
