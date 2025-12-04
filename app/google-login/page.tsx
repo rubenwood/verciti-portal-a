@@ -80,11 +80,6 @@ export default function GoogleLogin(){
                     </Button>
                 </>
             }
-            <Button className="green-shadcn-button" onClick={openApp2}>
-                Test
-            </Button>
-            <br/>
-            <a href="verciti://app">test 2</a>
         </div>
     );
 }
