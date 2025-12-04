@@ -10,9 +10,9 @@ export default function ModelBrowserPage(){
 
     useEffect(() => {
         const init = async () => {
-            const user = await checkUser();
+            const users = await checkUser();
             
-            if (user) { setUser(user); }
+            if (users) { setUser(users.testUser); }
             setLoading(false);
         };
         init();

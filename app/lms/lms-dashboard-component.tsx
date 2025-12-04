@@ -26,8 +26,8 @@ export default function LMSDashboard(){
 
     useEffect(() => {
         const init = async () => {
-            const user = await checkUser();
-            if (user) { setUser(user); }
+            const users = await checkUser();
+            if (users) { setUser(users.testUser); }
         };
         init();
     }, []);

@@ -2,7 +2,7 @@ import { supabaseMain, supabaseTest } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
 
 export async function checkUser(){
-    const { data: { user }, error } = await supabaseMain.auth.getUser();
+    const { data: { user: liveUser }, error } = await supabaseMain.auth.getUser();
     const { data: { user: testUser }, error: testError } = await supabaseTest.auth.getUser();
 
     if(testError){
@@ -14,5 +14,5 @@ export async function checkUser(){
         return null;
     }
 
-    return user;
+    return { liveUser, testUser };
 }

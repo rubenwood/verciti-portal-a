@@ -15,10 +15,10 @@ export default function ToolsDashboard(){
 
     useEffect(() => {
         const init = async () => {
-            const user = await checkUser();
-            if (user) { 
-                setUser(user);
-                const profile = await getUserProfile(supabaseTest, user);
+            const users = await checkUser();
+            if (users && users.testUser) { 
+                setUser(users.testUser);
+                const profile = await getUserProfile(supabaseTest, users.testUser);
                 setRole(profile?.data?.role || null);
             }
         };

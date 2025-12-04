@@ -12,16 +12,18 @@ export default function ToolsPage(){
 
     useEffect(() => {
         const init = async () => {
-            const user = await checkUser();
-            if (user) { 
-                const profile = await getUserProfile(supabaseTest, user);
+            const users = await checkUser();
+            console.log("Checked user in tools page:", users);
+            if (users && users.testUser) { 
+                const profile = await getUserProfile(supabaseTest, users.testUser);
+                console.log("User profile in tools page:", profile);
                 setRole(profile?.data?.role || null);
             }
         };
         init();
     }, []);
 
-    if(role !== "admin"){ return <p>Not logged in</p> }
+    if(role !== "admin"){ return <p>Not logged in {role}</p> }
         
     return (
         <>
