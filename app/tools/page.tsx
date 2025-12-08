@@ -7,6 +7,7 @@ import { checkUser } from "../db/general/get-user";
 import Login from '../login/login-component'
 import { getUserProfile } from "../db/general/utils";    
 import { supabaseTest } from "@/lib/supabase";
+import S3Invalidator from "./s3invalidator/s3invalidator";
         
 
 export default function ToolsDashboard(){
@@ -31,12 +32,16 @@ export default function ToolsDashboard(){
     return(
         <>
             <h1 className="header">Here you will find various tools</h1>
-            <div>
-                <ul>
-                    <li>
-                        <Link href="/tools/printable-applicant-form">Printable Applicant Form</Link>
-                    </li>
-                </ul>
+            <br/>
+            <div className="center-col">
+            <S3Invalidator user={user} />
+                <div>
+                    <ul>
+                        <li>
+                            <Link href="/tools/printable-applicant-form">Printable Applicant Form</Link>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </>
     )

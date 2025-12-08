@@ -91,6 +91,10 @@ body {
   @apply text-2xl font-bold text-center p-4;
 }
 
+.center-col {
+  @apply flex flex-col items-center justify-center w-full max-w-xl mx-auto p-8 space-y-4;
+}
+
 .top-left-div {
   display: flex;
   flex-direction: column;
