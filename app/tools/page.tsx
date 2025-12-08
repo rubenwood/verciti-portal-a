@@ -11,14 +11,16 @@ import S3Invalidator from "./s3invalidator/s3invalidator";
         
 
 export default function ToolsDashboard(){
-    const [user, setUser] = useState<User | null>(null);
+    const [testUser, setTestUser] = useState<User | null>(null);
+    const [liveUser, setLiveUser] = useState<User | null>(null);
     const [role, setRole] = useState<string | null>(null);
 
     useEffect(() => {
         const init = async () => {
             const users = await checkUser();
             if (users && users.testUser) { 
-                setUser(users.testUser);
+                setTestUser(users.testUser);
+                setLiveUser(users.liveUser);
                 const profile = await getUserProfile(supabaseTest, users.testUser);
                 setRole(profile?.data?.role || null);
             }
@@ -26,7 +28,7 @@ export default function ToolsDashboard(){
         init();
     })
 
-    if(!user){ return <Login setUserFunc={setUser} user={user} /> }
+    if(!testUser){ return <Login setUserFunc={setTestUser} user={testUser} /> }
     if(role !== "admin"){ return <p>Not logged in</p> }
 
     return(
@@ -34,7 +36,7 @@ export default function ToolsDashboard(){
             <h1 className="header">Here you will find various tools</h1>
             <br/>
             <div className="center-col">
-            <S3Invalidator user={user} />
+            <S3Invalidator user={testUser} />
                 <div>
                     <ul>
                         <li>
