@@ -6,6 +6,7 @@ import { fetchStagesWithInfoTexts, updateInfoText } from '../../general/utils';
 import { PostgrestError } from '@supabase/supabase-js';
 import { supabaseTest } from '@/lib/supabase';
 
+import { Copy } from "lucide-react";
 import { InfoTextAdder } from './info-text-adder-component';
 
 export default function InfoTextEditor() {
@@ -93,6 +94,28 @@ export default function InfoTextEditor() {
         }
     };
 
+    const getValueByPath = (obj: any, path: string) => {
+        return path.split('.').reduce((acc, key) => acc?.[key], obj);
+    };
+
+    const copyColumnContent = async (columnPath: string) => {
+        if (!stagesInfoTextResults) return;
+
+        const values = stagesInfoTextResults
+            .map((row) => getValueByPath(row, columnPath))
+            .filter((v) => v !== undefined && v !== null);
+
+        const text = values.join('\n');
+
+        try {
+            await navigator.clipboard.writeText(text);
+            console.log(`Copied ${values.length} values from ${columnPath}`);
+        } catch (err) {
+            console.error("Copy failed:", err);
+        }
+    };
+
+
     return (
         <div className="grey-border">
             <b>Info text editor</b><br />
@@ -123,7 +146,12 @@ export default function InfoTextEditor() {
                     <table className="w-full text-sm border border-gray-200">
                         <thead className="bg-gray-100">
                             <tr>
-                                <th className="pr-4 text-left">Stage ID</th>
+                                <th className="pr-4 text-left">
+                                    Stage ID
+                                    <Button onClick={() => copyColumnContent("stage.id")} variant="outline">
+                                        <Copy />
+                                    </Button>
+                                </th>
                                 <th className="pr-4 text-left">Info Text ID</th>
                                 <th className="pr-4 text-left">Batch ID</th>
                                 <th className="pr-4 text-left">Sheet ID</th>
