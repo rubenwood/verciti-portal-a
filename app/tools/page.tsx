@@ -8,7 +8,6 @@ import Login from '../login/login-component'
 import { getUserProfile } from "../db/general/utils";    
 import { supabaseTest } from "@/lib/supabase";
 import S3Invalidator from "./s3invalidator/s3invalidator";
-        
 
 export default function ToolsDashboard(){
     const [testUser, setTestUser] = useState<User | null>(null);

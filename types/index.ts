@@ -5,6 +5,13 @@ type ParsedRow = {
   sheetId: number;
 };
 
+enum EntryVisiblity {
+  Production,
+  Testing,
+  ComingSoon,
+  None,
+}
+
 type Course = {
     id: string
     created_at: string
@@ -15,13 +22,6 @@ type Course = {
     skill_level: object
     status: string
     ranks: object
-}
-
-enum EntryVisiblity {
-    Production,
-    Testing,
-    ComingSoon,
-    None
 }
 
 type Activity = {
