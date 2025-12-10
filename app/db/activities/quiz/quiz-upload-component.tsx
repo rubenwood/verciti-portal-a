@@ -4,11 +4,7 @@ import Papa from 'papaparse';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { supabaseTest, supabaseMain } from '@/lib/supabase';
 
 type ParsedQuizRow = {
   sheet_id: number;
@@ -97,7 +93,7 @@ export default function QuizUploader() {
       }));
       console.log("Payload:", payload);
 
-      const { data: insertedQuestions, error } = await supabase
+      const { data: insertedQuestions, error } = await supabaseTest
         .from('quiz_questions')
         .insert(payload)
         .select('id, batch_id, question_text_en_uk, correct_answer_en_uk, incorrect_answers_en_uk');
@@ -127,7 +123,7 @@ export default function QuizUploader() {
         batch_id: batchId
       }));
 
-      const { error: stageError } = await supabase
+      const { error: stageError } = await supabaseTest
         .from('stages')
         .insert(stagePayload);
 

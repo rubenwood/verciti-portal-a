@@ -48,18 +48,18 @@ async function createSynthesiaVideo(infoText: InfoText,videoTitle: string, testM
 }
 // TODO: currently lists 0 - 100 videos, should be paginated
 async function listAllVideos() {
-        const response = await fetch('/api/synthesia/list', {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-        });
+    const response = await fetch('/api/synthesia/list', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    });
 
-        if (!response.ok) {
-            console.error(`Failed to list videos`, await response.json());
-            return null;
-        }
-        const data = await response.json();
-        console.log(data);
-        return data;
+    if (!response.ok) {
+        console.error(`Failed to list videos`, await response.json());
+        return null;
+    }
+    const data = await response.json();
+    //console.log(data);
+    return data;
 }
 
 export default function BatchSynthesia() {
@@ -108,6 +108,8 @@ export default function BatchSynthesia() {
                 videosInBatch.push(vid);
             }
         }
+
+        console.log(`videos in batch ${videosInBatch}`);
 
         const response = await fetch('/api/aws/upload-synthesia', {
             method: 'POST',
