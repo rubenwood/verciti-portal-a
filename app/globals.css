@@ -56,6 +56,9 @@ body {
 .link-button {
   @apply mt-2 px-4 py-2 bg-[#97fb57] text-[#121212] rounded-lg  hover:bg-[#83d84d] text-sm
 }
+.link {
+  @apply mt-2 px-4 py-2 underline text-[#3366FF] hover:text-[#1a3584] text-sm
+}
 .green-shadcn-button {
   @apply bg-[#97fb57] hover:bg-[#83d84d] text-[#121212] text-sm
 }

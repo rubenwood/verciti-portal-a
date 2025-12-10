@@ -36,11 +36,15 @@ export default function ToolsDashboard(){
             <h1 className="header">Here you will find various tools</h1>
             <br/>
             <div className="center-col">
-            <S3Invalidator user={testUser} />
+                <Link className="link" href="/db/tools">you can find db tools here.</Link>
+                <br/>
+                <S3Invalidator user={testUser} />
+                <br/>
                 <div>
-                    <ul>
+                    <p>Links to other tools</p>
+                    <ul className="list-disc">
                         <li>
-                            <Link href="/tools/printable-applicant-form">Printable Applicant Form</Link>
+                            <Link className="link" href="/tools/printable-applicant-form">Printable Applicant Form</Link>
                         </li>
                     </ul>
                 </div>
