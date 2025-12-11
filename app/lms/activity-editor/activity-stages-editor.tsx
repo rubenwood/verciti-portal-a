@@ -3,7 +3,7 @@ import { useContext, useState } from "react"
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { StageList } from "./activity-editor-simple-component";
+import { StageList } from "./stage-list";
 
 import { EditingActivityContext } from "./activity-editor-simple-component";
 
