@@ -18,9 +18,9 @@ export function TrainingProviderTable() {
                     </tr>
                     <tr>
                         <th></th>
-                        <th className="text-sm">£6,000</th>
-                        <th className="text-sm">£18,000</th>
-                        <th className="text-sm">£80,000</th>
+                        <th className="text-sm">£12,000</th>
+                        <th className="text-sm">£32,000</th>
+                        <th className="text-sm">£50,000+</th>
                     </tr>
                     <tr>
                         <th></th>
@@ -30,9 +30,9 @@ export function TrainingProviderTable() {
                     </tr>
                     <tr>
                         <th>Intended For</th>
-                        <th className="px-8">SMEs & Suppliers</th>
-                        <th className="px-8">Operators & Manufacturers</th>
-                        <th className="px-8">Large employers & EPCs</th>
+                        <th className="px-8">FE colleges, ITPs</th>
+                        <th className="px-8">Funded / Regulated Delivery</th>
+                        <th className="px-8">Anchor Partners</th>
                     </tr>
                     <tr>
                         <th className="py-4 text-xl text-left">Feature</th>
