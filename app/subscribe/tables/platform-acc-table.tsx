@@ -14,15 +14,15 @@ export function PlatformAccessTable() {
                 <thead>
                     <tr>
                         <th></th>
-                        <th className="px-4 text-xl">Foundation</th>
-                        <th className="px-4 text-xl">Professional</th>
-                        <th className="px-4 text-xl">Enterprise</th>
+                        <th className="px-4 text-2xl">Foundation</th>
+                        <th className="px-4 text-2xl">Professional</th>
+                        <th className="px-4 text-2xl">Enterprise</th>
                     </tr>
                     <tr>
                         <th></th>
-                        <th className="text-sm">£6,000</th>
-                        <th className="text-sm">£18,000</th>
-                        <th className="text-sm">£80,000</th>
+                        <th className="text-lg">£6,000</th>
+                        <th className="text-lg">£18,000</th>
+                        <th className="text-lg">£80,000</th>
                     </tr>
                     <tr>
                         <th></th>

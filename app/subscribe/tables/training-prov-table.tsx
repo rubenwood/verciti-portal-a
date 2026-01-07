@@ -12,15 +12,15 @@ export function TrainingProviderTable() {
                 <thead>
                     <tr>
                         <th></th>
-                        <th className="px-4 text-xl">Core</th>
-                        <th className="px-4 text-xl">Accredited</th>
-                        <th className="px-4 text-xl">Strategic</th>
+                        <th className="px-4 text-2xl">Core</th>
+                        <th className="px-4 text-2xl">Accredited</th>
+                        <th className="px-4 text-2xl">Strategic</th>
                     </tr>
                     <tr>
                         <th></th>
-                        <th className="text-sm">£12,000</th>
-                        <th className="text-sm">£32,000</th>
-                        <th className="text-sm">£50,000+</th>
+                        <th className="text-lg">£12,000</th>
+                        <th className="text-lg">£32,000</th>
+                        <th className="text-lg">£50,000+</th>
                     </tr>
                     <tr>
                         <th></th>
