@@ -72,5 +72,5 @@ export function OrgDetailsModal(props: any) {
                 <OrganisationDetails tiers={props.tiers} />
             </DialogContent>
         </Dialog>
-)
+    )
 }
