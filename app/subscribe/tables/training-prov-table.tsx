@@ -117,6 +117,10 @@ export function TrainingProviderTable() {
                         <td className="py-4 text-center">✔️</td>
                         <td className="py-4 text-center">✔️</td>
                     </tr>
+                    <tr>
+                        <td className="py-4"></td>
+                        <td colSpan={3} className="py-4 text-center"><Button className="w-full">Contact Us</Button></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
