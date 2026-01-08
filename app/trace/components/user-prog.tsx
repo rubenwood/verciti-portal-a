@@ -12,7 +12,6 @@ function UserProgressTable(props: any) {
         <table className="w-full mb-4 border-collapse border border-gray-300">
             <thead>
                 <tr>
-                    <th className="text-center border-2">User ID</th>
                     <th className="text-center border-2">Email</th>
                     <th className="text-center border-2">Activity ID</th>
                     <th className="text-center border-2">Completion</th>
@@ -23,7 +22,6 @@ function UserProgressTable(props: any) {
                     props.userProgress.map((userProg: any) => (
                         userProg.generic_activity_progress.map((prog: any) => (
                             <tr key={`${userProg.id}-${prog.activity_id}`}>
-                                <td className="text-center border-2">{userProg.id}</td>
                                 <td className="text-center border-2">{userProg.data.email}</td>
                                 <td className="text-center border-2">{prog.caj_id}</td>
                                 <td className="text-center border-2">{prog.completion}</td>
@@ -46,7 +44,7 @@ export function UserProgress(){
     const begin = async () => {
         const data = await getUsersProgressByVisibility(supabaseTest, "Verciti");
         setUserProgressData(data);
-        console.log("User Progress Data:", data);
+        //console.log("User Progress Data:", data);
     }
     
     useEffect(() => {
