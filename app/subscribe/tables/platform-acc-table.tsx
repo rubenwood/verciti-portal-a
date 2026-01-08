@@ -1,9 +1,19 @@
 "use client"
+import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { OrganisationDetails } from "../forms/org-details";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-export function PlatformAccessTable() {
+export function PlatformAccessTable(props: any) {
+    const [open, setOpen] = useState(false);
+
+    const contactUsClicked = () => {
+        console.log("Contact Us clicked");
+        setOpen(true);
+    }
+
     return (
         <div>
             <h1 className="text-2xl">Employer & Industry Platform Access</h1>
@@ -121,10 +131,28 @@ export function PlatformAccessTable() {
                     </tr>
                     <tr>
                         <td className="py-4"></td>
-                        <td colSpan={3} className="py-4 text-center"><Button className="w-full">Contact Us</Button></td>
+                        <td colSpan={3} className="py-4 text-center">
+                            <Button className="w-full" onClick={contactUsClicked}>Contact Us</Button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
+
+            <Dialog open={open} onOpenChange={setOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Contact Us</DialogTitle>
+                        <DialogDescription>
+                            Tell us about your organisation and we'll be in touch.
+                        </DialogDescription>
+                    </DialogHeader>
+                    
+                    <OrganisationDetails
+                        tiers={["Foundation", "Professional", "Enterprise"]}
+                    />
+                    </DialogContent>
+            </Dialog>
+
         </div>
     );
 }

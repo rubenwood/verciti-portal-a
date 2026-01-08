@@ -2,8 +2,9 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { OrganisationDetails } from "../forms/org-details";
 
-export function TrainingProviderTable() {
+export function TrainingProviderTable(props: any) {
     return (
         <div>
             <h1 className="text-2xl">Colleges & Training Providers</h1>
@@ -119,7 +120,9 @@ export function TrainingProviderTable() {
                     </tr>
                     <tr>
                         <td className="py-4"></td>
-                        <td colSpan={3} className="py-4 text-center"><Button className="w-full">Contact Us</Button></td>
+                        <td colSpan={3} className="py-4 text-center">
+                            <Button className="w-full" onClick={props.contactBtnFunc}>Contact Us</Button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
