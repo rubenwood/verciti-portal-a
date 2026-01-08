@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectLabel, SelectItem } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 
 function TierSelector(props: any) {
@@ -25,7 +26,7 @@ function TierSelector(props: any) {
   )
 }
 
-export function OrganisationDetails(props: any){
+function OrganisationDetails(props: any){
     return (
         <>
         <Card>
@@ -54,4 +55,22 @@ export function OrganisationDetails(props: any){
         </Card>
         </>
     )
+}
+
+export function OrgDetailsModal(props: any) {
+
+    return (
+        <Dialog open={props.open} onOpenChange={props.setOpen}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Contact Us</DialogTitle>
+                    <DialogDescription>
+                        Tell us about your organisation and we'll be in touch.
+                    </DialogDescription>
+                </DialogHeader>
+                
+                <OrganisationDetails tiers={props.tiers} />
+            </DialogContent>
+        </Dialog>
+)
 }

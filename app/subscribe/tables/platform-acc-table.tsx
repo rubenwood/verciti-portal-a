@@ -3,7 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { OrganisationDetails } from "../forms/org-details";
+import { OrgDetailsModal } from "../forms/org-details";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export function PlatformAccessTable(props: any) {
@@ -138,20 +138,7 @@ export function PlatformAccessTable(props: any) {
                 </tbody>
             </table>
 
-            <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Contact Us</DialogTitle>
-                        <DialogDescription>
-                            Tell us about your organisation and we'll be in touch.
-                        </DialogDescription>
-                    </DialogHeader>
-                    
-                    <OrganisationDetails
-                        tiers={["Foundation", "Professional", "Enterprise"]}
-                    />
-                    </DialogContent>
-            </Dialog>
+            <OrgDetailsModal open={open} setOpen={setOpen} tiers={["Foundation", "Professional", "Enterprise"]} />
 
         </div>
     );

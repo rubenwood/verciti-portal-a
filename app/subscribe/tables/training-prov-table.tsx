@@ -1,10 +1,19 @@
 "use client"
+import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { OrganisationDetails } from "../forms/org-details";
+import { OrgDetailsModal } from "../forms/org-details";
+
 
 export function TrainingProviderTable(props: any) {
+    const [open, setOpen] = useState(false);
+    
+    const contactUsClicked = () => {
+        console.log("Contact Us clicked");
+        setOpen(true);
+    }
+
     return (
         <div>
             <h1 className="text-2xl">Colleges & Training Providers</h1>
@@ -121,11 +130,13 @@ export function TrainingProviderTable(props: any) {
                     <tr>
                         <td className="py-4"></td>
                         <td colSpan={3} className="py-4 text-center">
-                            <Button className="w-full" onClick={props.contactBtnFunc}>Contact Us</Button>
+                            <Button className="w-full" onClick={contactUsClicked}>Contact Us</Button>
                         </td>
                     </tr>
                 </tbody>
             </table>
+
+            <OrgDetailsModal open={open} setOpen={setOpen} tiers={["Core", "Accredited", "Strategic"]} />
         </div>
     );
 }
