@@ -1,12 +1,16 @@
 "use client"
-import Image from "next/image";
-import { UserProgress } from "./components/user-prog";
 import { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
 import { checkUser } from "../db/general/get-user";
 
+import Image from "next/image";
+
+import { AnalyticsDashboard } from "./components/analytics-dashboard"
+
+
 export default function TraceLandingPage(){
     const [user, setUser] = useState<User | null>(null);
+
     
     useEffect(() => {
         const init = async () => {
@@ -30,7 +34,7 @@ export default function TraceLandingPage(){
             />
             <h1 className="text-2xl">Verciti Trace</h1>
             <br/>
-            <UserProgress />
+            <AnalyticsDashboard />
         </div>       
     )
 }

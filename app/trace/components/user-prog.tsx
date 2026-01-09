@@ -1,10 +1,4 @@
 "use client"
-import { useEffect, useState } from "react";
-import { supabaseMain, supabaseTest } from "@/lib/supabase";
-import { getUsersProgress, getUsersProgressByVisibility } from "@/app/db/user/user-prog";
-
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
 
 
 function UserProgressTable(props: any) {
@@ -33,30 +27,12 @@ function UserProgressTable(props: any) {
     )
 }
 
-export function UserProgress(){
-    const [userProgressData, setUserProgressData] = useState<any[]>();
-
-    const getUserProgressData = () => {
-        // Placeholder function to fetch user progress data
-        return [];
-    }
-
-    const begin = async () => {
-        const data = await getUsersProgressByVisibility(supabaseTest, "Verciti");
-        setUserProgressData(data);
-        //console.log("User Progress Data:", data);
-    }
-    
-    useEffect(() => {
-        
-    }, [userProgressData]);
-
+export function UserProgress(props: any){
 
     return (
         <>
-            <Button onClick={begin}>Begin</Button><br/>
-            {userProgressData !== null ?
-                <UserProgressTable userProgress={userProgressData} />
+            {props.data !== null ?
+                <UserProgressTable userProgress={props.data} />
             : null}
         </>       
     )

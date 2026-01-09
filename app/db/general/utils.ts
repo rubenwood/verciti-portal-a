@@ -457,6 +457,26 @@ export async function copyDataBetweenTables(fromClient: SupabaseClient, toClient
 }
 
 
+
+export function formatDuration(totalSeconds: number): string {
+  if (!Number.isFinite(totalSeconds) || totalSeconds < 0) {
+    return "0s";
+  }
+
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = Math.floor(totalSeconds % 60);
+
+  const parts: string[] = [];
+
+  if (days) parts.push(`${days}d`);
+  if (hours) parts.push(`${hours}h`);
+  if (minutes) parts.push(`${minutes}m`);
+  if (seconds || parts.length === 0) parts.push(`${seconds}s`);
+
+  return parts.join(" ");
+}
 export function showConfetti<T extends HTMLElement = HTMLElement>(ref: RefObject<T | null>){
     if (!ref?.current) return;
 
