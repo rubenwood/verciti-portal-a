@@ -31,9 +31,9 @@ export function AnalyticsDashboard() {
             <br/>
             <div className="grid grid-cols-3 gap-4">
                 <TotalUsersCard data={userProgressData} />
-                <UserLoginsCard data={userProgressData} />
                 <ModulesCard data={userProgressData} />
                 <UsageTimeCard data={userProgressData} />
+                <UserLoginsCard data={userProgressData} />
             </div>
             <br />
             <UserProgress data={userProgressData} />

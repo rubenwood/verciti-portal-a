@@ -17,12 +17,12 @@ export function UsageTimeCard(props: any){
     }, [props.data]);    
 
     return (
-        <Card className="mb-4 p-4">
+        <Card className="mb-4 p-4 flex flex-col">
             <CardHeader className="text-lg font-semibold">
-                <CardTitle>Total Usage Time</CardTitle>
+                <CardTitle className="text-lg font-semibold text-center">Total Usage Time</CardTitle>
             </CardHeader>
-            <CardContent>
-                {formatDuration(totalUsageTime)}
+            <CardContent className="flex flex-1 items-center justify-center">
+                <p className="text-4xl">{formatDuration(totalUsageTime)}</p>
             </CardContent>
         </Card>
     )

@@ -20,12 +20,14 @@ export function ModulesCard(props: any){
     }, [props.data]);    
 
     return (
-        <Card className="mb-4 p-4">
-            <CardHeader className="text-lg font-semibold">
-                <CardTitle>Total Modules Completed</CardTitle>
+        <Card className="mb-4 p-4 flex flex-col">
+            <CardHeader>
+                <CardTitle className="text-lg font-semibold text-center">
+                    Total Modules Completed
+                </CardTitle>
             </CardHeader>
-            <CardContent>
-                {modulesCompleted}
+            <CardContent className="flex flex-1 items-center justify-center">
+                <p className="text-4xl">{modulesCompleted}</p>
             </CardContent>
         </Card>
     )
