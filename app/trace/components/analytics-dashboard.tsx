@@ -9,9 +9,10 @@ import { Button } from "@/components/ui/button";
 import { UserProgress } from "../components/user-prog";
 import { TotalUsersCard } from "./total-users-card";
 import { UserLoginsCard } from "./user-logins-card";
-import { ModulesCard } from "./modules-card"
+import { ModulesCard } from "./total-modules-card"
 import { UsageTimeCard } from "./usage-time";
 import { NewRetUsersCard } from "./new-ret-users-card";
+import { PopularModulesCard } from "./popular-modules";
 
 export function AnalyticsDashboard() {
     const [userProgressData, setUserProgressData] = useState<any[]>();
@@ -52,6 +53,7 @@ export function AnalyticsDashboard() {
                 <UsageTimeCard data={userProgressData} />
                 <UserLoginsCard data={userProgressData} />
                 <NewRetUsersCard data={userProgressData} />
+                <PopularModulesCard data={userProgressData} />
             </div>
             <br />
             <UserProgress data={userProgressData} />
