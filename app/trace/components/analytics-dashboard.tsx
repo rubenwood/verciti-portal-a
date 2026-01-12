@@ -25,6 +25,15 @@ export function AnalyticsDashboard() {
         
     }, [userProgressData]);
 
+    if(!userProgressData){
+        return (
+            <>
+                <Button onClick={begin}>Begin</Button>
+                <br/>
+            </>
+        )
+    }
+
     return (
         <>
             <Button onClick={begin}>Begin</Button>
