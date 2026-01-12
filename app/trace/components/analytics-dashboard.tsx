@@ -11,6 +11,7 @@ import { TotalUsersCard } from "./total-users-card";
 import { UserLoginsCard } from "./user-logins-card";
 import { ModulesCard } from "./modules-card"
 import { UsageTimeCard } from "./usage-time";
+import { NewRetUsersCard } from "./new-ret-users-card";
 
 export function AnalyticsDashboard() {
     const [userProgressData, setUserProgressData] = useState<any[]>();
@@ -38,11 +39,19 @@ export function AnalyticsDashboard() {
         <>
             <Button onClick={begin}>Begin</Button>
             <br/>
+            Timefame
+            <br/>
+            start:
+            <input type="date" />
+            end:
+            <input type="date" />
+            <br/>
             <div className="grid grid-cols-3 gap-4">
                 <TotalUsersCard data={userProgressData} />
                 <ModulesCard data={userProgressData} />
                 <UsageTimeCard data={userProgressData} />
                 <UserLoginsCard data={userProgressData} />
+                <NewRetUsersCard data={userProgressData} />
             </div>
             <br />
             <UserProgress data={userProgressData} />

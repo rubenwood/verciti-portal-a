@@ -4,11 +4,12 @@
 function UserProgressTable(props: any) {
     return (
         <table className="w-full mb-4 border-collapse border border-gray-300">
-            <thead>
+            <thead className="bg-[#333333]">
                 <tr>
-                    <th className="text-center border-2">Email</th>
-                    <th className="text-center border-2">Activity ID</th>
+                    <th className="text-center border-2">User</th>
+                    <th className="text-center border-2">Module</th>
                     <th className="text-center border-2">Completion</th>
+                    <th className="text-center border-2">Actions</th>
                 </tr>
             </thead>
             <tbody >
@@ -17,8 +18,9 @@ function UserProgressTable(props: any) {
                         userProg.generic_activity_progress.map((prog: any) => (
                             <tr key={`${userProg.id}-${prog.activity_id}`}>
                                 <td className="text-center border-2">{userProg.data.email}</td>
-                                <td className="text-center border-2">{prog.caj_id}</td>
-                                <td className="text-center border-2">{prog.completion}</td>
+                                <td className="text-center border-2">{prog.external_title}</td>
+                                <td className="text-center border-2">{Math.round(prog.completion * 100)} %</td>
+                                <td className="text-center border-2"></td>
                             </tr>
                     ))
                 )): null}

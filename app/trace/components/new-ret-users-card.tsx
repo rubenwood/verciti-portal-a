@@ -3,20 +3,18 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 
-export function UserLoginsCard(props: any){
+export function NewRetUsersCard(props: any){
 
     if(props.data == null ) { return null; }
 
     return (
         <Card className="mb-4 p-4">
             <CardHeader className="text-lg font-semibold">
-                <CardTitle className="text-lg font-semibold text-center">User Logins</CardTitle>
+                <CardTitle className="text-lg font-semibold text-center">New & Returning Users</CardTitle>
             </CardHeader>
             <CardContent>
-                Last 24 hours:<br/>
-                1 day ago:<br/>
-                7 days ago:<br/>
-                30 days ago: <br/>
+                New:<br/>
+                Returning:<br/>
             </CardContent>
         </Card>
     )
