@@ -34,7 +34,7 @@ export async function getUsersProgressByVisibility(client: SupabaseClient, conte
     return data ?? [];
 }
 
-export async function getUserAttempts(client: SupabaseClient, user_ids: string[]){
+export async function getUserAttempts(client: SupabaseClient, user_ids: string[], page: number = 0) {
     const { count, error: errorCount } = await client
         .from('generic_activity_attempts')
         .select('*',  { count: 'exact', head: true });
