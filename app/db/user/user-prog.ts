@@ -33,3 +33,31 @@ export async function getUsersProgressByVisibility(client: SupabaseClient, conte
 
     return data ?? [];
 }
+
+export async function getUserAttempts(client: SupabaseClient, user_ids: string[]){
+    const { count, error: errorCount } = await client
+        .from('generic_activity_attempts')
+        .select('*',  { count: 'exact', head: true });
+
+    if (errorCount) {
+        console.error("Error fetching attempts count:", errorCount);
+        return [];
+    }
+    console.log("Total attempts count:", count);
+
+    const pageSize = 1000; // this may change, check supabase
+    const pageCount = Math.ceil((count || 0) / 1000);
+    
+
+    const { data, error } = await client
+        .from('generic_activity_attempts')
+        .select('*')
+        .in('user_id', user_ids)
+        .range(0, 1000);
+
+    if (error) {
+        console.error("Error fetching user attempts:", error);
+        return [];
+    }
+    return data as any[];
+}

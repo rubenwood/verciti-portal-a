@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
 import { supabaseMain, supabaseTest } from "@/lib/supabase";
-import { getUsersProgress, getUsersProgressByVisibility } from "@/app/db/user/user-prog";
+import { getUsersProgress, getUsersProgressByVisibility, getUserAttempts } from "@/app/db/user/user-prog";
 
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -13,14 +13,19 @@ import { ModulesCard } from "./total-modules-card"
 import { UsageTimeCard } from "./usage-time";
 import { NewRetUsersCard } from "./new-ret-users-card";
 import { PopularModulesCard } from "./popular-modules";
+import { get } from "http";
 
 export function AnalyticsDashboard() {
     const [userProgressData, setUserProgressData] = useState<any[]>();
+    const [userAttemptsData, setUserAttemptsData] = useState<any[]>();
 
     const begin = async () => {
         const data = await getUsersProgressByVisibility(supabaseTest, "Verciti");
+        const attempts = await getUserAttempts(supabaseTest, data.map((user) => user.id));
         setUserProgressData(data);
+        setUserAttemptsData(attempts);
         console.log("User Progress Data:", data);
+        console.log("User Attempts Data:", attempts);
     }
 
     useEffect(() => {
