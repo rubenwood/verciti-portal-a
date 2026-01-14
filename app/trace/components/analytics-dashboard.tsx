@@ -1,7 +1,15 @@
 "use client"
 import { useEffect, useState } from "react";
 import { supabaseMain, supabaseTest } from "@/lib/supabase";
-import { getUsersProgress, getUsersProgressByVisibility, getUserAttempts } from "@/app/db/user/user-prog";
+import { getUsersProgress,
+    getUsersProgressByVisibility,
+    getUserAttempts,
+    calcTotalUniqueModulesCompleted,
+    calcTotalModulesCompleted,
+    calcTotalUsageTime,
+    calcMostPopularByUserCount,
+    calcMostPlayed,
+    calcMostPlayedTime } from "@/app/db/user/user-prog";
 
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -36,9 +44,9 @@ export function AnalyticsDashboard() {
 
     useEffect(() => {
         
-    }, [userProgressData]);
+    }, [userProgressData, userAttemptsData]);
 
-    if(!userProgressData){
+    if(!userProgressData || !userAttemptsData){
         return (
             <>
                 <Button onClick={begin}>Begin</Button>
@@ -59,12 +67,19 @@ export function AnalyticsDashboard() {
             <input type="date" />
             <br/>
             <div className="grid grid-cols-3 gap-4">
-                <TotalUsersCard data={userProgressData} />
-                <ModulesCard data={userProgressData} />
-                <UsageTimeCard data={userProgressData} />
+                <TotalUsersCard totalUsers={userProgressData.length} />
+                <ModulesCard 
+                    totalModulesCompleted={calcTotalModulesCompleted(userProgressData)}
+                    uniqueModulesCompleted={calcTotalUniqueModulesCompleted(userProgressData)}
+                />
+                <UsageTimeCard totalUsageTime={calcTotalUsageTime(userProgressData)} />
                 <UserLoginsCard data={userProgressData} />
                 <NewRetUsersCard data={userProgressData} />
-                <PopularModulesCard data={userProgressData} />
+                <PopularModulesCard 
+                    mostPlayedByUserCount={calcMostPopularByUserCount(userProgressData)}
+                    mostPlayed={calcMostPlayed(userProgressData)}
+                    mostPlayedTime={calcMostPlayedTime(userAttemptsData)}
+                />
             </div>
             <br />
             <UserProgress data={userProgressData} />

@@ -3,21 +3,9 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function ModulesCard(props: any){
-    if(props.data == null ) { return null; }
-    
-    const [modulesCompleted, setModulesCompleted] = useState<number>(0);
-
     useEffect(() => {
-        let totalModulesCompleted = 0;
-        for(let user of props.data) {
-            for(let activity of user.generic_activity_progress) {
-                if(activity.completion >= 1){
-                    totalModulesCompleted += 1;
-                }
-            }
-        }
-        setModulesCompleted(totalModulesCompleted);
-    }, [props.data]);    
+
+    }, [props]);    
 
     return (
         <Card className="mb-4 p-4 flex flex-col">
@@ -27,7 +15,7 @@ export function ModulesCard(props: any){
                 </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-1 items-center justify-center">
-                <p className="text-4xl">{modulesCompleted}</p>
+                <p className="text-4xl">{props.uniqueModulesCompleted} ({props.totalModulesCompleted})</p>
             </CardContent>
         </Card>
     )
