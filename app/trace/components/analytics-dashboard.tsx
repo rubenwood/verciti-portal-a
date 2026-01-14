@@ -13,7 +13,7 @@ import { getUsersProgress,
 
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { UserProgress } from "../components/user-prog";
+import { UserProgress } from "./user-prog-table";
 import { TotalUsersCard } from "./total-users-card";
 import { UserLoginsCard } from "./user-logins-card";
 import { ModulesCard } from "./total-modules-card"
