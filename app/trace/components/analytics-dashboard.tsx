@@ -12,6 +12,7 @@ import { getUsersProgress,
     calcMostPlayedTime } from "@/app/db/user/user-prog-analytics";
 
 import {
+    getUsersCreatedInTimePeriod,
     getUsersLoggedInTimePeriod
 } from "@/app/db/user/user-gen-analytics";
 
@@ -102,8 +103,16 @@ export function AnalyticsDashboard() {
             </div>
             <br />
             <div className="grid grid-cols-2 gap-4">
-                <MonthlyGraph year={2025} metricName="Test" data={userProgressData}/>
-                <MonthlyGraph year={2026} metricName="Test" data={userProgressData}/>
+                <MonthlyGraph 
+                    year={2025} 
+                    metricName="# Users"
+                    data={(getUsersCreatedInTimePeriod(userProgressData, new Date("2025-01-01"), new Date("2025-12-31")))}
+                />
+                <MonthlyGraph 
+                    year={2026} 
+                    metricName="# Users"
+                    data={(getUsersCreatedInTimePeriod(userProgressData, new Date("2026-01-01"), new Date("2026-12-31")))}
+                />
             </div>
             <br />
             <UserProgress data={userProgressData} />
