@@ -1,7 +1,14 @@
 "use client"
 import { useEffect, useState } from "react";
 
-export function MonthlyTable(props: any){
+export function MonthlyTotalUserTable(props: any){
+    return (
+        <MonthlyTable year={props.year} metricName="Total Users">
+            <MontlyTotalUsersTableBody year={props.year} data={props.data} />
+        </MonthlyTable>
+    )
+}
+export function MontlyTotalUsersTableBody(props: any){
     const monthlyData = [
         {year:props.year, month:"Jan", users:0},
         {year:props.year, month:"Feb", users:0}, 
@@ -21,14 +28,14 @@ export function MonthlyTable(props: any){
     const calculateMonthlyData = () => {
         for(const user of props.data){
             const createdAt = new Date(user.created_at);
-            const monthIndex = createdAt.getMonth();
+            const monthIndex = createdAt.getMonth();            
             const year = createdAt.getFullYear();
-            if(year !== props.year) { continue; }
-            monthlyData[monthIndex].users += 1;
-            console.log(monthlyData[monthIndex]);
+
+            if(year == props.year) { 
+                monthlyData[monthIndex].users += 1;
+            }
         }
 
-        console.log("Monthly data calculated:", monthlyData);
         setMonthlyDataState(monthlyData);
     }
 
@@ -36,6 +43,29 @@ export function MonthlyTable(props: any){
         calculateMonthlyData();
     }, [props.data]);
 
+    return (
+        <tbody>
+            {monthlyDataState.map((monthData, index) => (
+                <tr key={index}>
+                    <td className="text-center border-2">{monthData.month}</td>
+                    <td className="text-center border-2">{monthData.users}</td>
+                </tr>
+            ))}
+        </tbody>
+    );
+}
+
+export function MonthlyTotalUsageTimeTable(props: any){
+    <MonthlyTable year={props.year} metricName="Total Usage Time">
+        <MonthlyTotalUsageTimeTableBody year={props.year} data={props.data} />
+    </MonthlyTable>
+}
+export function MonthlyTotalUsageTimeTableBody(props: any){
+    return null;
+}
+
+
+export function MonthlyTable(props: any){
     return (
         <div className="w-50">
             <p>{props.year}</p>
@@ -46,16 +76,7 @@ export function MonthlyTable(props: any){
                         <td className="text-center border-2">{props.metricName}</td>
                     </tr>
                 </thead>
-                <tbody>
-                    {monthlyDataState.map((element, index) => (
-                        element.year === props.year ? (
-                            <tr key={element.month}>
-                                <td className="text-center border-2">{element.month}</td>
-                                <td className="text-center border-2">{element.users}</td>
-                            </tr>
-                        ) : null
-                    ))}
-                </tbody>
+                {props.children}
             </table>
         </div>
     )

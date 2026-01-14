@@ -8,7 +8,7 @@ export function UserLoginsCard(props: any){
     if(props == null ) { return null; }
 
     useEffect(() => {
-        console.log("UserLoginsCard props:", props);
+        //console.log("UserLoginsCard props:", props);
     }, [props]);
 
 
