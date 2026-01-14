@@ -25,7 +25,7 @@ import { ModulesCard } from "./total-modules-card"
 import { UsageTimeCard } from "./usage-time";
 import { NewRetUsersCard } from "./new-ret-users-card";
 import { PopularModulesCard } from "./popular-modules";
-import { MonthlyGraph } from "./monthly-graph";
+import { MonthlyTable } from "./tables/monthly-table";
 
 export function AnalyticsDashboard() {
     const [cohortName, setCohortName] = useState<string>("Verciti");
@@ -103,12 +103,12 @@ export function AnalyticsDashboard() {
             </div>
             <br />
             <div className="grid grid-cols-2 gap-4">
-                <MonthlyGraph 
+                <MonthlyTable 
                     year={2025} 
                     metricName="# Users"
                     data={(getUsersCreatedInTimePeriod(userProgressData, new Date("2025-01-01"), new Date("2025-12-31")))}
                 />
-                <MonthlyGraph 
+                <MonthlyTable 
                     year={2026} 
                     metricName="# Users"
                     data={(getUsersCreatedInTimePeriod(userProgressData, new Date("2026-01-01"), new Date("2026-12-31")))}

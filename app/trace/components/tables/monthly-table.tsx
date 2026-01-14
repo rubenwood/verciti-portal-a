@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
 
-export function MonthlyGraph(props: any){
+export function MonthlyTable(props: any){
     const monthlyData = [
         {year:props.year, month:"Jan", users:0},
         {year:props.year, month:"Feb", users:0}, 
