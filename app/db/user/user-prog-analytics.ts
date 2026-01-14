@@ -97,10 +97,7 @@ export function calcTotalModulesCompleted(userProgressData: any[]): number {
     return totalCompleted;
 }
 export function calcTotalUniqueModulesCompleted(userProgressData: any[]): number {
-    console.log(
-        "Calculating total modules completed from user progress data:",
-        userProgressData
-    );
+    console.log("Calculating total modules completed from user progress data:", userProgressData);
 
     const completedModules = new Set<string>();
 

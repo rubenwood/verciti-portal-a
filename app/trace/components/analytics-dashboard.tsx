@@ -9,7 +9,11 @@ import { getUsersProgress,
     calcTotalUsageTime,
     calcMostPopularByUserCount,
     calcMostPlayed,
-    calcMostPlayedTime } from "@/app/db/user/user-prog";
+    calcMostPlayedTime } from "@/app/db/user/user-prog-analytics";
+
+import {
+    getUsersLoggedInTimePeriod
+} from "@/app/db/user/user-gen-analytics";
 
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -28,6 +32,7 @@ export function AnalyticsDashboard() {
     const getAllData = async () => {
         const data = await getUsersProgressByVisibility(supabaseTest, "Verciti");
         setUserProgressData(data);
+        console.log("User Progress Data:", data);
 
         const attempts = await getUserAttempts(supabaseTest, data.map((user) => user.id), 0, 1000);
         for(let i = 0; i < attempts.pageCount-1; i++){
@@ -35,7 +40,6 @@ export function AnalyticsDashboard() {
             attempts.data = attempts.data.concat(moreAttempts.data);
         }
         setUserAttemptsData(attempts.data);
-        console.log("User Progress Data:", data);
         console.log("User Attempts Data:", attempts);
     }
 
@@ -74,7 +78,11 @@ export function AnalyticsDashboard() {
                     uniqueModulesCompleted={calcTotalUniqueModulesCompleted(userProgressData)}
                 />
                 <UsageTimeCard totalUsageTime={calcTotalUsageTime(userProgressData)} />
-                <UserLoginsCard data={userProgressData} />
+                <UserLoginsCard 
+                    loginsToday={getUsersLoggedInTimePeriod(userProgressData, new Date(Date.now() - 24*60*60*1000), new Date())}
+                    logins7Days={getUsersLoggedInTimePeriod(userProgressData, new Date(Date.now() - 7*24*60*60*1000), new Date())}
+                    logins30Days={getUsersLoggedInTimePeriod(userProgressData, new Date(Date.now() - 30*24*60*60*1000), new Date())}
+                />
                 <NewRetUsersCard data={userProgressData} />
                 <PopularModulesCard 
                     mostPlayed={calcMostPlayed(userProgressData)}
