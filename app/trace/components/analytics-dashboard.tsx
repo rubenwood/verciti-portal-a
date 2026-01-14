@@ -28,6 +28,7 @@ export function AnalyticsDashboard() {
     const getAllData = async () => {
         const data = await getUsersProgressByVisibility(supabaseTest, "Verciti");
         setUserProgressData(data);
+
         const attempts = await getUserAttempts(supabaseTest, data.map((user) => user.id), 0, 1000);
         for(let i = 0; i < attempts.pageCount-1; i++){
             const moreAttempts = await getUserAttempts(supabaseTest, data.map((user) => user.id), i+1, 1000);
@@ -76,8 +77,8 @@ export function AnalyticsDashboard() {
                 <UserLoginsCard data={userProgressData} />
                 <NewRetUsersCard data={userProgressData} />
                 <PopularModulesCard 
-                    mostPlayedByUserCount={calcMostPopularByUserCount(userProgressData)}
                     mostPlayed={calcMostPlayed(userProgressData)}
+                    mostPlayedByUserCount={calcMostPopularByUserCount(userProgressData)}
                     mostPlayedTime={calcMostPlayedTime(userAttemptsData)}
                 />
             </div>

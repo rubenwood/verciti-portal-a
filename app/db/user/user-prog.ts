@@ -84,7 +84,6 @@ export async function getUserAttempts(client: SupabaseClient, user_ids: string[]
 }
 
 
-
 // =============== Metrics Calculations ===============
 export function calcTotalModulesCompleted(userProgressData: any[]): number {
     let totalCompleted = 0;
@@ -124,40 +123,36 @@ export function calcTotalUsageTime(userProgressData: any[]): number {
     return totalUsageTime;
 }
 
-function allMostFrequent(arr: any[]): any[] {
-    const count = new Map();
-    let maxFreq = 0;
-
-    for (let val of arr) {
-        const freq = (count.get(val) || 0) + 1;
-        count.set(val, freq);
-        if (freq > maxFreq) maxFreq = freq;
-    }
-    return [...count.entries()]
-        .filter(([key, freq]) => freq === maxFreq)
-        .map(([key]) => key);
-}
-export function calcMostPopularByUserCount(userProgressData: any[]): {moduleTitle: string | null, playCount: number} {
-    const activities: any[] = [];
-    const activityIds: string[] = [];
+export function calcMostPopularByUserCount(userProgressData: any[]): {moduleTitles: string[] | null, userCount: number} {
+    const activityUserMap: {[key: string]: Set<any>} = {};
     for (const user of userProgressData) {
+        const userId = user.id;
         for(const activity of user.generic_activity_progress){
-            console.log("Activity:", activity.activity_id);
-            if(!activities.includes(activity)) { activities.push(activity); }
-            activityIds.push(activity.activity_id);
+            if(!(activity.activity_id in activityUserMap)){
+                activityUserMap[activity.activity_id] = new Set<any>();
+            }
+            activityUserMap[activity.activity_id].add({userId, activity});
         }
     }
-    const mostFrequent = allMostFrequent(activityIds);
-    console.log("Most frequent activity IDs:", mostFrequent);
-    const mostPlayedByUserCount = activities.find((activity) => activity.activity_id == mostFrequent[0] );
 
+    const highestUserCount = Math.max(...Object.values(activityUserMap).map(set => set.size));
+    // create a list of module that have the highest user count
+    let mostFrequentActivities = Object.keys(activityUserMap).filter(key => activityUserMap[key].size === highestUserCount);
+    let mostPlayedActivityTitles = [];
+    for(const activityId of mostFrequentActivities){
+        const firstEntry = activityUserMap[activityId].values().next().value;
+        mostPlayedActivityTitles.push(firstEntry.activity.external_title);
+    }
+    console.log("Most played activity titles:", mostPlayedActivityTitles);
+    
     return {
-        moduleTitle: mostPlayedByUserCount ? mostPlayedByUserCount.external_title : null,
-        playCount: 0
+        moduleTitles: mostPlayedActivityTitles,
+        userCount: highestUserCount
     }
 }
+
 export function calcMostPlayed(userProgressData: any[]): {moduleTitle: string | null, playCount: number} {
-const playCounts: {[key: string]: number} = {};
+    const playCounts: {[key: string]: number} = {};
     for (const user of userProgressData) {
         for(const activity of user.generic_activity_progress){
             if(!(activity.activity_id in playCounts)){
@@ -167,7 +162,8 @@ const playCounts: {[key: string]: number} = {};
         }
     }
     const mostPlayedActivityId = Object.keys(playCounts).reduce((a, b) => playCounts[a] > playCounts[b] ? a : b);
-    const mostPlayedActivity = userProgressData[0].generic_activity_progress.find((activity: any) => activity.activity_id === mostPlayedActivityId);
+    const mostPlayedActivity = userProgressData[0].generic_activity_progress.find(
+        (activity: any) => activity.activity_id === mostPlayedActivityId);
     
     return {
         moduleTitle: mostPlayedActivity ? mostPlayedActivity.external_title : null,
@@ -176,7 +172,7 @@ const playCounts: {[key: string]: number} = {};
 }
 
 export function calcMostPlayedTime(userAttemptsData: any[]): {moduleTitle: string | null, playTime: number} {
-    console.log("Calculating most played time from attempts data:", userAttemptsData);
+    //console.log("Calculating most played time from attempts data:", userAttemptsData);
 
     const playTimes: {[key: string]: number} = {};
     for (const attempt of userAttemptsData) {
@@ -185,10 +181,10 @@ export function calcMostPlayedTime(userAttemptsData: any[]): {moduleTitle: strin
         }
         playTimes[attempt.activity_id] += attempt.duration;
     }
-    console.log("Accumulated play times:", playTimes);
+    //console.log("Accumulated play times:", playTimes);
 
     const mostPlayedActivityId = Object.keys(playTimes).reduce((a, b) => playTimes[a] > playTimes[b] ? a : b, '');
-    console.log("Most played activity ID by time:", mostPlayedActivityId);
+    //console.log("Most played activity ID by time:", mostPlayedActivityId);
     const mostPlayedActivity = userAttemptsData.find((attempt: any) => attempt.activity_id === mostPlayedActivityId);
     return {
         moduleTitle: mostPlayedActivity ? mostPlayedActivity.external_title : null,
