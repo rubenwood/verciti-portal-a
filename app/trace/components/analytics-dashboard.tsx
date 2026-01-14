@@ -5,7 +5,6 @@ import { getUsersProgress, getUsersProgressByVisibility, getUserAttempts } from 
 
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-
 import { UserProgress } from "../components/user-prog";
 import { TotalUsersCard } from "./total-users-card";
 import { UserLoginsCard } from "./user-logins-card";
@@ -13,19 +12,26 @@ import { ModulesCard } from "./total-modules-card"
 import { UsageTimeCard } from "./usage-time";
 import { NewRetUsersCard } from "./new-ret-users-card";
 import { PopularModulesCard } from "./popular-modules";
-import { get } from "http";
 
 export function AnalyticsDashboard() {
     const [userProgressData, setUserProgressData] = useState<any[]>();
     const [userAttemptsData, setUserAttemptsData] = useState<any[]>();
 
-    const begin = async () => {
+    const getAllData = async () => {
         const data = await getUsersProgressByVisibility(supabaseTest, "Verciti");
-        const attempts = await getUserAttempts(supabaseTest, data.map((user) => user.id));
         setUserProgressData(data);
-        setUserAttemptsData(attempts);
+        const attempts = await getUserAttempts(supabaseTest, data.map((user) => user.id), 0, 1000);
+        for(let i = 0; i < attempts.pageCount-1; i++){
+            const moreAttempts = await getUserAttempts(supabaseTest, data.map((user) => user.id), i+1, 1000);
+            attempts.data = attempts.data.concat(moreAttempts.data);
+        }
+        setUserAttemptsData(attempts.data);
         console.log("User Progress Data:", data);
         console.log("User Attempts Data:", attempts);
+    }
+
+    const begin = async () => {
+        await getAllData();
     }
 
     useEffect(() => {

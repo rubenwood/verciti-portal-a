@@ -34,30 +34,51 @@ export async function getUsersProgressByVisibility(client: SupabaseClient, conte
     return data ?? [];
 }
 
-export async function getUserAttempts(client: SupabaseClient, user_ids: string[], page: number = 0) {
+export async function getUserAttempts(client: SupabaseClient, user_ids: string[], page: number = 0, pageSize: number = 1000) {
+    const from = page * pageSize;
+    const to = from + pageSize - 1;
+
     const { count, error: errorCount } = await client
         .from('generic_activity_attempts')
-        .select('*',  { count: 'exact', head: true });
+        .select('*', { count: 'exact', head: true })
+        .in('user_id', user_ids)
+        .gte('duration', 1); // need attempts that are greater than 0 duration
 
     if (errorCount) {
-        console.error("Error fetching attempts count:", errorCount);
-        return [];
+        console.error('Error fetching attempts count:', errorCount);
+        return {
+            data: [],
+            page,
+            pageSize,
+            totalCount: 0,
+            pageCount: 0,
+        };
     }
-    console.log("Total attempts count:", count);
 
-    const pageSize = 1000; // this may change, check supabase
-    const pageCount = Math.ceil((count || 0) / 1000);
-    
-
+    const pageCount = Math.ceil((count || 0) / pageSize);
     const { data, error } = await client
         .from('generic_activity_attempts')
         .select('*')
         .in('user_id', user_ids)
-        .range(0, 1000);
+        .gte('duration', 1)
+        .range(from, to);
 
     if (error) {
-        console.error("Error fetching user attempts:", error);
-        return [];
+        console.error('Error fetching user attempts:', error);
+        return {
+            data: [],
+            page,
+            pageSize,
+            totalCount: count || 0,
+            pageCount,
+        };
     }
-    return data as any[];
+
+    return {
+        data: data as any[],
+        page,
+        pageSize,
+        totalCount: count || 0,
+        pageCount,
+    };
 }
