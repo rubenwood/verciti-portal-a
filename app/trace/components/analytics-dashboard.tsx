@@ -24,13 +24,21 @@ import { ModulesCard } from "./total-modules-card"
 import { UsageTimeCard } from "./usage-time";
 import { NewRetUsersCard } from "./new-ret-users-card";
 import { PopularModulesCard } from "./popular-modules";
+import { MonthlyGraph } from "./monthly-graph";
 
 export function AnalyticsDashboard() {
+    const [cohortName, setCohortName] = useState<string>("Verciti");
+
     const [userProgressData, setUserProgressData] = useState<any[]>();
     const [userAttemptsData, setUserAttemptsData] = useState<any[]>();
 
     const getAllData = async () => {
-        const data = await getUsersProgressByVisibility(supabaseTest, "Verciti");
+        if(!cohortName || cohortName.trim() === "") {
+            alert("Please enter a cohort name.");
+            return;
+        }
+
+        const data = await getUsersProgressByVisibility(supabaseTest, cohortName);
         setUserProgressData(data);
         console.log("User Progress Data:", data);
 
@@ -54,6 +62,7 @@ export function AnalyticsDashboard() {
     if(!userProgressData || !userAttemptsData){
         return (
             <>
+                <input type="text" placeholder="cohort name" onChange={(e) => setCohortName(e.target.value)} />
                 <Button onClick={begin}>Begin</Button>
                 <br/>
             </>
@@ -62,6 +71,7 @@ export function AnalyticsDashboard() {
 
     return (
         <>
+            <input type="text" placeholder="cohort name" onChange={(e) => setCohortName(e.target.value)} />
             <Button onClick={begin}>Begin</Button>
             <br/>
             Timefame
@@ -89,6 +99,11 @@ export function AnalyticsDashboard() {
                     mostPlayedByUserCount={calcMostPopularByUserCount(userProgressData)}
                     mostPlayedTime={calcMostPlayedTime(userAttemptsData)}
                 />
+            </div>
+            <br />
+            <div className="grid grid-cols-2 gap-4">
+                <MonthlyGraph year={2025} metricName="Test" data={userProgressData}/>
+                <MonthlyGraph year={2026} metricName="Test" data={userProgressData}/>
             </div>
             <br />
             <UserProgress data={userProgressData} />

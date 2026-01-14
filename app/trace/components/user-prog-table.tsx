@@ -1,6 +1,5 @@
 "use client"
 
-
 function UserProgressTable(props: any) {
     return (
         <table className="w-full mb-4 border-collapse border border-gray-300">
