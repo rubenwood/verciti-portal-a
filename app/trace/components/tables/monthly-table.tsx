@@ -55,6 +55,16 @@ export function MontlyTotalUsersTableBody(props: any){
     );
 }
 
+export function MonthlyModulesCompletedTable(props: any){
+    <MonthlyTable year={props.year} metricName="Total Modules Completed">
+        <MonthlyModulesCompletedTableBody year={props.year} data={props.data} />
+    </MonthlyTable>
+}
+export function MonthlyModulesCompletedTableBody(props: any){
+    return null;
+}
+
+
 export function MonthlyTotalUsageTimeTable(props: any){
     <MonthlyTable year={props.year} metricName="Total Usage Time">
         <MonthlyTotalUsageTimeTableBody year={props.year} data={props.data} />
