@@ -18,7 +18,7 @@ import {
 
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { UserProgress } from "./user-prog-table";
+import { UserProgressTable } from "./user-prog-table";
 import { TotalUsersCard } from "./total-users-card";
 import { UserLoginsCard } from "./user-logins-card";
 import { ModulesCard } from "./total-modules-card"
@@ -129,7 +129,7 @@ export function AnalyticsDashboard() {
                 />
             </div>
             <br />
-            <UserProgress data={userProgressData} />
+            <UserProgressTable progressData={userProgressData} quizData={userQuizData} />
         </>
     )
 }
