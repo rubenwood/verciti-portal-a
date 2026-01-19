@@ -25,7 +25,7 @@ export function UserLoginsCard(props: any){
             <CardHeader className="text-lg font-semibold">
                 <CardTitle className="text-lg font-semibold text-center">User Logins</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-1 items-center justify-center">
                 Last 24 hours: {getLoginsPerUser(props.loginsToday)} (# users: {props.loginsToday.length})<br/>
                 Last 7 days: {getLoginsPerUser(props.logins7Days)} (# users: {props.logins7Days.length})<br/>
                 Last 30 days: {getLoginsPerUser(props.logins30Days)} (# users: {props.logins30Days.length})<br/>

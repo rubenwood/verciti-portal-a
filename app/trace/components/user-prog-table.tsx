@@ -7,16 +7,16 @@ import { JSX, useEffect, useState } from "react";
 function QuizScoresDetailElement(props: any){
     return (
         <span key={props.attempt.id}>
-            Score: {(props.attempt.score * 100).toFixed(2)}% 
-            | Achieved On: {props.attempt.attempted_at || ""}
-            | Completed On: {props.attempt.completed_on || ""}
+            Score: {(props.attempt.score * 100).toFixed(2)}% <br/>
+            Achieved On: {props.attempt.attempted_at || ""}<br/>
+            Completed On: {props.attempt.completed_on || ""}<br/>
         </span>
     )
 }
 
 function QuizScoresDisplay(props: any){
     const [detailsVisible, setDetailsVisible] = useState(false);
-    
+
     const populateAllScoresDetails = (quizAttempts: any[]) => {
         const elements: JSX.Element[] = [];
         quizAttempts.map(attempt => {
@@ -24,7 +24,6 @@ function QuizScoresDisplay(props: any){
                 <>
                     <br/>
                     <QuizScoresDetailElement key={attempt.id} attempt={attempt} />
-                    <br/>
                 </>
             );
         });

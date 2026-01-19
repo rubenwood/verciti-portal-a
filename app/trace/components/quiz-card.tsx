@@ -17,11 +17,11 @@ export function QuizCard(props: any){
                 </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col items-center justify-center">
-                <p>Total Quizzes attempted: {props.totalQuizzes} </p><br/>              
-                <p>Total Quiz attempts: {props.totalQuizAttempts} </p><br/>              
-                <p>Total Quizzes completed: {props.completedQuizzes.length}</p><br/>              
-                <p>Total Time spent: {formatDuration(props.totalQuizDuration)}</p><br/>              
-                <p>Average Quiz score: {(props.averageQuizScore * 100).toFixed(2)}%</p><br/>              
+                Total Quizzes attempted: {props.totalQuizzes} <br/>              
+                Total Quiz attempts: {props.totalQuizAttempts}<br/>              
+                Total Quizzes completed: {props.completedQuizzes.length}<br/>              
+                Total Time spent: {formatDuration(props.totalQuizDuration)}<br/>              
+                Average Quiz score: {(props.averageQuizScore * 100).toFixed(2)}%<br/>              
             </CardContent>
         </Card>
     )

@@ -12,7 +12,7 @@ export function NewRetUsersCard(props: any){
             <CardHeader className="text-lg font-semibold">
                 <CardTitle className="text-lg font-semibold text-center">New & Returning Users</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-1 items-center justify-center">
                 New:<br/>
                 Returning:<br/>
             </CardContent>
