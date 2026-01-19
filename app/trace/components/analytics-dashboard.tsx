@@ -56,7 +56,7 @@ export function AnalyticsDashboard() {
 
         const quizData = await getUsersQuizAttempts(supabaseTest, data.map((user) => user.id));
         setUserQuizData(quizData);
-        console.log("User Quiz Data:", quizData);
+        //console.log("User Quiz Data:", quizData);
     }
 
     const begin = async () => {
@@ -107,6 +107,7 @@ export function AnalyticsDashboard() {
                     mostPlayedByUserCount={calcMostPopularByUserCount(userProgressData)}
                     mostPlayedTime={calcMostPlayedTime(userAttemptsData)}
                 />
+                <div />
                 <QuizCard 
                     totalQuizzes={calcTotalQuizStages(userQuizData)}
                     totalQuizAttempts={userQuizData?.length || 0} 
