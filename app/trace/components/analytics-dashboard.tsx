@@ -25,13 +25,16 @@ import { ModulesCard } from "./total-modules-card"
 import { UsageTimeCard } from "./usage-time";
 import { NewRetUsersCard } from "./new-ret-users-card";
 import { PopularModulesCard } from "./popular-modules";
+import { QuizCard } from "./quiz-card";
 import { MonthlyTable, MonthlyTotalUserTable } from "./tables/monthly-table";
+import { calcCompletedQuizzes, calcTotalQuizStages, getUsersQuizAttempts } from "@/app/db/user/user-quiz-analytics";
 
 export function AnalyticsDashboard() {
     const [cohortName, setCohortName] = useState<string>("Verciti");
 
     const [userProgressData, setUserProgressData] = useState<any[]>();
     const [userAttemptsData, setUserAttemptsData] = useState<any[]>();
+    const [userQuizData, setUserQuizData] = useState<any[]>();
 
     const getAllData = async () => {
         if(!cohortName || cohortName.trim() === "") {
@@ -41,7 +44,7 @@ export function AnalyticsDashboard() {
 
         const data = await getUsersProgressByVisibility(supabaseTest, cohortName);
         setUserProgressData(data);
-        console.log("User Progress Data:", data);
+        //console.log("User Progress Data:", data);
 
         const attempts = await getUserAttempts(supabaseTest, data.map((user) => user.id), 0, 1000);
         for(let i = 0; i < attempts.pageCount-1; i++){
@@ -49,7 +52,11 @@ export function AnalyticsDashboard() {
             attempts.data = attempts.data.concat(moreAttempts.data);
         }
         setUserAttemptsData(attempts.data);
-        console.log("User Attempts Data:", attempts);
+        //console.log("User Attempts Data:", attempts);
+
+        const quizData = await getUsersQuizAttempts(supabaseTest, data.map((user) => user.id));
+        setUserQuizData(quizData);
+        console.log("User Quiz Data:", quizData);
     }
 
     const begin = async () => {
@@ -58,9 +65,9 @@ export function AnalyticsDashboard() {
 
     useEffect(() => {
         
-    }, [userProgressData, userAttemptsData]);
+    }, [userProgressData, userAttemptsData, userQuizData]);
 
-    if(!userProgressData || !userAttemptsData){
+    if(!userProgressData || !userAttemptsData || !userQuizData){
         return (
             <>
                 <input type="text" placeholder="cohort name" onChange={(e) => setCohortName(e.target.value)} />
@@ -100,6 +107,13 @@ export function AnalyticsDashboard() {
                     mostPlayedByUserCount={calcMostPopularByUserCount(userProgressData)}
                     mostPlayedTime={calcMostPlayedTime(userAttemptsData)}
                 />
+            </div>
+            <br />
+            <div className="grid grid-cols-2 gap-4">
+                <QuizCard 
+                    totalQuizzes={calcTotalQuizStages(userQuizData)}
+                    totalQuizAttempts={userQuizData?.length || 0} 
+                    completedQuizzes={calcCompletedQuizzes(userQuizData)} />
             </div>
             <br />
             <div className="grid grid-cols-2 gap-4">
