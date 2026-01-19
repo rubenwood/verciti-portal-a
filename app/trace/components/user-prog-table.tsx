@@ -28,7 +28,7 @@ export function UserProgressTable(props: any) {
                                     findQuizAttemptByActivityAndUser(
                                         props.quizData, 
                                         prog.activity_id, 
-                                        prog.user_id)?.score.toFixed(2)*100 || 0}%
+                                        prog.user_id)?.score.toFixed(2)*100 || 0} %
                                     </td>
                                 <td className="text-center border-2"></td>
                             </tr>
