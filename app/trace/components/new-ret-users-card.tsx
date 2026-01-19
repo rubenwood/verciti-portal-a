@@ -13,8 +13,12 @@ export function NewRetUsersCard(props: any){
                 <CardTitle className="text-lg font-semibold text-center">New & Returning Users</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-1 items-center justify-center">
-                New:<br/>
-                Returning:<br/>
+                <span className="grid grid-cols-2 border-b-2 border-t-2 w-full">
+                    <p className="border-1 p-1">New</p>
+                    <p className="border-1 p-1"></p>
+                    <p className="border-1 p-1">Returning</p>
+                    <p className="border-1 p-1"></p>
+                </span>
             </CardContent>
         </Card>
     )
