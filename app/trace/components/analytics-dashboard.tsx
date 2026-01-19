@@ -27,7 +27,7 @@ import { NewRetUsersCard } from "./new-ret-users-card";
 import { PopularModulesCard } from "./popular-modules";
 import { QuizCard } from "./quiz-card";
 import { MonthlyTable, MonthlyTotalUserTable } from "./tables/monthly-table";
-import { calcCompletedQuizzes, calcTotalQuizStages, getUsersQuizAttempts } from "@/app/db/user/user-quiz-analytics";
+import { calcAverageQuizScore, calcCompletedQuizzes, calcTotalQuizDuration, calcTotalQuizStages, getUsersQuizAttempts } from "@/app/db/user/user-quiz-analytics";
 
 export function AnalyticsDashboard() {
     const [cohortName, setCohortName] = useState<string>("Verciti");
@@ -107,13 +107,13 @@ export function AnalyticsDashboard() {
                     mostPlayedByUserCount={calcMostPopularByUserCount(userProgressData)}
                     mostPlayedTime={calcMostPlayedTime(userAttemptsData)}
                 />
-            </div>
-            <br />
-            <div className="grid grid-cols-2 gap-4">
                 <QuizCard 
                     totalQuizzes={calcTotalQuizStages(userQuizData)}
                     totalQuizAttempts={userQuizData?.length || 0} 
-                    completedQuizzes={calcCompletedQuizzes(userQuizData)} />
+                    completedQuizzes={calcCompletedQuizzes(userQuizData)}
+                    totalQuizDuration={calcTotalQuizDuration(userQuizData)} 
+                    averageQuizScore={calcAverageQuizScore(userQuizData)} 
+                />
             </div>
             <br />
             <div className="grid grid-cols-2 gap-4">

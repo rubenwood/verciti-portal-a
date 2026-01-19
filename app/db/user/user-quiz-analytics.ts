@@ -33,7 +33,7 @@ export function calcTotalQuizStages(quizAttemptsData: any[]){
 export function calcCompletedQuizzes(quizAttemptsData: any[]){
     const completedQuizAttempts: any[] = [];
 
-    for( const attempt of quizAttemptsData) {
+    for(const attempt of quizAttemptsData) {
         if(attempt.completed_on == null || attempt.completed_on == "" ){
             continue;
         }
@@ -47,4 +47,26 @@ export function calcCompletedQuizzes(quizAttemptsData: any[]){
     }
     console.log("Completed Quiz Attempts:", completedQuizAttempts);
     return completedQuizAttempts;
+}
+
+export function calcTotalQuizDuration(quizAttemptsData: any[]){
+    let totalDuration = 0;
+    quizAttemptsData.forEach(attempt => {
+        if(attempt.duration && typeof attempt.duration === 'number'){
+            totalDuration += attempt.duration;
+        }
+    });
+    return totalDuration;
+}
+
+export function calcAverageQuizScore(quizAttemptsData: any[]){
+    let totalScore = 0;
+    let count = 0;
+    quizAttemptsData.forEach(attempt => {
+        if(attempt.score && typeof attempt.score === 'number'){
+            totalScore += attempt.score;
+            count++;
+        }
+    });
+    return count > 0 ? totalScore / count : 0;
 }

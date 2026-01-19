@@ -1,6 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatDuration } from "@/app/db/general/utils";
 
 export function QuizCard(props: any){
 
@@ -19,8 +20,8 @@ export function QuizCard(props: any){
                 <p>Total Quizzes attempted: {props.totalQuizzes} </p><br/>              
                 <p>Total Quiz attempts: {props.totalQuizAttempts} </p><br/>              
                 <p>Total Quizzes completed: {props.completedQuizzes.length}</p><br/>              
-                <p>Total Time spent: </p><br/>              
-                <p>Average Quiz score: </p><br/>              
+                <p>Total Time spent: {formatDuration(props.totalQuizDuration)}</p><br/>              
+                <p>Average Quiz score: {(props.averageQuizScore * 100).toFixed(2)}%</p><br/>              
             </CardContent>
         </Card>
     )
