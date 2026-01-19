@@ -19,10 +19,25 @@ export function PopularModulesCard(props: any){
                     Most Popular Modules
                 </CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-1 items-center justify-center">
-                Most Played Module (# plays):<br/>{props.mostPlayed?.moduleTitle} - {props.mostPlayed?.playCount}<br/><br/>
-                Most Played Module (# users):<br/>{props.mostPlayedByUserCount.moduleTitles.join(", ")} - {props.mostPlayedByUserCount.userCount}<br/><br/>
-                Most Played Module (time):<br/>{props.mostPlayedTime?.moduleTitle} - {formatDuration(props.mostPlayedTime?.playTime)}<br/><br/>
+            <CardContent className="gridflex flex-1 items-center justify-center">                
+                <span className="grid grid-cols-3 border-b-2 border-t-2 w-full">
+                    <p className="border-1 p-1">Most Played Module (# plays):</p>
+                    <p className="border-1 p-1">{props.mostPlayed?.moduleTitle}</p>
+                    <p className="border-1 p-1">{props.mostPlayed?.playCount}</p>
+                </span>
+                <br/>
+                <span className="grid grid-cols-3 border-b-2 border-t-2 w-full">
+                    <p className="border-1 p-1">Most Played Module (# users):</p>
+                    <p className="border-1 p-1">{props.mostPlayedByUserCount.moduleTitles.join(", ")}</p>
+                    <p className="border-1 p-1">{props.mostPlayedByUserCount.userCount}</p>
+                </span>
+                <br/>
+                <span className="grid grid-cols-3 border-b-2 border-t-2 w-full">
+                    <p className="border-1 p-1">Most Played Module (time):</p>
+                    <p className="border-1 p-1">{props.mostPlayedTime?.moduleTitle}</p>
+                    <p className="border-1 p-1">{formatDuration(props.mostPlayedTime?.playTime)}</p>
+                </span>
+                <br/><br/>
             </CardContent>
         </Card>
     )
