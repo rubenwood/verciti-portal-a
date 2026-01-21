@@ -27,7 +27,13 @@ import { NewRetUsersCard } from "./new-ret-users-card";
 import { PopularModulesCard } from "./popular-modules";
 import { QuizCard } from "./quiz-card";
 import { MonthlyTable, MonthlyTotalUserTable } from "./tables/monthly-table";
-import { calcAverageQuizScore, calcCompletedQuizzes, calcTotalQuizDuration, calcTotalQuizStages, getUsersQuizAttempts } from "@/app/db/user/user-quiz-analytics";
+import { 
+    calcAverageQuizScore, 
+    calcCompletedQuizzes,
+    calcTotalQuizDuration, 
+    calcTotalQuizStages,
+    getUsersQuizAttempts
+} from "@/app/db/user/user-quiz-analytics";
 
 export function AnalyticsDashboard() {
     const [cohortName, setCohortName] = useState<string>("Verciti");
@@ -55,7 +61,12 @@ export function AnalyticsDashboard() {
         //console.log("User Attempts Data:", attempts);
 
         const quizData = await getUsersQuizAttempts(supabaseTest, data.map((user) => user.id));
-        setUserQuizData(quizData);
+        for(let i = 0; i < quizData.pageCount-1; i++){
+            const moreQuizData = await getUsersQuizAttempts(supabaseTest, data.map((user) => user.id), i+1, 1000);
+            quizData.data = quizData.data.concat(moreQuizData.data);
+        }
+        console.log(quizData.data);
+        setUserQuizData(quizData.data);
         //console.log("User Quiz Data:", quizData);
     }
 

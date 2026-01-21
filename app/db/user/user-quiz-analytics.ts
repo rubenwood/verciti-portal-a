@@ -2,18 +2,51 @@ import { PostgrestError, SupabaseClient, User } from '@supabase/supabase-js';
 import confetti from 'canvas-confetti';
 import type { RefObject } from 'react';
 
-export async function getUsersQuizAttempts(client: SupabaseClient, user_ids: string[]){
+export async function getUsersQuizAttempts(client: SupabaseClient, user_ids: string[], page: number = 0, pageSize: number = 1000){
+    const from = page * pageSize;
+    const to = from + pageSize - 1;
+
+    const { count, error: errorCount } = await client
+        .from('quiz_attempts')
+        .select('*', { count: 'exact', head: true })
+        .in('user_id', user_ids);
+
+    if (errorCount) {
+        console.error("Error fetching user quiz attempts:", errorCount);
+        return {
+            data: [],
+            page,
+            pageSize,
+            totalCount: 0,
+            pageCount: 0,
+        };
+    }
+
+    const pageCount = Math.ceil((count || 0) / pageSize);
     const { data, error } = await client
         .from('quiz_attempts')
         .select('*')
-        .in('user_id', user_ids);
+        .in('user_id', user_ids)
+        .range(from, to);
 
     if (error) {
         console.error("Error fetching user quiz attempts:", error);
-        return [];
+        return {
+            data: [],
+            page,
+            pageSize,
+            totalCount: count || 0,
+            pageCount,
+        };
     }
 
-    return data as any[];
+    return {
+        data: data as any[],
+        page,
+        pageSize,
+        totalCount: count || 0,
+        pageCount,
+    };
 }
 
 
