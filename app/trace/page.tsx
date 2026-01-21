@@ -24,7 +24,7 @@ export default function TraceLandingPage(){
     return (
         <div className="dark bg-background text-foreground">
             <div className="grid items-center justify-items-center min-h-screen p-8 pb-20">
-                <h1 className="text-2xl">Verciti Trace</h1>
+                <h1 className="text-2xl">Verciti Analytics</h1>
                 <br/>
                 <AnalyticsDashboard />
             </div>

@@ -40,11 +40,18 @@ function QuizScoresDisplay(props: any){
     }
 
     const getPrimaryScore = (quizAttempts: any[]) => {
-        const attemptToDisplay = quizAttempts.find(attempt => attempt.completed_on != null && attempt.completed_on !== "");
-        if(attemptToDisplay){
+        const completedAttempts = quizAttempts.filter(attempt => attempt.completed_on != null && attempt.completed_on !== "");
+        const highestMostRecentAttempt = completedAttempts.sort((a, b) => {
+            if(b.score === a.score){ // TODO: check this
+                return new Date(b.completed_on).getTime() - new Date(a.completed_on).getTime();
+            }
+            return b.score - a.score;
+        })[0];
+
+        if(highestMostRecentAttempt){
             return (
-                <span key={attemptToDisplay?.id} className="cursor-pointer underline">
-                    {(attemptToDisplay?.score * 100).toFixed(2)}%
+                <span key={highestMostRecentAttempt?.id} className="cursor-pointer underline">
+                    {(highestMostRecentAttempt?.score * 100).toFixed(2)}%
                 </span>
             )
         }else if(quizAttempts.length > 0){
