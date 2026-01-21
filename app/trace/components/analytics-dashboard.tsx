@@ -52,6 +52,8 @@ export function AnalyticsDashboard() {
         setUserProgressData(data);
         //console.log("User Progress Data:", data);
 
+
+        //TODO: use a list of promises to fetch all pages in parallel
         const attempts = await getUserAttempts(supabaseTest, data.map((user) => user.id), 0, 1000);
         for(let i = 0; i < attempts.pageCount-1; i++){
             const moreAttempts = await getUserAttempts(supabaseTest, data.map((user) => user.id), i+1, 1000);
