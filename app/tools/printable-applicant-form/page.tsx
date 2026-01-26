@@ -675,7 +675,8 @@ export default function PrintableApplicantFormTool() {
     if(!user){ return <Login setUserFunc={setUser} user={user} /> }
 
     return (
-        <>
+        <div className="dark bg-background text-foreground">
+            <div className="grid items-center justify-items-center min-h-screen p-8 pb-20">
             <div className="grid w-full max-w-sm items-center gap-3">
                 <label>Upload CSV File</label>
                 <Input type="file" accept=".csv" onChange={handleFileUpload} />
@@ -707,6 +708,7 @@ export default function PrintableApplicantFormTool() {
                     <PrintableApplication data={entry} index={index} />
                 </div>) : null
             ))}
-        </>
+            </div>
+        </div>
     );
 }
