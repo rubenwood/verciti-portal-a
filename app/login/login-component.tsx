@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { supabaseMain, supabaseTest } from '@/lib/supabase'
 import { SupabaseClient } from '@supabase/supabase-js';
 import { Button } from '@/components/ui/button';
+import { createBrowserTestClient } from '@/lib/client';
 
 export default function Login(props: any){
     const router = useRouter();
@@ -12,6 +13,9 @@ export default function Login(props: any){
     const [error, setError] = useState('');
 
     const handleLogin = async () => {
+        // TODO: improve this
+        const btclient = await createBrowserTestClient();
+        await doLogin(btclient);
         await doLogin(supabaseMain);
         await doLogin(supabaseTest);
     };

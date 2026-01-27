@@ -1,17 +1,15 @@
-"use client"
-import { useRef, useState, FormEvent } from 'react'
 import { Button } from '@/components/ui/button';
 import { supabaseTest } from "@/lib/supabase";
 
 export function OrgSetupTool(){
-    const submitForm = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget)
-        const response = await fetch('/api/db/create-org', {
+
+    async function createOrg(formData: FormData) {
+        const output = await fetch('/api/db/create-org', {
             method: 'POST',
-            body: formData,
-        })
-        console.log("Creating organization...");
+            body: formData
+        });
+
+        console.log("Org setup output:", output);
     }
 
     return (
@@ -20,7 +18,7 @@ export function OrgSetupTool(){
             <h2 className="text-xl font-bold mb-4">Organization Setup Tool</h2>
             <p>This tool will help you set up your organization in the database.</p>
             <br/>
-            <form onSubmit={submitForm}>
+            <form action={async (formData) => { await createOrg(formData); }}>
                 <input name="org_name" type="text" placeholder="Organization Name" className="border p-2 mb-4 w-64" />
                 <br/>
                 <input name="lic_count" type="number" placeholder="Number of Users / licences" className="border p-2 mb-4 w-64" />

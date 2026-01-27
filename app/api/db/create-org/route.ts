@@ -1,9 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabaseMain, supabaseTest } from '@/lib/supabase';
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
-
-
+import { createClient } from '@/lib/server';
 
 function parseCommaSeparated(value: FormDataEntryValue | null): string[] {
   if (!value || typeof value !== 'string') return [];
@@ -14,22 +10,16 @@ function parseCommaSeparated(value: FormDataEntryValue | null): string[] {
     .filter(Boolean);
 }
 
-
 export async function POST(req: Request) {
-    const cookieStore = await cookies()
-    console.log("Cookies in create-org route:", cookieStore.getAll());
-
-    const {
-        data: { user },
-    } = await supabaseTest.auth.getUser();
+    const serverClient = await createClient();
+    // dependant on the corresponding browser client
+    const { data: { user }, } = await serverClient.auth.getUser();
 
     if (!user) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const data = await req.formData();
-    //console.log("Received organization creation request with data:", data);
-    console.log(supabaseTest)
 
     const orgName = data.get('org_name') as string;
     const licenceCount = Number(data.get('lic_count')) || 0;
@@ -37,7 +27,7 @@ export async function POST(req: Request) {
     const emailAddresses = parseCommaSeparated(data.get('email_addresses'));
     const contentTags = parseCommaSeparated(data.get('content_tags'));
 
-    const { error } = await supabaseTest.from('org_access').insert({
+    const { error } = await serverClient.from('org_access').insert({
         id: orgName,
         licence_count: licenceCount,
         email_suffixes: emailSuffixes,
