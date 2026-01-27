@@ -5,12 +5,15 @@ import { supabaseTest } from '@/lib/supabase';
 
 export async function POST(req: Request) {
     const request = await req.json();
-    const email = request.email;
-    const suffix = email.split('@')[1];
+    console.log("API call to check-email-access with request:", request);
 
-    const suffixMatch = supabaseTest.from('org_access').select('*').contains('email_suffixes', [suffix]);
-    const emailAddressMatch = supabaseTest.from('org_access').select('*').contains('email_addresses', [email]);
-    console.log("check for email:", email, "Result:", emailAddressMatch, suffixMatch);
+    // const email = request.email;
+    // const suffix = email.split('@')[1];
 
-    return NextResponse.json({ emailAddressMatch, suffixMatch });
+    // const suffixMatch = supabaseTest.from('org_access').select('*').contains('email_suffixes', [suffix]);
+    // const emailAddressMatch = supabaseTest.from('org_access').select('*').contains('email_addresses', [email]);
+    // console.log("check for email:", email, "Result:", emailAddressMatch, suffixMatch);
+
+    const response = "hello";
+    return NextResponse.json({ response });
 }
