@@ -34,6 +34,7 @@ export function OrgSetupTool(){
                 <p>you may also provide a list of specific email address (comma separated)</p>
                 <input name="email_addresses" type="text" placeholder="email addresses" className="border p-2 mb-4 w-64" />
                 <br/>
+                <p>set what the user can see (includes Production by default, case sensitive)</p>
                 <input name="content_tags" type="text" placeholder="content tags" className="border p-2 mb-4 w-64" />
                 <p> product details (shold be provded on stripe)</p>
                 <input name="product" type="text" placeholder="product" className="border p-2 mb-4 w-64" />

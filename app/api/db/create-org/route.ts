@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/server';
+import { createServerTestClient } from '@/lib/server';
 
 function parseCommaSeparated(value: FormDataEntryValue | null): string[] {
   if (!value || typeof value !== 'string') return [];
@@ -11,8 +11,7 @@ function parseCommaSeparated(value: FormDataEntryValue | null): string[] {
 }
 
 export async function POST(req: Request) {
-    const serverClient = await createClient();
-    // dependant on the corresponding browser client
+    const serverClient = await createServerTestClient();
     const { data: { user }, } = await serverClient.auth.getUser();
 
     if (!user) {
@@ -26,6 +25,7 @@ export async function POST(req: Request) {
     const emailSuffixes = parseCommaSeparated(data.get('suffixes'));
     const emailAddresses = parseCommaSeparated(data.get('email_addresses'));
     const contentTags = parseCommaSeparated(data.get('content_tags'));
+    contentTags.push("Production");
 
     const { error } = await serverClient.from('org_access').insert({
         id: orgName,
