@@ -1,7 +1,10 @@
 import { Button } from '@/components/ui/button';
+import { showConfetti } from '../../general/utils';
 import { supabaseTest } from "@/lib/supabase";
+import { useRef } from 'react';
 
 export function OrgSetupTool(){
+    const submitBtnRef = useRef<any>(null);
 
     async function createOrg(formData: FormData) {
         const output = await fetch('/api/db/create-org', {
@@ -9,7 +12,11 @@ export function OrgSetupTool(){
             body: formData
         });
 
-        console.log("Org setup output:", output);
+        if(!output.ok){
+            console.error("Error creating organization:", await output.text());
+        } else {
+            showConfetti(submitBtnRef);
+        }
     }
 
     return (
@@ -33,7 +40,7 @@ export function OrgSetupTool(){
                 <br/>
                 <input name="renewal" type="date" placeholder="renewal" className="border p-2 mb-4 w-64" />
                 <br/>
-                <Button className="mt-2" type="submit">Create Organization</Button>
+                <Button ref={submitBtnRef} className="mt-2" type="submit">Create Organization</Button>
             </form>
         </div>
         </>
