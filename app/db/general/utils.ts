@@ -406,7 +406,7 @@ export async function fetchActivityById(client: SupabaseClient, activityId: stri
     }
     return data as Activity;
 }
-export async function updateActivity(client: SupabaseClient, activity: Activity){
+export async function updateActivity(client: SupabaseClient, activity: Activity) {
     const { data, error } = await client
       .from('activities')
       .update(activity)
@@ -430,8 +430,7 @@ export async function fetchCourses(client: SupabaseClient) {
 }
 
 // copies data from a table in one Supabase client to another (assuming identical schemas and table names)
-export async function copyDataBetweenTables(fromClient: SupabaseClient, toClient: SupabaseClient, tables: string[]) {
-
+export async function copyDataBetweenTables(fromClient: SupabaseClient, toClient: SupabaseClient, tables: string[], updateCopyNum: boolean) {
     for (const table of tables) {
         const { data, error } = await fromClient
             .from(table)
@@ -452,7 +451,45 @@ export async function copyDataBetweenTables(fromClient: SupabaseClient, toClient
             }
 
             console.log(`Successfully copied ${data.length} records to table "${table}"`);
+
+            // once we have copied data, we should update the db_change_num in the versions tables
+            // assuming test
+            if(updateCopyNum){
+                await updateVersionsTable(fromClient, "versions_android");
+                await updateVersionsTable(fromClient, "versions_ios");
+            }
         }
+    }
+}
+
+async function getLatestDBChangeNum(client: SupabaseClient, versionTable: string) {
+    const { data, error } = await client
+        .from(versionTable)
+        .select('db_copy_num')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+    if (error) {
+        console.error(`Error fetching latest db_change_num from table "${versionTable}":`, error);
+        return null;
+    }
+
+    return data.db_copy_num;
+}
+
+async function updateVersionsTable(client: SupabaseClient, versionTable: string) {
+    const latestDBChangeNum = await getLatestDBChangeNum(client, versionTable);
+    const newChangeNum = latestDBChangeNum+1;
+    console.log(`${latestDBChangeNum} - ${newChangeNum}`);
+
+    const { data, error } = await client
+        .from(versionTable)
+        .update({ db_copy_num: newChangeNum })
+        .gt('id', -1)
+
+    if(error){
+        console.error(`Error updating db change num: \n`, error);
     }
 }
 

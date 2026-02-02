@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { checkUser } from "../general/get-user";
-import { CopyTablesTool } from "./download-tables/download-tables";
+import { CopyTablesTool } from "./copy-tables/copy-tables";
 import { getUserProfile } from "../general/utils";
 import { supabaseTest } from "@/lib/supabase";
 

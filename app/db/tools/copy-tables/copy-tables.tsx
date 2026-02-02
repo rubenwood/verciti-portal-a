@@ -17,16 +17,19 @@ export function TableToggleGroup(props: any){
             type="multiple"
             className="grid grid-cols-3 gap-2"
             onValueChange={props.setSelectedFunc}>
-
-            {props.tables.map((table: any) => (
-                <ToggleGroupItem
-                    key={table.name}
-                    value={table.name}
-                    className="data-copy-toggle"
-                >
-                    {table.name}
-                </ToggleGroupItem>
-            ))} 
+            {
+                props.tables
+                .filter((table: any) => !table.name.toLowerCase().startsWith('versions_'))
+                .map((table: any) => (
+                    <ToggleGroupItem
+                        key={table.name}
+                        value={table.name}
+                        className="data-copy-toggle"
+                    >
+                        {table.name}
+                    </ToggleGroupItem>
+                ))
+            } 
         </ToggleGroup>
     )
 }
@@ -46,6 +49,7 @@ async function downloadTables(client: SupabaseClient, tables: string[], suffix: 
     }
 }
 
+// dropdown to select db
 export function ClientSelect(props: any) {
     return (        
         <>
@@ -79,6 +83,7 @@ export function CopyTablesTool() {
     const [selectedTables, setSelectedTables] = useState<string[]>([]);
 
     const copyBtn = useRef<HTMLButtonElement | null>(null);
+    const syncVerBtn = useRef<HTMLButtonElement | null>(null);
 
     async function mapClients() {
         const minimalClients = allClients.map(c => ({ key: c.key }));
@@ -159,13 +164,26 @@ export function CopyTablesTool() {
                 ref={copyBtn}
                 onClick={async () => { 
                         console.log('Copying from', selectedFromClientString, 'to', selectedToClientString);
-                        await copyDataBetweenTables(selectedFromClient, selectedToClient, selectedTables) 
+                        await copyDataBetweenTables(selectedFromClient, selectedToClient, selectedTables, true); 
                         showConfetti(copyBtn);
                     } 
                 } 
                 className='green-shadcn-button mb-4'>
                 Copy data
             </Button>
+            <br/>
+            <Button 
+                ref={syncVerBtn}
+                onClick={ async () => {
+                        console.log('sync versions from', selectedFromClientString, 'to', selectedToClientString);
+                        await copyDataBetweenTables(selectedFromClient, selectedToClient, ["versions_android", "versions_ios"], false); 
+                        showConfetti(copyBtn);
+                    }
+                }
+                className='green-shadcn-button mb-4'>
+                    Sync Version #
+            </Button>
+            <br/>
             <Button 
                 className='green-shadcn-button' 
                 onClick={async () => {await downloadTables(selectedFromClient, selectedTables, `${selectedFromClientString}`)} }>
