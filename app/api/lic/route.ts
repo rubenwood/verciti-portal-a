@@ -16,8 +16,8 @@ export async function POST(req: Request) {
     const addrColName = process.env.ADDR_COL!;
 
     // will need to update this to use live
-    const suffixMatch = supabaseTest.from(orgTableName).select('*').contains(sufColName, [suffix]);
-    const emailAddressMatch = supabaseTest.from(orgTableName).select('*').contains(addrColName, [email]);
+    const suffixMatch = await supabaseTest.from(orgTableName).select('*').contains(sufColName, [suffix]);
+    const emailAddressMatch = await supabaseTest.from(orgTableName).select('*').contains(addrColName, [email]);
     console.log("suf match: ", suffixMatch);
     console.log("addr match:", emailAddressMatch);
 
