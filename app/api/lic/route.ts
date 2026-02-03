@@ -3,6 +3,7 @@ import { createServerTestClient } from '@/lib/server';
 
 import { supabaseTest } from '@/lib/supabase';
 
+// called by auth webhook
 export async function POST(req: Request) {
     const request = await req.json();
     console.log("API call to check-email-access with request:", request);

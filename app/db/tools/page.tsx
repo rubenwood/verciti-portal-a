@@ -6,6 +6,7 @@ import { checkUser } from "../general/get-user";
 import { CopyTablesTool } from "./copy-tables/copy-tables";
 import { getUserProfile } from "../general/utils";
 import { supabaseTest } from "@/lib/supabase";
+import Link from "next/link";
 
 export default function ToolsPage(){
     const [role, setRole] = useState<string | null>(null);
@@ -40,8 +41,10 @@ export default function ToolsPage(){
 
             <br/>
             {/* <DataCopyTool /> */}
+            <Link className="link" href="./tools/org-setup">Org Setup</Link>
             <br/>
             <CopyTablesTool />
+            <br />
         </div>
         </>
     )
