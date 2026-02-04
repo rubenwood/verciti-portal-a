@@ -36,7 +36,7 @@ export async function POST(req: Request) {
         if(!current_visibility.includes("Production")){ newContentTags.push("Production") } // must always have prod
         console.log(suffixMatch.data[0].content_tags);
         console.log(suffixMatch.data[0].content_tags[0]);
-        newContentTags.concat(suffixMatch.data[0].content_tags); // add the new tags
+        newContentTags = newContentTags.concat(suffixMatch.data[0].content_tags); // add the new tags
         console.log("content tags to add: ", newContentTags);
 
         // update the user account with these content tags
