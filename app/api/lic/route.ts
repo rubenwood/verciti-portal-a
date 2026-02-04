@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     console.log("API call to check-email-access with request:", request);
 
     const userId = request.record.id;
-    const email = request.record.data.email;
+    const email = request.record.data.email.toLowerCase();
     console.log("email: ", email);
     const suffix = email.split('@')[1];
     const current_visibility = request.record.content_visibility;
@@ -34,12 +34,14 @@ export async function POST(req: Request) {
         // using first result for now
         let newContentTags = [];
         if(!current_visibility.includes("Production")){ newContentTags.push("Production") } // must always have prod
+        console.log(suffixMatch.data[0].content_tags);
+        console.log(suffixMatch.data[0].content_tags[0]);
         newContentTags.concat(suffixMatch.data[0].content_tags); // add the new tags
         console.log("content tags to add: ", newContentTags);
 
         // update the user account with these content tags
         const {data, error} = await supabaseService
-        .from('user_profiiles')
+        .from('public.user_profiiles')
         .update({content_visiblity:newContentTags})
         .eq('id', userId);
 
