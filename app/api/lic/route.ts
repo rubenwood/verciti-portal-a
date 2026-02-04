@@ -33,7 +33,7 @@ export async function POST(req: Request) {
         // add content_tags to acc
         // using first result for now
         let newContentTags = [];
-        if(!current_visibility.contains("Production")){ newContentTags.push("Production") } // must always have prod
+        if(!current_visibility.includes("Production")){ newContentTags.push("Production") } // must always have prod
         newContentTags.concat(suffixMatch.data[0].content_tags); // add the new tags
         console.log("content tags to add: ", newContentTags);
 
