@@ -41,8 +41,8 @@ export async function POST(req: Request) {
 
         // update the user account with these content tags
         const {data, error} = await supabaseService
-        .from('public.user_profiiles')
-        .update({content_visiblity:newContentTags})
+        .from('user_profiles')
+        .update({content_visibility:newContentTags})
         .eq('id', userId);
 
         if(error){
