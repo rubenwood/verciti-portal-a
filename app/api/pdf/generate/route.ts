@@ -190,7 +190,7 @@ function ApplicantTable(data: any): Table {
   rows.push(
     new TableRow({
       children: [ // TODO: line breaks dont create new lines
-        createTableCell(`Address: ${data['Address']}Postcode: ${data['Postcode']}`, false, undefined, 4),
+        createTableCell(`Address: ${data['Address']}Postcode: ${data['Postcode'].toUpperCase()}`, false, undefined, 4),
       ],
     }),
   );
@@ -609,7 +609,7 @@ function EmploymentTable(data: any) : Table {
   new TableRow({
       children: [
         createTableCell(col1Lines.join('\n'), false, undefined, 1),
-        createTableCell(`Name of employer: ${data["Name of Employer"]}\n\nWorkplace postcode: ${data["Workplace postcode"]}\n\nCurrent job title: ${data["Current Job Title"]}\n\nIndustry / sector of current occupation: ${data["Industry/sector of current occupation"]}\n\nHours worked per week: ${data["Hours worked per week"]}\n\nCurrent salary (please specify if hourly rate, weekly, monthly or yearly): ${data["Current Salary (please specify if hourly rate, weekly, monthly or yearly)"]}\n`, false, undefined, 2),
+        createTableCell(`Name of employer: ${data["Name of Employer"]}\n\nWorkplace postcode: ${data["Workplace postcode"].toUpperCase()}\n\nCurrent job title: ${data["Current Job Title"]}\n\nIndustry / sector of current occupation: ${data["Industry/sector of current occupation"]}\n\nHours worked per week: ${data["Hours worked per week"]}\n\nCurrent salary (please specify if hourly rate, weekly, monthly or yearly): ${data["Current Salary (please specify if hourly rate, weekly, monthly or yearly)"]}\n`, false, undefined, 2),
         createTableCell(col3Lines.join('\n'), false, undefined, 1),
       ],
     }),
