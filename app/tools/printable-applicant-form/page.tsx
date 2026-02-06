@@ -77,7 +77,7 @@ const ApplicantInfoSection = ({ data }: any) => (
                 <td colSpan={2} style={{ border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>Address: {data["Address"]}
                     <br/>
                     <br/>
-                    Postcode:{data["Postcode"]}
+                    Postcode:{data["Postcode"].toUpperCase()}
                 </td>
             </tr>
             </tbody>
@@ -323,7 +323,7 @@ const ApplicantEmploymentSection = ({ data }: any) => (
                     <td style={{ width:"40%", border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>
                         Name of employer: {data["Name of Employer"]}<br/>
                         <br/>
-                        Workplace postcode: {data["Workplace postcode"]}<br/>
+                        Workplace postcode: {data["Workplace postcode"].toUpperCase()}<br/>
                         <br/>
                         Current job title: {data["Current Job Title"]}<br/>
                         <br/>
@@ -552,12 +552,17 @@ const PrintableApplication = ({data}: any) => (
 );
 
 const CohortSelect = (props: any) =>{
-  const uniqueCohorts = useMemo<string[]>(() => {
-    const cohorts = (props.entries || [])
-      .map((entry: any) => String(entry?.["Cohort"] ?? ""))
-      .filter((cohort: string) => cohort !== "");
-    return Array.from(new Set(cohorts));
-  }, [props.entries]);
+    const uniqueCohorts = useMemo<string[]>(() => {
+        const cohorts = (props.entries || []).map((entry: any) => {
+            const cohortKey = Object.keys(entry).find(
+            key => key.trim() === "Cohort"
+            );
+
+            return cohortKey ? String(entry[cohortKey]).trim() : "";
+        });
+
+        return Array.from(new Set(cohorts.filter(Boolean)));
+    }, [props.entries]);
 
   return (
     <select
