@@ -190,7 +190,7 @@ function ApplicantTable(data: any): Table {
   rows.push(
     new TableRow({
       children: [ // TODO: line breaks dont create new lines
-        createTableCell(`Address: ${data['Address']}Postcode: ${data['Postcode']}`, false, undefined, 4),
+        createTableCell(`Address: ${data['Address']} Postcode: ${data['Postcode']}`, false, undefined, 4),
       ],
     }),
   );
@@ -245,12 +245,12 @@ function ApplicantTable(data: any): Table {
     },
     rows,
     borders: {
-      top: { style: BorderStyle.SINGLE, size: 1, color: 'cccccc' },
-      bottom: { style: BorderStyle.SINGLE, size: 1, color: 'cccccc' },
-      left: { style: BorderStyle.SINGLE, size: 1, color: 'cccccc' },
-      right: { style: BorderStyle.SINGLE, size: 1, color: 'cccccc' },
-      insideHorizontal: { style: BorderStyle.SINGLE, size: 1, color: 'cccccc' },
-      insideVertical: { style: BorderStyle.SINGLE, size: 1, color: 'cccccc' },
+      top: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
+      bottom: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
+      left: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
+      right: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
+      insideHorizontal: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
+      insideVertical: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
     },
   })
 }
@@ -294,37 +294,84 @@ function EthnicTable(data: any): Table {
     '☐ Prefer not to say'
   ];
 
+  const ethnicRow = new TableRow({
+    children: [
+      new TableCell({
+        children: [createParagraphFromLines(col1Lines)],
+        margins: { top: 100, bottom: 100, left: 100, right: 100 },
+        columnSpan:2,
+        borders: {
+          top: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+          bottom: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+          left: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+          right: { style: BorderStyle.NONE, size: 0, color: "ffffff" },
+        },
+      }),
+      new TableCell({
+        children: [createParagraphFromLines(col2Lines)],
+        margins: { top: 100, bottom: 100, left: 100, right: 100 },
+        columnSpan:2,
+        borders: {
+          top: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+          bottom: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+          left: { style: BorderStyle.NONE, size: 0, color: "ffffff" },
+          right: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+        },
+      }),
+    ],
+  });
+
+  const criminalLines = [
+    `Do you have a criminal conviction (excluding minor motoring offences)?`,
+    '',
+    `${getMarker(data["Do you have a criminal conviction (excluding minor motoring offences)?"], "Yes")} Yes ${getMarker(data["Do you have a criminal conviction (excluding minor motoring offences)?"], "No")} No`
+  ];
+
+  const carerLines = [
+    `Are you currently caring for children or other adults?`,
+    '',
+    `${getMarker(data["Are you currently caring for children or other adults?"], "Yes")} Yes ${getMarker(data["Are you currently caring for children or other adults?"], "No")} No`
+  ];
+
+  const criminalRow = new TableRow({
+    children: [
+      new TableCell({
+        children: [createParagraphFromLines(criminalLines)],
+        margins: { top: 100, bottom: 100, left: 100, right: 100 },
+        columnSpan:4,
+        borders: {
+          top: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+          bottom: { style: BorderStyle.NONE, size: 0, color: "000000" },
+          left: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+          right: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+        },
+      }),   
+    ],
+  });
+  const carerRow = new TableRow({
+    children: [
+      new TableCell({
+        children: [createParagraphFromLines(carerLines)],
+        margins: { top: 100, bottom: 100, left: 100, right: 100 },
+        columnSpan:4,
+        borders: {
+          top: { style: BorderStyle.NONE, size: 0, color: "000000" },
+          bottom: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+          left: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+          right: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+        },
+      }),   
+    ],
+  });  
+
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
     rows: [
       headerRow,
-      new TableRow({
-        children: [
-          new TableCell({
-            children: [createParagraphFromLines(col1Lines)],
-            margins: { top: 100, bottom: 100, left: 100, right: 100 },
-            columnSpan:2,
-            borders: {
-              top: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
-              bottom: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
-              left: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
-              right: { style: BorderStyle.NONE, size: 0, color: "ffffff" },
-            },
-          }),
-          new TableCell({
-            children: [createParagraphFromLines(col2Lines)],
-            margins: { top: 100, bottom: 100, left: 100, right: 100 },
-            columnSpan:2,
-            borders: {
-              top: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
-              bottom: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
-              left: { style: BorderStyle.NONE, size: 0, color: "ffffff" },
-              right: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
-            },
-          }),
-        ],
-      }),
-    ],
+      ethnicRow,
+      criminalRow,
+      carerRow,
+    ]
   });
 }
 
@@ -362,12 +409,12 @@ rows.push(
     },
     rows,
     borders: {
-      top: { style: BorderStyle.SINGLE, size: 1, color: 'cccccc' },
-      bottom: { style: BorderStyle.SINGLE, size: 1, color: 'cccccc' },
-      left: { style: BorderStyle.SINGLE, size: 1, color: 'cccccc' },
-      right: { style: BorderStyle.SINGLE, size: 1, color: 'cccccc' },
-      insideHorizontal: { style: BorderStyle.SINGLE, size: 1, color: 'cccccc' },
-      insideVertical: { style: BorderStyle.SINGLE, size: 1, color: 'cccccc' },
+      top: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
+      bottom: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
+      left: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
+      right: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
+      insideHorizontal: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
+      insideVertical: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
     },
   })
 }
@@ -592,6 +639,53 @@ function EmploymentTable(data: any) : Table {
     `${getMarker(data["Do you currently receive any of the following?"], col3Texts[4])} ${col3Texts[4]}`
   ];
 
+
+
+  const sec4Lines = [
+    `4. If employed, are you attending this bootcamp via your current employer (has applicant been sent on the bootcamp through their current employment)?`,
+    '',
+    `${getMarker(data["If employed, are you attending this bootcamp via your current employer (has applicant been sent on the bootcamp through their current employment)?"], "Yes")} Yes`,
+    `${getMarker(data["If employed, are you attending this bootcamp via your current employer (has applicant been sent on the bootcamp through their current employment)?"], "No")} No`,
+    `${getMarker(data["If employed, are you attending this bootcamp via your current employer (has applicant been sent on the bootcamp through their current employment)?"], "N/A - not in paid employment")} N/A – not in paid employment`
+  ]
+  const sec4Row = new TableRow({
+    children: [
+      new TableCell({
+        children: [createParagraphFromLines(sec4Lines)],
+        margins: { top: 100, bottom: 100, left: 100, right: 100 },
+        columnSpan:4,
+        borders: {
+          top: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+          bottom: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+          left: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+          right: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+        },
+      }),   
+    ],
+  });
+
+  const sec5Lines = [
+    `5. Do you plan to work alongside the bootcamp?`,
+    '',
+    `${getMarker(data["Do you plan to work alongside the bootcamp?"], "Yes (Full-time employment)")} - Yes (Full-time employment)	${getMarker(data["Do you plan to work alongside the bootcamp?"], "Yes (Self-employed)")} - Yes (Self-employed)`,
+    `${getMarker(data["Do you plan to work alongside the bootcamp?"], "Yes (Part time employed)")} - Yes (Part time employed)    ${getMarker(data["Do you plan to work alongside the bootcamp?"], "No")} - No`
+  ]
+  const sec5Row = new TableRow({
+    children: [
+      new TableCell({
+        children: [createParagraphFromLines(sec5Lines)],
+        margins: { top: 100, bottom: 100, left: 100, right: 100 },
+        columnSpan:4,
+        borders: {
+          top: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+          bottom: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+          left: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+          right: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+        },
+      }),   
+    ],
+  });
+
   // Section header row
   rows.push(
     new TableRow({
@@ -613,7 +707,11 @@ function EmploymentTable(data: any) : Table {
         createTableCell(col3Lines.join('\n'), false, undefined, 1),
       ],
     }),
+    sec4Row,
+    sec5Row
   );
+
+
 
   return new Table({
     width: {

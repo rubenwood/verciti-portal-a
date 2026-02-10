@@ -45,6 +45,14 @@ const getMultiMarker = (userInput: string, option: string) => {
     return selections.includes(option) ? "☒" : "☐";
 };
 
+const SkillsBootCampStrings = {
+    header: "Skill Bootcamp"
+}
+const RegionalSkillsStrings = {
+    header: "Regional Skills Pilot Short Course"
+}
+
+
 const ApplicantInfoSection = ({ data }: any) => (
   <div className="WordSection1" style={{fontFamily: 'Arial, sans-serif'}}>
         <p style={{ fontSize:'14pt' }}>
@@ -77,7 +85,7 @@ const ApplicantInfoSection = ({ data }: any) => (
                 <td colSpan={2} style={{ border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>Address: {data["Address"]}
                     <br/>
                     <br/>
-                    Postcode:{data["Postcode"]}
+                    Postcode: {data["Postcode"]}
                 </td>
             </tr>
             </tbody>
@@ -601,31 +609,14 @@ export default function PrintableApplicantFormTool() {
         });
     };
 
-    const handleFetchFromUrl = async () => {
-        if (!csvUrl.trim()) return;
-
-        try {
-            const response = await fetch(csvUrl);
-            if (!response.ok) throw new Error(`Failed to fetch CSV: ${response.statusText}`);
-            const csvText = await response.text();
-
-            Papa.parse(csvText, {
-                header: true,
-                skipEmptyLines: true,
-                complete: (results) => {
-                    setEntries(results.data);
-                },
-            });
-        } catch (error) {
-            console.error("Error fetching CSV:", error);
-        }
-    };
-
     const generateAndDownloadDocx = async () => {
         for (let i = 0; i < entries.length; i++) {
             const data = entries[i];
             if(data['Cohort'] !== selectedCohort){ continue; }
+
+            console.log("DATA");
             console.log(data);
+
             const emailAddress = data["Email Address"]?.toLowerCase().trim();
 
             if (emailList.length > 0 && !emailList.includes(emailAddress)) {
@@ -646,9 +637,6 @@ export default function PrintableApplicantFormTool() {
 
             const blob = await response.blob();
             const url = URL.createObjectURL(blob);
-
-            console.log("DATA");
-            console.log(data);
             
             const now = new Date();
             const timestamp = now.toISOString().replace(/[:.]/g, '-').replace('T', '_').replace('Z', '');
