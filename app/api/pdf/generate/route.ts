@@ -508,18 +508,18 @@ function AttainmentTable(data: any): Table {
   const row2Col2Lines = [
     ``,
     ``,
-    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[0])}, ${row2Col2Texts[0]}`,
-    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[1])}, ${row2Col2Texts[1]}`,
-    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[2])}, ${row2Col2Texts[2]}`,
-    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[3])}, ${row2Col2Texts[3]}`,
-    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[4])}, ${row2Col2Texts[4]}`,
-    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[5])}, ${row2Col2Texts[5]}`,
-    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[6])}, ${row2Col2Texts[6]}`,
-    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[7])}, ${row2Col2Texts[7]}`,
-    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[8])}, ${row2Col2Texts[8]}`,
-    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[9])}, ${row2Col2Texts[9]}`,
-    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[10])}, ${row2Col2Texts[10]}`,
-    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[11])}, ${row2Col2Texts[11]}`
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[0])} ${row2Col2Texts[0]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[1])} ${row2Col2Texts[1]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[2])} ${row2Col2Texts[2]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[3])} ${row2Col2Texts[3]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[4])} ${row2Col2Texts[4]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[5])} ${row2Col2Texts[5]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[6])} ${row2Col2Texts[6]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[7])} ${row2Col2Texts[7]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[8])} ${row2Col2Texts[8]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[9])} ${row2Col2Texts[9]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[10])} ${row2Col2Texts[10]}`,
+    `${getMarker(data["If you completed a level 6 qualification or higher, please select which subject this was in"], row2Col2Texts[11])} ${row2Col2Texts[11]}`
   ];
 
   // TODO: might need to adjust column width or font sizes
