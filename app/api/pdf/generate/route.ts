@@ -588,7 +588,7 @@ function AttainmentTable(data: any): Table {
   })
 }
 
-function EmploymentTable(data: any) : Table {
+function EmploymentTable(data: any, variant: any) : Table {
   const rows: TableRow[] = [];
 
   const col1Texts = [
@@ -642,7 +642,7 @@ function EmploymentTable(data: any) : Table {
 
 
   const sec4Lines = [
-    `4. If employed, are you attending this bootcamp via your current employer (has applicant been sent on the bootcamp through their current employment)?`,
+    `4. If employed, are you attending this ${variant.type} via your current employer (has applicant been sent on the bootcamp through their current employment)?`,
     '',
     `${getMarker(data["If employed, are you attending this bootcamp via your current employer (has applicant been sent on the bootcamp through their current employment)?"], "Yes")} Yes`,
     `${getMarker(data["If employed, are you attending this bootcamp via your current employer (has applicant been sent on the bootcamp through their current employment)?"], "No")} No`,
@@ -665,7 +665,7 @@ function EmploymentTable(data: any) : Table {
   });
 
   const sec5Lines = [
-    `5. Do you plan to work alongside the bootcamp?`,
+    `5. Do you plan to work alongside the ${variant.type}?`,
     '',
     `${getMarker(data["Do you plan to work alongside the bootcamp?"], "Yes (Full-time employment)")} - Yes (Full-time employment)	${getMarker(data["Do you plan to work alongside the bootcamp?"], "Yes (Self-employed)")} - Yes (Self-employed)`,
     `${getMarker(data["Do you plan to work alongside the bootcamp?"], "Yes (Part time employed)")} - Yes (Part time employed)    ${getMarker(data["Do you plan to work alongside the bootcamp?"], "No")} - No`
@@ -787,7 +787,7 @@ function MarketingTable(data: any) : Table {
     rows
   })
 }
-function DeclarationTable(data: any) : Table {
+function DeclarationTable(data: any, variant: any) : Table {
    const rows: TableRow[] = [];
 
    rows.push(
@@ -801,7 +801,7 @@ function DeclarationTable(data: any) : Table {
   rows.push(
     new TableRow({
       children: [
-        createTableCell(`I agree that initial assessment and information advice and guidance concerning the course has been provided to me, this included information about the course, its entry requirements, the implications of the choice of course, its suitability and the support which is available to me. I agree that the information given on this agreement is true, correct and completed to the best of my knowledge and I understand that Verciti has the right to cancel my enrolment if it is found that I have provided false or inaccurate information. I agree that this information can be used to process my data for any purposes connected with my studies or my health and safety whilst on the premises. This also includes any other contractual requirements and, in particular to the disclosure of all the data on this form or otherwise collected about me to the DfE for the purposes noted in the Privacy Notice (add link to most current privacy notice and privacy Q&A here). I also agree with the below points relating to my chosen programme: \n\n- Take appropriate responsibility for my own learning, development and progression\n- Attend and undertake training required to achieve the Skills Bootcamp identified in Programme Details in the ILP\n- Promptly inform the Employer and/or Verciti if any matters or issues arise, or might arise, that will, or may, affect my learning, development and progression\n- All times behave in a safe and responsible manner and in accordance with the statutory requirements of health and safety law relating to my responsibilities from time to time\n- Comply with the policies, regulations and procedures of my Employer and/or Verciti, notified to me from time to time;\n\nIf you wish to raise a complaint about how we have handled your personal data email to Verciti or any other issues, please email info@verciti.com with full details of your issue. If you are not satisfied how your complaint has been dealt with, please be aware of Authority’s Whistleblowing and Complaints policies and processes. Whistleblowing involves entering a 'whistleblowing' webform on the 'Contact the Department for Education' page, which can be found below: <Link href='https://form.education.gov.uk/service/Contact_the_Department_for_Education'>Contact the Department for Education - DFE Online Forms</Link>. Whistleblowing entries for Skills Bootcamps must be clearly marked as 'Skills Bootcamps' and will submitted via the DfE's whistleblowing submission process and will be escalated to the relevant policy team.\n\nYour information may also be shared with other third parties for the above purposes, but only where the law allows it and the sharing is in compliance with data protection legislation. You can agree to be contacted for other purposes by ticking any of the following boxes:\n\n
+        createTableCell(`I agree that initial assessment and information advice and guidance concerning the course has been provided to me, this included information about the course, its entry requirements, the implications of the choice of course, its suitability and the support which is available to me. I agree that the information given on this agreement is true, correct and completed to the best of my knowledge and I understand that Verciti has the right to cancel my enrolment if it is found that I have provided false or inaccurate information. I agree that this information can be used to process my data for any purposes connected with my studies or my health and safety whilst on the premises. This also includes any other contractual requirements and, in particular to the disclosure of all the data on this form or otherwise collected about me to ${variant.department} for the purposes noted in the Privacy Notice (https://www.gov.uk/government/publications/office-for-clean-energy-jobs-regional-skills-pilot-privacy-notice/office-for-clean-energy-jobs-regional-skills-pilot-privacy-notice). I also agree with the below points relating to my chosen programme: \n\n- Take appropriate responsibility for my own learning, development and progression\n- Attend and undertake training required to achieve the Skills Bootcamp identified in Programme Details in the ILP\n- Promptly inform the Employer and/or Verciti if any matters or issues arise, or might arise, that will, or may, affect my learning, development and progression\n- All times behave in a safe and responsible manner and in accordance with the statutory requirements of health and safety law relating to my responsibilities from time to time\n- Comply with the policies, regulations and procedures of my Employer and/or Verciti, notified to me from time to time;\n\nIf you wish to raise a complaint about how we have handled your personal data email to Verciti or any other issues, please email info@verciti.com with full details of your issue. If you are not satisfied how your complaint has been dealt with, please be aware of Authority’s Whistleblowing and Complaints policies and processes. ${variant.whistleblowing}\n\nYour information may also be shared with other third parties for the above purposes, but only where the law allows it and the sharing is in compliance with data protection legislation. You can agree to be contacted for other purposes by ticking any of the following boxes:\n\n
         ${getMarker(data["Your information may also be shared with other third parties for the above purposes, but only where the law allows it and the sharing is in compliance with data protection legislation. You can agr..."], "About courses or learning opportunities")} About courses or learning opportunities\n
         ${getMarker(data["Your information may also be shared with other third parties for the above purposes, but only where the law allows it and the sharing is in compliance with data protection legislation. You can agr..."], "For research and evaluation purposes")} For research and evaluation purposes\n
         ${getMarker(data["Your information may also be shared with other third parties for the above purposes, but only where the law allows it and the sharing is in compliance with data protection legislation. You can agr..."], "By post")} By post\n
@@ -894,16 +894,16 @@ function EmptyParagraph(){
   });
 }
 
-function constructWordDoc(data: any) {
+function constructWordDoc(data: any, variant: any) {
   const ParagraphBreak: Paragraph = EmptyParagraph();
   const ApplicantSection: Table = ApplicantTable(data);
   const EthnicSection: Table = EthnicTable(data);
   const EmergencySection: Table = EmergencyTable(data);
   const AttainmentSection: Table = AttainmentTable(data);
-  const EmploymentSection: Table = EmploymentTable(data);
+  const EmploymentSection: Table = EmploymentTable(data, variant);
   const DisabilitySection: Table = DisabilityTable(data);
   const MarketingSection: Table = MarketingTable(data);
-  const DeclarationSection: Table = DeclarationTable(data);
+  const DeclarationSection: Table = DeclarationTable(data, variant);
   const SignatureSection: Table = SignatureTable(data);
 
   const doc = new Document({
@@ -913,7 +913,7 @@ function constructWordDoc(data: any) {
           new Paragraph({
             children: [
               new TextRun({
-                text: 'Skills Bootcamp',
+                text: variant.header,
                 bold: true,
                 size: 56, // 28pt = 56 half-points
                 font: 'Arial',
@@ -957,13 +957,13 @@ function constructWordDoc(data: any) {
 }
 
 export async function POST(req: NextRequest) {
-  const { data } = await req.json();
+  const { data, variant } = await req.json();
 
   if (!data || data['Completion time'] === "") {
     return new Response(JSON.stringify({ error: 'Missing form data' }), { status: 400 });
   }
 
-  const doc = constructWordDoc(data);
+  const doc = constructWordDoc(data, variant);
   const buffer = await Packer.toBuffer(doc);
   const uint8Array = new Uint8Array(buffer);
 

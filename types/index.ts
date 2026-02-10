@@ -129,3 +129,6 @@ type SynthesiaPayload = {
   nextOffset?: number;
 };
 
+type FormVariant = {
+    
+}

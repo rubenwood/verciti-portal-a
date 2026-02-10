@@ -45,18 +45,10 @@ const getMultiMarker = (userInput: string, option: string) => {
     return selections.includes(option) ? "☒" : "☐";
 };
 
-const SkillsBootCampStrings = {
-    header: "Skill Bootcamp"
-}
-const RegionalSkillsStrings = {
-    header: "Regional Skills Pilot Short Course"
-}
-
-
-const ApplicantInfoSection = ({ data }: any) => (
+const ApplicantInfoSection = ({ data, variant }: any) => (
   <div className="WordSection1" style={{fontFamily: 'Arial, sans-serif'}}>
         <p style={{ fontSize:'14pt' }}>
-            <b>Skills Bootcamp</b>
+            <b>{variant.header}</b>
         </p>
         <p style={{ fontSize:'14pt' }}>
             <b>Date of application: {formatUKDate(data["Completion time"].split(" ")[0])}</b>
@@ -289,7 +281,7 @@ const ApplicantQualificationsSection = ({ data }: any) => (
         </table>
     </div>
 );
-const ApplicantEmploymentSection = ({ data }: any) => (
+const ApplicantEmploymentSection = ({ data, variant }: any) => (
   <div className="WordSection2" style={{fontFamily: 'Arial, sans-serif'}}>
         <table style={{ borderCollapse: 'collapse', width: '100%', border: '1px solid black' }}>
             <thead>
@@ -352,7 +344,7 @@ const ApplicantEmploymentSection = ({ data }: any) => (
                 </tr>
                 <tr style={{ border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>
                     <td colSpan={3} style={{padding: '5px', paddingBottom:'10px' }}>
-                        4. <b>If employed</b>, are you attending this bootcamp via your current employer (has applicant been sent on the bootcamp through their current employment)?
+                        4. <b>If employed</b>, are you attending this {variant.type} via your current employer (has applicant been sent on the bootcamp through their current employment)?
                         <br/><br/>
                         {getMarker(data["If employed, are you attending this bootcamp via your current employer (has applicant been sent on the bootcamp through their current employment)?"], "Yes")} Yes<br/>
                         {getMarker(data["If employed, are you attending this bootcamp via your current employer (has applicant been sent on the bootcamp through their current employment)?"], "No")} No<br/>
@@ -362,7 +354,7 @@ const ApplicantEmploymentSection = ({ data }: any) => (
                 </tr>
                 <tr style={{ border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>
                     <td colSpan={3} style={{padding: '5px', paddingBottom:'10px' }}>
-                        5. Do you plan to work alongside the bootcamp?<br/><br/>
+                        5. Do you plan to work alongside the {variant.type}?<br/><br/>
                         {getMarker(data["Do you plan to work alongside the bootcamp?"], "Yes (Full-time employment)")} - Yes (Full-time employment)	{getMarker(data["Do you plan to work alongside the bootcamp?"], "Yes (Self-employed)")} - Yes (Self-employed)<br/>
                         {getMarker(data["Do you plan to work alongside the bootcamp?"], "Yes (Part time employed)")} - Yes (Part time employed)    {getMarker(data["Do you plan to work alongside the bootcamp?"], "No")} - No<br/>
                         <br/>
@@ -464,7 +456,7 @@ const ApplicantMarketingSection = ({ data }: any) => (
         </table>
     </div>
 );
-const ApplicantDeclarationSection = ({ data }: any) => (
+const ApplicantDeclarationSection = ({ data, variant }: any) => (
   <div className="WordSection2" style={{fontFamily: 'Arial, sans-serif'}}>
         <table style={{ borderCollapse: 'collapse', width: '100%', border: '1px solid black' }}>
             <thead>
@@ -477,14 +469,14 @@ const ApplicantDeclarationSection = ({ data }: any) => (
             <tbody style={{fontSize: '11pt'}}>
                 <tr>
                     <td colSpan={3} style={{ border: '1px solid black', padding: '5px', paddingBottom:'10px' }}>
-                        I agree that initial assessment and information advice and guidance concerning the course has been provided to me, this included information about the course, its entry requirements, the implications of the choice of course, its suitability and the support which is available to me. I agree that the information given on this agreement is true, correct and completed to the best of my knowledge and I understand that Verciti has the right to cancel my enrolment if it is found that I have provided false or inaccurate information. I agree that this information can be used to process my data for any purposes connected with my studies or my health and safety whilst on the premises. This also includes any other contractual requirements and, in particular to the disclosure of all the data on this form or otherwise collected about me to the DfE for the purposes noted in the Privacy Notice (add link to most current privacy notice and privacy Q&A here). I also agree with the below points relating to my chosen programme: 
+                        I agree that initial assessment and information advice and guidance concerning the course has been provided to me, this included information about the course, its entry requirements, the implications of the choice of course, its suitability and the support which is available to me. I agree that the information given on this agreement is true, correct and completed to the best of my knowledge and I understand that Verciti has the right to cancel my enrolment if it is found that I have provided false or inaccurate information. I agree that this information can be used to process my data for any purposes connected with my studies or my health and safety whilst on the premises. This also includes any other contractual requirements and, in particular to the disclosure of all the data on this form or otherwise collected about me to {variant.department} for the purposes noted in the <Link className="link" href="https://www.gov.uk/government/publications/office-for-clean-energy-jobs-regional-skills-pilot-privacy-notice/office-for-clean-energy-jobs-regional-skills-pilot-privacy-notice">Privacy Notice</Link>. I also agree with the below points relating to my chosen programme: 
 
                         - Take appropriate responsibility for my own learning, development and progression<br/>
                         - Attend and undertake training required to achieve the Skills Bootcamp identified in Programme Details in the ILP<br/>
                         - Promptly inform the Employer and/or Verciti if any matters or issues arise, or might arise, that will, or may, affect my learning, development and progression<br/>
                         - All times behave in a safe and responsible manner and in accordance with the statutory requirements of health and safety law relating to my responsibilities from time to time<br/>
                         - Comply with the policies, regulations and procedures of my Employer and/or Verciti, notified to me from time to time;<br/><br/>
-                        If you wish to raise a complaint about how we have handled your personal data email to Verciti or any other issues, please email info@verciti.com with full details of your issue. If you are not satisfied how your complaint has been dealt with, please be aware of Authority’s Whistleblowing and Complaints policies and processes. Whistleblowing involves entering a 'whistleblowing' webform on the 'Contact the Department for Education' page, which can be found below: <Link href='https://form.education.gov.uk/service/Contact_the_Department_for_Education'>Contact the Department for Education - DFE Online Forms</Link>. Whistleblowing entries for Skills Bootcamps must be clearly marked as 'Skills Bootcamps' and will submitted via the DfE's whistleblowing submission process and will be escalated to the relevant policy team.<br/><br/>
+                        If you wish to raise a complaint about how we have handled your personal data email to Verciti or any other issues, please email info@verciti.com with full details of your issue. If you are not satisfied how your complaint has been dealt with, please be aware of Authority’s Whistleblowing and Complaints policies and processes. {variant.whistleblowing}<br/><br/>
                         Your information may also be shared with other third parties for the above purposes, but only where the law allows it and the sharing is in compliance with data protection legislation. You can agree to be contacted for other purposes by ticking any of the following boxes:<br/><br/>
 
                         {getMarker(data["Your information may also be shared with other third parties for the above purposes, but only where the law allows it and the sharing is in compliance with data protection legislation. You can agr..."], "About courses or learning opportunities")} About courses or learning opportunities<br/>
@@ -532,9 +524,9 @@ const ApplicantSignSection = ({ data }: any) => {
         </div>
     );
 };
-const PrintableApplication = ({data}: any) => (
+const PrintableApplication = ({data, variant, index}: any) => (
     <div>
-        <ApplicantInfoSection data={data} />
+        <ApplicantInfoSection data={data} variant={variant}/>
         <ApplicantEthnicSection data={data} />
         <div className="page-break"></div>
         <br/>
@@ -544,7 +536,7 @@ const PrintableApplication = ({data}: any) => (
         <ApplicantQualificationsSection data={data} />
         <div className="page-break"></div>
         <br/>
-        <ApplicantEmploymentSection data={data} />
+        <ApplicantEmploymentSection data={data} variant={variant} />
         <div className="page-break"></div>
         <br/>
         <ApplicantDisabilitySection data={data} />
@@ -552,7 +544,7 @@ const PrintableApplication = ({data}: any) => (
         <ApplicantMarketingSection data={data} />
         <div className="page-break"></div>
         <br/>
-        <ApplicantDeclarationSection data={data} />
+        <ApplicantDeclarationSection data={data} variant={variant} />
         <div className="page-break"></div>
         <br/>
         <ApplicantSignSection data={data} />
@@ -575,7 +567,7 @@ const CohortSelect = (props: any) =>{
   return (
     <select
       value={props.selectedCohort}
-      onChange={(e) => props.setSelectedCohort(e.target.value)}
+      onChange={(e) => props.setSelected(e.target.value)}
       className="w-full p-2 border rounded"
     >
       <option value="" disabled>
@@ -590,10 +582,45 @@ const CohortSelect = (props: any) =>{
   );
 }
 
+const SkillsBootCampVariant = {
+    id:"skills-bootcamp",
+    header: "Skill Bootcamp",
+    type: "bootcamp",
+    department:"the DfE",
+    whistleblowing:`Whistleblowing involves entering a 'whistleblowing' webform on the 'Contact the Department for Education' page, which can be found below: Contact the Department for Education - DFE Online Forms. Whistleblowing entries for Skills Bootcamps must be clearly marked as 'Skills Bootcamps' and will submitted via the DfE's whistleblowing submission process and will be escalated to the relevant policy team.`
+}
+const RegionalSkillsVariant = {
+    id:"regional-skills-pilot",
+    header: "Regional Skills Pilot Short Course",
+    type: "course",
+    department:"DESNZ",
+    whistleblowing:``
+}
+const FormVariantSelect = (props: any) =>{
+    return(
+        <select 
+            value={props.formVariantId}
+            onChange={(e) => props.setSelected(e.target.value)}
+            className="w-full p-2 border rounded"
+            >
+            <option value="" disabled>
+                Select a variant
+            </option>
+            {props.variants.map((variant: any, index: any) => (
+                <option key={index} value={variant.id}>
+                    {`${variant.header}`}
+                </option>
+            ))}
+        </select>
+    )
+}
+
 export default function PrintableApplicantFormTool() {
     const [user, setUser] = useState<User | null>(null);
     const [entries, setEntries] = useState<any[]>([]);
     const [selectedCohort, setSelectedCohort] = useState("");
+    const [formVariantId, setFormVariantId] = useState("");
+    const [selectedFormVariant, setSelectedFormVariant] = useState<any>(undefined);
     const [csvUrl, setCsvUrl] = useState("");
     const formRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -632,7 +659,7 @@ export default function PrintableApplicantFormTool() {
             const response = await fetch("/api/pdf/generate", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ data }),
+                body: JSON.stringify({ data, variant: selectedFormVariant }),
             });
 
             if (!response.ok) {
@@ -656,14 +683,28 @@ export default function PrintableApplicantFormTool() {
         }
     };
 
+    const formVariants = [SkillsBootCampVariant, RegionalSkillsVariant];
+
+    const getVariantById = (vid: string) =>{
+        return formVariants.find(variant => variant.id === vid);
+    }
 
     useEffect(() => {
         const init = async () => {
             const users = await checkUser();
             if (users) { setUser(users.testUser); }
         };
-        init();        
-    }, [entries, user]);
+        init();
+    }, [user]);
+
+    useEffect(() => {
+        console.log("entries changed");
+    }, [entries])
+
+    useEffect(() => {
+        console.log(`form variant changed: ${formVariantId}`);
+        setSelectedFormVariant(getVariantById(formVariantId));
+    }, [formVariantId])
 
     if(!user){ return <Login setUserFunc={setUser} user={user} /> }
 
@@ -675,7 +716,9 @@ export default function PrintableApplicantFormTool() {
                 <Input type="file" accept=".csv" onChange={handleFileUpload} />
                 <br/>
                 <p>Select a cohort from the list below</p>
-                <CohortSelect entries={entries} selectedCohort={selectedCohort} setSelectedCohort={setSelectedCohort} />
+                <CohortSelect entries={entries} selectedCohort={selectedCohort} setSelected={setSelectedCohort} />
+                <br/>
+                <FormVariantSelect variants={formVariants} formVariantId={formVariantId} setSelected={setFormVariantId} /> 
                 <br/>
                 <p>You have selected <b>cohort {selectedCohort}</b> for printing</p>
             </div>
@@ -684,23 +727,27 @@ export default function PrintableApplicantFormTool() {
                 Create DOCX Files
             </Button>
 
-            {entries.map((entry, index) => (
-                entry["Completion time"] != "" && entry["Completion time"] != null ?
-                (<div
-                    key={index}
-                    className="printable-form my-4 p-4 border rounded"
-                    style={{
-                        color: "#000",
-                        backgroundColor: "#fff",
-                        fontFamily: "Arial, sans-serif",
-                    }}
-                    ref={(el) => {
-                        formRefs.current[index] = el;
-                    }}
-                >
-                    <PrintableApplication data={entry} index={index} />
-                </div>) : null
-            ))}
+            {selectedFormVariant == undefined ? 
+                    <p>No form variant selected</p>
+                :
+                entries.map((entry, index) => (
+                    entry["Completion time"] != "" && entry["Completion time"] != null ?
+                    (<div
+                        key={index}
+                        className="printable-form my-4 p-4 border rounded"
+                        style={{
+                            color: "#000",
+                            backgroundColor: "#fff",
+                            fontFamily: "Arial, sans-serif",
+                        }}
+                        ref={(el) => {
+                            formRefs.current[index] = el;
+                        }}
+                    >
+                        <PrintableApplication data={entry} variant={selectedFormVariant} index={index} />
+                    </div>) : null
+                ))
+            }            
             </div>
         </div>
     );
