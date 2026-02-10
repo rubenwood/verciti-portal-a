@@ -568,7 +568,7 @@ const CohortSelect = (props: any) =>{
     <select
       value={props.selectedCohort}
       onChange={(e) => props.setSelected(e.target.value)}
-      className="w-full p-2 border rounded"
+      className="dark w-full p-2 border rounded"
     >
       <option value="" disabled>
         Select a cohort
@@ -601,7 +601,7 @@ const FormVariantSelect = (props: any) =>{
         <select 
             value={props.formVariantId}
             onChange={(e) => props.setSelected(e.target.value)}
-            className="w-full p-2 border rounded"
+            className="dark w-full p-2 border rounded"
             >
             <option value="" disabled>
                 Select a variant
