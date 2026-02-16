@@ -81,6 +81,8 @@ async function updateMatchingUserProfiles(emailSuffixes: string[], emailAddresse
   const { data: matchingUsers, error } =
     await query as { data: UserProfile[] | null, error: any };
 
+  console.log("matching users: ", matchingUsers);
+
   if (error) throw error;
 
   const responses = [];
