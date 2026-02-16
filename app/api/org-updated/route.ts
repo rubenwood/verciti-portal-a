@@ -39,17 +39,15 @@ export async function POST(req: Request) {
     }
 }
 
-async function updateMatchingUserProfiles(
-    emailSuffixes: string[],
-    emailAddresses: string[],
-    contentTags: string[]
-) {
-  if (!emailSuffixes.length && !emailAddresses.length) return;
+async function updateMatchingUserProfiles(emailSuffixes: string[], emailAddresses: string[], contentTags: string[]) {
+  if (!emailSuffixes.length && !emailAddresses.length) {
+    return { updated: 0, responses: [] };
+  }
 
   const supabaseService = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_TEST_URL!,
-        process.env.SUPABASE_SEC_KEY!
-    );
+    process.env.NEXT_PUBLIC_SUPABASE_TEST_URL!,
+    process.env.SUPABASE_SEC_KEY!
+  );
 
   const suffixFilters = emailSuffixes.map(
     suffix => `%@${suffix}`
@@ -76,13 +74,16 @@ async function updateMatchingUserProfiles(
     query = query.in('email', emailAddresses);
   } else if (suffixFilters.length > 0) {
     query = query.or(
-        suffixFilters.map(s => `email.ilike.${s}`).join(',')
+      suffixFilters.map(s => `email.ilike.${s}`).join(',')
     );
   }
 
-  const { data: matchingUsers, error } = await query as { data: UserProfile[] | null, error: any };
+  const { data: matchingUsers, error } =
+    await query as { data: UserProfile[] | null, error: any };
 
   if (error) throw error;
+
+  const responses = [];
 
   for (const profile of matchingUsers ?? []) {
     const existingTags: string[] = profile.content_visibility ?? [];
@@ -101,11 +102,15 @@ async function updateMatchingUserProfiles(
       .eq('id', profile.id)
       .select();
 
-    console.log(response);
-
     if (response.error) {
       throw response.error;
     }
-  }
-}
 
+    responses.push(response);
+  }
+
+  return {
+    updated: responses.length,
+    responses
+  };
+}
