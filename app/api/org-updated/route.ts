@@ -21,11 +21,13 @@ export async function POST(req: Request) {
             contentTags.push("Production");
         }
 
-        await updateMatchingUserProfiles(
+        const updateProfilesResp = await updateMatchingUserProfiles(
             emailSuffixes,
             emailAddresses,
             contentTags
         );
+
+        console.log("updated profiles response:", updateProfilesResp);
 
         return NextResponse.json({ success: true });
     } catch (err) {
@@ -93,13 +95,16 @@ async function updateMatchingUserProfiles(
       ])
     );
 
-    const { error: updateError } = await supabaseService
+    const response = await supabaseService
       .from('user_profiles')
       .update({ content_visibility: mergedTags })
-      .eq('id', profile.id);
+      .eq('id', profile.id)
+      .select();
 
-    if (updateError) {
-      throw updateError;
+    console.log(response);
+
+    if (response.error) {
+      throw response.error;
     }
   }
 }
