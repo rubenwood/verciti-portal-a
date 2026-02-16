@@ -44,6 +44,65 @@ export async function POST(req: Request) {
     }
     console.log("Organization created successfully");
 
+    // find any existing users that match these suffixes or email addresses and update their content tags
+    for(const suffix of emailSuffixes){
+        const { data: matchedUsers, error: matchError } = await serverClient
+            .from('user_profiles')
+            .select('*')
+            .contains('data->>email', suffix);
+
+        if (matchError) {
+            console.error("Error finding matching users:", matchError);
+        } else {
+            console.log("Found matching users for suffix:", suffix, matchedUsers);
+        }
+
+        for(const user of matchedUsers || []){
+            const userContentTags = user.content_visibility || [];
+            const newContentTags = Array.from(new Set([...userContentTags, ...contentTags]));
+
+            const { error: updateError } = await serverClient
+                .from('user_profiles')
+                .update({ content_visibility: newContentTags })
+                .eq('id', user.id);
+            
+            if (updateError) {
+                console.error("Error updating user profile:", updateError);
+            } else {
+                console.log("Updated user profile with new content tags:", user.id);
+            }
+        }
+    }
+    // TODO: refactor these loops to avoid repeating the update logic
+    for(const email of emailAddresses){
+        const { data: matchedUsers, error: matchError } = await serverClient
+            .from('user_profiles')
+            .select('*')
+            .contains('data->>email', email);
+
+        if (matchError) {
+            console.error("Error finding matching users:", matchError);
+        } else {
+            console.log("Found matching users for email:", email, matchedUsers);
+        }
+
+        for(const user of matchedUsers || []){
+            const userContentTags = user.content_visibility || [];
+            const newContentTags = Array.from(new Set([...userContentTags, ...contentTags]));
+
+            const { error: updateError } = await serverClient
+                .from('user_profiles')
+                .update({ content_visibility: newContentTags })
+                .eq('id', user.id);
+
+            if (updateError) {
+                console.error("Error updating user profile:", updateError);
+            } else {
+                console.log("Updated user profile with new content tags:", user.id);
+            }
+        }
+    }
+
     return NextResponse.json({ message: 'Organization created successfully' });
 }
 
