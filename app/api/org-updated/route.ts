@@ -55,7 +55,7 @@ async function updateMatchingUserProfiles(emailSuffixes: string[], emailAddresse
 
   type UserProfile = {
     id: string;
-    email: string;
+    data: { email?: string };
     content_visibility: string[] | null;
   };
 
