@@ -61,20 +61,20 @@ async function updateMatchingUserProfiles(emailSuffixes: string[], emailAddresse
 
   let query = supabaseService
     .from('user_profiles')
-    .select('id, email, content_visibility');
+    .select('id, data, content_visibility');
 
   if (emailAddresses.length > 0 && suffixFilters.length > 0) {
     query = query.or(
       [
-        `email.in.(${emailAddresses.join(',')})`,
-        ...suffixFilters.map(s => `email.ilike.${s}`)
+        `data.email.in.(${emailAddresses.join(',')})`,
+        ...suffixFilters.map(s => `data.email.ilike.${s}`)
       ].join(',')
     );
   } else if (emailAddresses.length > 0) {
-    query = query.in('email', emailAddresses);
+    query = query.in('data.email', emailAddresses);
   } else if (suffixFilters.length > 0) {
     query = query.or(
-      suffixFilters.map(s => `email.ilike.${s}`).join(',')
+      suffixFilters.map(s => `data.email.ilike.${s}`).join(',')
     );
   }
 
