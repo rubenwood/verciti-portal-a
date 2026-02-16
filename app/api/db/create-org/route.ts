@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createServerTestClient } from '@/lib/server';
+import { createServerTestClient, createServerLiveClient } from '@/lib/server';
 
 function parseCommaSeparated(value: FormDataEntryValue | null): string[] {
   if (!value || typeof value !== 'string') return [];
@@ -11,6 +11,7 @@ function parseCommaSeparated(value: FormDataEntryValue | null): string[] {
 }
 
 export async function POST(req: Request) {
+    // TODO: need a switch here to handle updating the live db too
     const serverClient = await createServerTestClient();
     const { data: { user }, } = await serverClient.auth.getUser();
 
@@ -27,7 +28,7 @@ export async function POST(req: Request) {
     const contentTags = parseCommaSeparated(data.get('content_tags'));
     contentTags.push("Production");
 
-    const { error } = await serverClient.from('org_access').insert({
+    const { error } = await serverClient.from(process.env.ORG_TABLE_NAME!).insert({
         id: orgName,
         licence_count: licenceCount,
         email_suffixes: emailSuffixes,
@@ -37,10 +38,14 @@ export async function POST(req: Request) {
         renewal: data.get('renewal'),
     });
 
-    if (!error) {
-        console.log("Organization created successfully");
-        return NextResponse.json({ message: 'Organization created successfully' });
+    if (error) {
+        console.error("Error creating organization:", error);
+        return NextResponse.json({ message: 'Error creating organization', error }, { status: 500 });
     }
-    console.error("Error creating organization:", error);
-    return NextResponse.json({ message: 'Error creating organization', error }, { status: 500 });
+    console.log("Organization created successfully");
+
+    return NextResponse.json({ message: 'Organization created successfully' });
 }
+
+
+

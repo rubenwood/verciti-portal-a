@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
 import { showConfetti } from '../../general/utils';
-import { supabaseTest } from "@/lib/supabase";
 import { useRef } from 'react';
 
 export function OrgSetupTool(){
@@ -43,6 +42,7 @@ export function OrgSetupTool(){
                 <br/>
                 <Button ref={submitBtnRef} className="mt-2" type="submit">Create Organization</Button>
             </form>
+            <br/>
         </div>
         </>
     )

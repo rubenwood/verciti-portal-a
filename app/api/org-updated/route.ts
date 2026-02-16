@@ -1,0 +1,106 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+
+// called by webhook (org updated)
+export async function POST(req: NextRequest) {
+    const sec = req.headers.get('x-webhook-secret');
+    if (sec !== process.env.API_SEC_KEY) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    try {
+        console.log("req: ", req);
+
+        const body = await req.json();
+        const emailSuffixes: string[] = body.email_suffixes ?? [];
+        const emailAddresses: string[] = body.email_addresses ?? [];
+        const contentTags: string[] = body.content_tags ?? [];
+
+        // Always enforce Production
+        if (!contentTags.includes("Production")) {
+            contentTags.push("Production");
+        }
+
+        await updateMatchingUserProfiles(
+            emailSuffixes,
+            emailAddresses,
+            contentTags
+        );
+
+        return NextResponse.json({ success: true });
+    } catch (err) {
+        console.error("Webhook org update error:", err);
+        return NextResponse.json(
+            { error: "Failed to process webhook" },
+            { status: 500 }
+        );
+    }
+}
+
+async function updateMatchingUserProfiles(
+    emailSuffixes: string[],
+    emailAddresses: string[],
+    contentTags: string[]
+) {
+  if (!emailSuffixes.length && !emailAddresses.length) return;
+
+  const supabaseService = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_TEST_URL!,
+        process.env.SUPABASE_SEC_KEY!
+    );
+
+  const suffixFilters = emailSuffixes.map(
+    suffix => `%@${suffix}`
+  );
+
+  type UserProfile = {
+    id: string;
+    email: string;
+    content_visibility: string[] | null;
+  };
+
+  let query = supabaseService
+    .from('user_profiles')
+    .select('id, email, content_visibility');
+
+  if (emailAddresses.length > 0 && suffixFilters.length > 0) {
+    query = query.or(
+      [
+        `email.in.(${emailAddresses.join(',')})`,
+        ...suffixFilters.map(s => `email.ilike.${s}`)
+      ].join(',')
+    );
+  } else if (emailAddresses.length > 0) {
+    query = query.in('email', emailAddresses);
+  } else if (suffixFilters.length > 0) {
+    query = query.or(
+        suffixFilters.map(s => `email.ilike.${s}`).join(',')
+    );
+  }
+
+  const { data: matchingUsers, error } = await query as { data: UserProfile[] | null, error: any };
+
+  if (error) throw error;
+
+  for (const profile of matchingUsers ?? []) {
+    const existingTags: string[] = profile.content_visibility ?? [];
+
+    const mergedTags = Array.from(
+      new Set([
+        ...existingTags,
+        ...contentTags,
+        "Production",
+      ])
+    );
+
+    const { error: updateError } = await supabaseService
+      .from('user_profiles')
+      .update({ content_visibility: mergedTags })
+      .eq('id', profile.id);
+
+    if (updateError) {
+      throw updateError;
+    }
+  }
+}
+

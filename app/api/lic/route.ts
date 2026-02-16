@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-//import { createServerTestClient } from '@/lib/server';
-//import { supabaseTest } from '@/lib/supabase';
 import { createClient } from '@supabase/supabase-js';
 
-// called by auth webhook
+// called by auth webhook (user profile created / sign up)
 export async function POST(req: Request) {
+    const sec = req.headers.get('x-webhook-secret');
+    if (sec !== process.env.API_SEC_KEY) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const supabaseService = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_TEST_URL!,
         process.env.SUPABASE_SEC_KEY!,
@@ -33,7 +36,7 @@ export async function POST(req: Request) {
         const tagsFromOrg = suffixMatch.data[0].content_tags ?? [];
         const newContentTags = Array.from(
             new Set(["Production", ...tagsFromOrg])
-        ); // must always have production and must be unique
+        ); // must always have production
 
         // update the user account with these content tags
         const {data, error} = await supabaseService
