@@ -63,7 +63,7 @@ export async function POST(req: Request) {
 
             const { error: updateError } = await serverClient
                 .from('user_profiles')
-                .update({ content_visibility: newContentTags })
+                .update({ content_visibility: newContentTags, org_id: orgName })
                 .eq('id', user.id);
             
             if (updateError) {
@@ -92,7 +92,7 @@ export async function POST(req: Request) {
 
             const { error: updateError } = await serverClient
                 .from('user_profiles')
-                .update({ content_visibility: newContentTags })
+                .update({ content_visibility: newContentTags, org_id: orgName })
                 .eq('id', user.id);
 
             if (updateError) {
