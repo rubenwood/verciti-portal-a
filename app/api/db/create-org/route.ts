@@ -49,12 +49,12 @@ export async function POST(req: Request) {
         const { data: matchedUsers, error: matchError } = await serverClient
             .from('user_profiles')
             .select('*')
-            .contains('data->>email', suffix);
+            .contains('data->>email', `%${suffix}`);
 
         if (matchError) {
             console.error("Error finding matching users:", matchError);
         } else {
-            console.log("Found matching users for suffix:", suffix, matchedUsers);
+            console.log("Found matching users for suffix:", suffix);
         }
 
         for(const user of matchedUsers || []){
@@ -78,12 +78,12 @@ export async function POST(req: Request) {
         const { data: matchedUsers, error: matchError } = await serverClient
             .from('user_profiles')
             .select('*')
-            .contains('data->>email', email);
+            .eq('data->>email', email);
 
         if (matchError) {
             console.error("Error finding matching users:", matchError);
         } else {
-            console.log("Found matching users for email:", email, matchedUsers);
+            console.log("Found matching users for email:", email);
         }
 
         for(const user of matchedUsers || []){

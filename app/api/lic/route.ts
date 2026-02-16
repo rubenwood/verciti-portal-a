@@ -33,6 +33,7 @@ export async function POST(req: Request) {
 
     if(suffixMatch.data){
         // add content_tags to acc, using first result for now
+        const orgId = suffixMatch.data[0].id;
         const tagsFromOrg = suffixMatch.data[0].content_tags ?? [];
         const newContentTags = Array.from(
             new Set(["Production", ...tagsFromOrg])
@@ -41,7 +42,7 @@ export async function POST(req: Request) {
         // update the user account with these content tags
         const {data, error} = await supabaseService
         .from('user_profiles')
-        .update({content_visibility:newContentTags})
+        .update({content_visibility:newContentTags, org_id: orgId})
         .eq('id', userId);
 
         if(error){
@@ -49,9 +50,9 @@ export async function POST(req: Request) {
         }else{
             console.log("Success updating content tags: ", data);
         }
-
-        
     }
+
+    
 
     const response = {suffMatch:suffixMatch, addrMatch:emailAddressMatch};
     return NextResponse.json({ response });
