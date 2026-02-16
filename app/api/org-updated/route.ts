@@ -66,15 +66,15 @@ async function updateMatchingUserProfiles(emailSuffixes: string[], emailAddresse
   if (emailAddresses.length > 0 && suffixFilters.length > 0) {
     query = query.or(
       [
-        `data.email.in.(${emailAddresses.join(',')})`,
-        ...suffixFilters.map(s => `data.email.ilike.${s}`)
+        `data->>email.in.(${emailAddresses.join(',')})`,
+        ...suffixFilters.map(s => `data->>email.ilike.${s}`)
       ].join(',')
     );
   } else if (emailAddresses.length > 0) {
-    query = query.in('data.email', emailAddresses);
+    query = query.in('data->>email', emailAddresses);
   } else if (suffixFilters.length > 0) {
     query = query.or(
-      suffixFilters.map(s => `data.email.ilike.${s}`).join(',')
+      suffixFilters.map(s => `data->>email.ilike.${s}`).join(',')
     );
   }
 
