@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 // called by webhook (org updated)
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
     const sec = req.headers.get('x-webhook-secret');
     if (sec !== process.env.API_SEC_KEY) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
