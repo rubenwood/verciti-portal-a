@@ -16,7 +16,7 @@ export default function Home() {
     console.log("URL hash 1:", hash);
 
     if (hash.includes("type=recovery")) {
-      window.location.href = `/reset-password${hash}&${test2}`;
+      window.location.href = `/reset-password${hash}`;
     }
   }, [router]);
 

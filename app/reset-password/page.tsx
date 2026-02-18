@@ -16,8 +16,10 @@ export default function ResetPassword() {
     const hash = window.location.hash;
     console.log("URL hash 2 :", hash);
     const params = new URLSearchParams(hash.replace(/^#/, ''));
-    const env = params.get("env");
-    console.log("Detected env:", env);
+    console.log("Parsed hash parameters:", Object.fromEntries(params.entries()));
+    const env = params.get("env"); // "test" or null
+    console.log("Environment from hash:", env);
+    const client = env === "test" ? supabaseTest : supabaseMain;
     //TODO: need to switch based off of the account
     // could be an account from test or main
 
