@@ -13,6 +13,7 @@ export default function UpdatePasswordPage() {
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const envParam = queryParams.get("env");
+    console.log("Environment parameter from URL:", envParam);
     if (envParam === "main") {
       setEnv("main");
       setClient(supabaseMain);
@@ -23,8 +24,7 @@ export default function UpdatePasswordPage() {
   }, []);
 
   const updatePassword = async () => {
-    //TODO: need to switch based off of the account
-    // could be an account from test or main
+    
     const { error } = await client.auth.updateUser({ password });
 
     if (error) {

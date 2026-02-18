@@ -11,21 +11,21 @@ export default function ResetPassword() {
   useEffect(() => {
     const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
     const accessToken = hashParams.get('access_token');
-    console.log("Access token from hash:", accessToken);
 
     let env = 'test';
     let clientToUse = supabaseTest;
 
     if (accessToken) {
       const decoded = JSON.parse(atob(accessToken.split('.')[1]));
-      console.log("Decoded access token:", decoded);
       env = decoded?.iss.includes(process.env.NEXT_PUBLIC_SUPABASE_TEST_URL) ? 'test' : 'main';
       if (env === 'main') {
         clientToUse = supabaseMain;
       }else{
         clientToUse = supabaseTest;
-}
+      }
     }
+
+    console.log("Using environment:", env);
 
     const { data: listener } = clientToUse.auth.onAuthStateChange(
       async (event, session) => {
