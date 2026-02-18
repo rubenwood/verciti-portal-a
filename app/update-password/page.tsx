@@ -36,7 +36,7 @@ export default function UpdatePasswordPage() {
             <Button className="green-shadcn-button" onClick={updatePassword}>
                 Update Password
             </Button>
-            {status && <p className="mt-2">{status}</p>}
+            {status && <p className="mt-2 text-[#ffffff]">{status}</p>}
         </div>
     </div>
   );
