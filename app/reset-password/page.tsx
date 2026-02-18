@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabaseMain } from "@/lib/supabase";
+import { supabaseMain, supabaseTest } from "@/lib/supabase";
 
 export default function ResetPassword() {
   const [loading, setLoading] = useState(true);
@@ -18,12 +18,12 @@ export default function ResetPassword() {
     //TODO: need to switch based off of the account
     // could be an account from test or main
 
-    const { data: listener } = supabaseMain.auth.onAuthStateChange(
+    const { data: listener } = supabaseTest.auth.onAuthStateChange(
       async (event, session) => {
         console.log("Auth event:", event);
         console.log("Session data:", session);
         if (event === "PASSWORD_RECOVERY") {
-          router.replace("/update-password/main");
+          router.replace("/update-password/test");
         }
 
         if (!session) {

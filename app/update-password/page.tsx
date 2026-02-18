@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { supabaseMain } from "@/lib/supabase";
+import { supabaseMain, supabaseTest } from "@/lib/supabase";
 import Image from 'next/image'
 import { Button } from "@/components/ui/button";
 
@@ -11,7 +11,7 @@ export default function UpdatePasswordPage() {
   const updatePassword = async () => {
     //TODO: need to switch based off of the account
     // could be an account from test or main
-    const { error } = await supabaseMain.auth.updateUser({ password });
+    const { error } = await supabaseTest.auth.updateUser({ password });
 
     if (error) {
       console.log("Error updating password:", error);
