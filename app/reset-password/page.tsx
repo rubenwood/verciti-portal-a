@@ -10,6 +10,8 @@ export default function ResetPassword() {
   const router = useRouter();
 
   useEffect(() => {
+    const test = window.location.href;
+    console.log("Current URL:", test);
     const hash = window.location.hash;
     console.log("URL hash:", hash);
     //TODO: need to switch based off of the account
