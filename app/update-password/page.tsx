@@ -11,6 +11,7 @@ export default function UpdatePasswordPage() {
     const { error } = await supabaseMain.auth.updateUser({ password });
 
     if (error) {
+      console.log("Error updating password:", error);
       setStatus("Error updating password.");
     } else {
       setStatus("Password updated!");
