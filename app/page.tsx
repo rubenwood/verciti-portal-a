@@ -20,7 +20,7 @@ export default function Home() {
     console.log("Environment from query:", env);
 
     if (hash.includes("type=recovery")) {
-      window.location.href = `/reset-password${hash}&${env}`;
+      window.location.href = `/reset-password${hash}&env=${env}`;
     }
   }, [router]);
 
