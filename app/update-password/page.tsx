@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { supabaseMain } from "@/lib/supabase";
 import Image from 'next/image'
+import { Button } from "@/components/ui/button";
 
 export default function UpdatePasswordPage() {
   const [password, setPassword] = useState("");
@@ -30,9 +31,9 @@ export default function UpdatePasswordPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
             />
-            <button className="button w-full" onClick={updatePassword}>
+            <Button className="green-shadcn-button" onClick={updatePassword}>
                 Update Password
-            </button>
+            </Button>
             {status && <p className="mt-2">{status}</p>}
         </div>
     </div>
