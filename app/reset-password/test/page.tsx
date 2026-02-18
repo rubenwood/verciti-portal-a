@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabaseMain, supabaseTest } from "@/lib/supabase";
+import { supabaseTest } from "@/lib/supabase";
 import { createClient } from "@supabase/supabase-js";
 
 export default function ResetPassword() {
@@ -24,7 +24,7 @@ export default function ResetPassword() {
         console.log("Auth event:", event);
         console.log("Session data:", session);
         if (event === "PASSWORD_RECOVERY") {
-          router.replace("/update-password");
+          router.replace("/update-password/test");
         }
 
         if (!session) {
