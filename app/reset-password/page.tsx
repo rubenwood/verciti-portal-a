@@ -23,7 +23,7 @@ export default function ResetPassword() {
         console.log("Auth event:", event);
         console.log("Session data:", session);
         if (event === "PASSWORD_RECOVERY") {
-          router.replace("/update-password/test");
+          router.replace("/update-password");
         }
 
         if (!session) {
