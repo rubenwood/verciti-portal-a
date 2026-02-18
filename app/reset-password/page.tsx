@@ -15,6 +15,9 @@ export default function ResetPassword() {
     console.log("URL query parameters 2 :", test2);
     const hash = window.location.hash;
     console.log("URL hash 2 :", hash);
+    const params = new URLSearchParams(hash.replace(/^#/, ''));
+    const env = params.get("env");
+    console.log("Detected env:", env);
     //TODO: need to switch based off of the account
     // could be an account from test or main
 
@@ -23,7 +26,7 @@ export default function ResetPassword() {
         console.log("Auth event:", event);
         console.log("Session data:", session);
         if (event === "PASSWORD_RECOVERY") {
-          router.replace("/update-password");
+          router.replace(`/update-password?env=${env}`);
         }
 
         if (!session) {
