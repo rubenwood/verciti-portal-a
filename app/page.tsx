@@ -8,6 +8,12 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const searchParams = new URLSearchParams(window.location.search);
+    console.log("URL hash:", window.location.hash);
+    console.log("URL search params:", window.location.search);
+
+
     // TODO: verify this
     const hash = window.location.hash;
     console.log("URL hash:", hash);
