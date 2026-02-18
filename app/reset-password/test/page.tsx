@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabaseTest } from "@/lib/supabase";
-import { createClient } from "@supabase/supabase-js";
 
 export default function ResetPassword() {
   const [loading, setLoading] = useState(true);
