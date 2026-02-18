@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabaseMain } from "@/lib/supabase";
+import { createClient } from "@supabase/supabase-js";
 
 export default function ResetPassword() {
   const [loading, setLoading] = useState(true);
@@ -12,7 +12,12 @@ export default function ResetPassword() {
     const hash = window.location.hash;
     console.log("URL hash:", hash);
 
-    const { data: listener } = supabaseMain.auth.onAuthStateChange(
+    const client = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_TEST_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_TEST_ANON_KEY!,
+    )
+
+    const { data: listener } = client.auth.onAuthStateChange(
       async (event, session) => {
         console.log("Auth event:", event);
         console.log("Session data:", session);
