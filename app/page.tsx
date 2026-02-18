@@ -1,28 +1,24 @@
 "use client"
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
-  const router = useRouter();
-
   useEffect(() => {
-    const test = window.location.href;
-    console.log("Current URL 1:", test);
-    const test2 = window.location.search;
-    console.log("URL query parameters 1:", test2);
-    const hash = window.location.hash;
-    console.log("URL hash 1:", hash);
-
-    const query = new URLSearchParams(window.location.search);
+    const { hash, search } = window.location;
+    console.log("Current URL:", window.location.href);
+    console.log("URL query parameters:", search);
+    console.log("URL hash:", hash);
+    const query = new URLSearchParams(search);
     const env = query.get("env");
-    console.log("Environment from query:", env);
+    console.log("Detected env from query parameters:", env);
 
     if (hash.includes("type=recovery")) {
-      window.location.href = `/reset-password${hash}&env=${env}`;
+      // Forward the hash and env to /reset-password
+      const redirectUrl = `/reset-password${hash}${env ? `&env=${env}` : ''}`;
+      window.location.href = redirectUrl;
     }
-  }, [router]);
+  }, []);
 
   return (
     <div className="grid items-center justify-items-center min-h-screen p-8 pb-20">
