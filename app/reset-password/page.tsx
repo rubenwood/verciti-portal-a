@@ -9,6 +9,9 @@ export default function ResetPassword() {
   const router = useRouter();
 
   useEffect(() => {
+    const hash = window.location.hash;
+    console.log("URL hash:", hash);
+
     const { data: listener } = supabaseMain.auth.onAuthStateChange(
       async (event, session) => {
         console.log("Auth event:", event);
