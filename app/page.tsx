@@ -15,8 +15,12 @@ export default function Home() {
     const hash = window.location.hash;
     console.log("URL hash 1:", hash);
 
+    const query = new URLSearchParams(window.location.search);
+    const env = query.get("env");
+    console.log("Environment from query:", env);
+
     if (hash.includes("type=recovery")) {
-      window.location.href = `/reset-password${hash}`;
+      window.location.href = `/reset-password${hash}&${env}`;
     }
   }, [router]);
 
