@@ -10,9 +10,9 @@ export default function Home() {
   useEffect(() => {
     const hash = window.location.hash;
     console.log("URL hash:", hash);
-    // if (hash.includes("type=recovery")) {
-    //   window.location.href = `/reset-password${hash}`;
-    // }
+    if (hash.includes("type=recovery")) {
+      window.location.href = `/reset-password${hash}`;
+    }
   }, [router]);
 
   return (
