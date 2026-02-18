@@ -9,30 +9,30 @@ export default function ResetPassword() {
   const router = useRouter();
 
   useEffect(() => {
-    const test = window.location.href;
-    console.log("Current URL 2 :", test);
-    const test2 = window.location.search;
-    console.log("URL query parameters 2 :", test2);
-    const hash = window.location.hash;
-    console.log("URL hash 2 :", hash);
     const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
     const accessToken = hashParams.get('access_token');
-    console.log("Access token from hash:", accessToken); 
+    console.log("Access token from hash:", accessToken);
+
+    let env = 'test';
+    let clientToUse = supabaseTest;
+
     if (accessToken) {
       const decoded = JSON.parse(atob(accessToken.split('.')[1]));
       console.log("Decoded access token:", decoded);
-      const iss = decoded.iss; // e.g., "https://<project>.supabase.co/auth/v1"
-      const env = iss.includes('test-project') ? 'test' : 'main';
+      env = decoded?.iss.includes(process.env.NEXT_PUBLIC_SUPABASE_TEST_URL) ? 'test' : 'main';
+      if (env === 'main') {
+        clientToUse = supabaseMain;
+      }else{
+        clientToUse = supabaseTest;
+}
     }
-    //TODO: need to switch based off of the account
-    // could be an account from test or main
 
-    const { data: listener } = supabaseTest.auth.onAuthStateChange(
+    const { data: listener } = clientToUse.auth.onAuthStateChange(
       async (event, session) => {
         console.log("Auth event:", event);
         console.log("Session data:", session);
         if (event === "PASSWORD_RECOVERY") {
-          router.replace(`/update-password`);
+          router.replace(`/update-password?env=${env}`);
         }
 
         if (!session) {
