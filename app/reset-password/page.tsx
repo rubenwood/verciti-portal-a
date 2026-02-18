@@ -11,11 +11,11 @@ export default function ResetPassword() {
 
   useEffect(() => {
     const test = window.location.href;
-    console.log("Current URL:", test);
+    console.log("Current URL 2 :", test);
     const test2 = window.location.search;
-    console.log("URL query parameters:", test2);
+    console.log("URL query parameters 2 :", test2);
     const hash = window.location.hash;
-    console.log("URL hash:", hash);
+    console.log("URL hash 2 :", hash);
     //TODO: need to switch based off of the account
     // could be an account from test or main
 

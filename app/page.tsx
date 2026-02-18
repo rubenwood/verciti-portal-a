@@ -8,8 +8,12 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
+    const test = window.location.href;
+    console.log("Current URL 1:", test);
+    const test2 = window.location.search;
+    console.log("URL query parameters 1:", test2);
     const hash = window.location.hash;
-    console.log("URL hash:", hash);
+    console.log("URL hash 1:", hash);
     if (hash.includes("type=recovery")) {
       window.location.href = `/reset-password${hash}`;
     }
