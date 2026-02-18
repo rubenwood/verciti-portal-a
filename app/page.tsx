@@ -6,16 +6,9 @@ import Link from "next/link";
 export default function Home() {
   useEffect(() => {
     const { hash, search } = window.location;
-    console.log("Current URL:", window.location.href);
-    console.log("URL query parameters:", search);
-    console.log("URL hash:", hash);
-    const query = new URLSearchParams(search);
-    const env = query.get("env");
-    console.log("Detected env from query parameters:", env);
-
     if (hash.includes("type=recovery")) {
       // Forward the hash and env to /reset-password
-      const redirectUrl = `/reset-password${hash}${env ? `&env=${env}` : ''}`;
+      const redirectUrl = `/reset-password${hash}`;
       window.location.href = redirectUrl;
     }
   }, []);
