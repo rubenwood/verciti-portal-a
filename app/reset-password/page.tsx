@@ -11,7 +11,9 @@ export default function ResetPassword() {
 
   useEffect(() => {
     const hash = window.location.hash;
-    console.log("URL hash:", hash);
+
+    //TODO: need to switch based off of the account
+    // could be an account from test or main
 
     const { data: listener } = supabaseTest.auth.onAuthStateChange(
       async (event, session) => {

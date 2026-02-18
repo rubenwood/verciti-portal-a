@@ -9,6 +9,8 @@ export default function UpdatePasswordPage() {
   const [status, setStatus] = useState("");
 
   const updatePassword = async () => {
+    //TODO: need to switch based off of the account
+    // could be an account from test or main
     const { error } = await supabaseTest.auth.updateUser({ password });
 
     if (error) {
