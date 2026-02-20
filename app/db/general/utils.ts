@@ -431,6 +431,8 @@ export async function fetchCourses(client: SupabaseClient) {
 
 // copies data from a table in one Supabase client to another (assuming identical schemas and table names)
 export async function copyDataBetweenTables(fromClient: SupabaseClient, toClient: SupabaseClient, tables: string[], updateCopyNum: boolean) {
+    // TODO: make sure we copy data before joins
+
     for (const table of tables) {
         const { data, error } = await fromClient
             .from(table)
