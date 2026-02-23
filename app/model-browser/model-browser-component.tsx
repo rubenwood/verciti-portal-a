@@ -1,4 +1,4 @@
-import { createContext, Suspense, useState, useEffect } from 'react'
+import { createContext, Suspense, useState, useEffect, useRef } from 'react'
 import { Canvas, Vector3 } from "@react-three/fiber"
 import { GizmoHelper, GizmoViewport, Gltf, Html, OrbitControls, PivotControls, Stage } from '@react-three/drei'
 import { ModelEntry, ModelList } from './model-button-list-component'
@@ -22,8 +22,12 @@ export function DefaultStage(props: any){
 }
 
 export function HTMLModal(props: any) {
+
   return (
-    <Html position={props.position} center>
+    <Html
+      position={props.position}
+      center
+      occlude={props.gltfRef}>
       <div className="bg-white p-4 rounded shadow-lg">
         <p className="text-sm"><b>Name:</b> {props.name}</p>
         <br />
@@ -34,6 +38,7 @@ export function HTMLModal(props: any) {
 }
 
 export function InteractiveScene(props: any){
+  const gltfRef = useRef<any>(null);
   const [pivotControlsEnabled, setPivotControls] = useState<boolean>(false);
   const [orbitEnabled, setOrbit] = useState<boolean>(true);
 
@@ -75,19 +80,26 @@ export function InteractiveScene(props: any){
     <>
       <OrbitControls enabled={orbitEnabled} />
       <group
-      onPointerMissed={() => { // click off
-        setModalOpen(false);
-        setModalData(null);
-      }}
+        onPointerMissed={() => { // click off
+          setModalOpen(false);
+          setModalData(null);
+        }}
       >
         <PivotControls enabled={pivotControlsEnabled} onDragStart={pivotDragStart} onDragEnd={pivotDragEnd}>
-            <Gltf 
+            <Gltf
+              ref={gltfRef}
               castShadow
               position={[0, -0.5, 0]} 
               src={props.model}
               onClick={modelClicked}
             />
-            {modalOpen && modalData ? <HTMLModal position={modalData.position} name={modalData.name} uuid={modalData.uuid} /> : null}
+            {modalOpen && modalData ? 
+              <HTMLModal
+                gltfRef={gltfRef}
+                position={modalData.position}
+                name={modalData.name}
+                uuid={modalData.uuid} />
+              : null}
         </PivotControls>
       </group>
     </>
@@ -129,4 +141,8 @@ export function ModelBrowser(){
             </div>
         </>
     )
+}
+
+function userRef<T>() {
+  throw new Error('Function not implemented.')
 }
