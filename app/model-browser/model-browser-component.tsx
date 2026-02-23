@@ -22,12 +22,24 @@ export function DefaultStage(props: any){
 }
 
 export function HTMLModal(props: any) {
+  const [hidden, setHidden] = useState<boolean>(false);
+
+  const onOcclude = (visible: boolean) => {
+    console.log("Occlusion status:", visible);
+  }
 
   return (
     <Html
       position={props.position}
       center
-      occlude={props.gltfRef}>
+      occlude={props.gltfRef}
+      onOcclude={setHidden}
+      style={{
+        transition: 'all 0.5s',
+        opacity: hidden ? 0 : 1,
+        transform: `scale(${hidden ? 0.5 : 1})`
+      }}
+      >
       <div className="bg-white p-4 rounded shadow-lg">
         <p className="text-sm"><b>Name:</b> {props.name}</p>
         <br />
