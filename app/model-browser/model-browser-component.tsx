@@ -74,15 +74,22 @@ export function InteractiveScene(props: any){
   return(
     <>
       <OrbitControls enabled={orbitEnabled} />
-      <PivotControls enabled={pivotControlsEnabled} onDragStart={pivotDragStart} onDragEnd={pivotDragEnd}>
-          <Gltf 
-            castShadow
-            position={[0, -0.5, 0]} 
-            src={props.model}
-            onClick={modelClicked}
-          />
-          {modalOpen && modalData ? <HTMLModal position={modalData.position} name={modalData.name} uuid={modalData.uuid} /> : null}
-      </PivotControls>
+      <group
+      onPointerMissed={() => { // click off
+        setModalOpen(false);
+        setModalData(null);
+      }}
+      >
+        <PivotControls enabled={pivotControlsEnabled} onDragStart={pivotDragStart} onDragEnd={pivotDragEnd}>
+            <Gltf 
+              castShadow
+              position={[0, -0.5, 0]} 
+              src={props.model}
+              onClick={modelClicked}
+            />
+            {modalOpen && modalData ? <HTMLModal position={modalData.position} name={modalData.name} uuid={modalData.uuid} /> : null}
+        </PivotControls>
+      </group>
     </>
   )
 }
@@ -101,7 +108,11 @@ export function ModelBrowser(){
             
             <div className='three-main-div'>
               {selectedModel ? (
-                <Canvas shadows gl={{ preserveDrawingBuffer: true }} camera={{ position: [0, 0, 5], fov: 90 }} frameloop="demand">
+                <Canvas 
+                  shadows 
+                  gl={{ preserveDrawingBuffer: true }} 
+                  camera={{ position: [0, 0, 5], fov: 90 }} 
+                  frameloop="demand">
                     {/* suspense allows us to render the empty scene until the selected model is present
                     Then we re-render the scene with the gltf model attached :)
                     */}          
