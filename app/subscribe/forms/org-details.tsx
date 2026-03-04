@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectLabel, SelectItem } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useState } from "react";
 
 
 function TierSelector(props: any) {
@@ -27,6 +28,33 @@ function TierSelector(props: any) {
 }
 
 function OrganisationDetails(props: any){
+    const [selectedTier, setSelectedTier] = useState("")
+    const [loading, setLoading] = useState(false)
+    const [success, setSuccess] = useState(false)
+
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        setLoading(true)
+        setSuccess(false)
+
+        const formData = new FormData(e.currentTarget)
+        const data = Object.fromEntries(formData.entries())
+        data.tier = selectedTier;
+
+        const res = await fetch("/api/send-email", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        })
+
+        if (res.ok) {
+            setSuccess(true)
+        }
+
+        setLoading(false)
+    }
     return (
         <>
         <Card>
@@ -35,21 +63,40 @@ function OrganisationDetails(props: any){
                 <CardDescription>Please provide your organisation's details below.</CardDescription>
             </CardHeader>
             <CardContent>
-                <form className="grid gap-4">
+                <form onSubmit={onSubmit} className="grid gap-4">
                     <div className="grid gap-2">
                         <label htmlFor="email-addr">Email Address</label>
-                        <input type="text" id="email-addr" className="border p-2 rounded" placeholder="example@example.com" />
+                        <input
+                            name="email"
+                            type="email"
+                            required
+                            className="border p-2 rounded"
+                            placeholder="example@example.com"
+                        />
                         <br/>
                         <label htmlFor="email-addr">What product tier are you most interested in?</label>
-                        <TierSelector tiers={props.tiers} />
+                        <TierSelector tiers={props.tiers} setSelectedFunc={setSelectedTier} />
                         <br/>
                         <label htmlFor="org-name">Organisation Name</label>
-                        <input type="text" id="org-name" className="border p-2 rounded" placeholder="Enter organisation name" />
+                        <input
+                            name="orgName"
+                            type="text"
+                            required
+                            className="border p-2 rounded"
+                        />
                         <br/>
                         <label htmlFor="org-type">Organisation Type</label>
-                        <input type="text" id="org-type" className="border p-2 rounded" placeholder="Enter organisation type" />
+                        <input
+                            name="orgType"
+                            type="text"
+                            required
+                            className="border p-2 rounded"
+                        />
                     </div>
-                    <Button type="submit" className="mt-4 py-2 px-4">Submit</Button>
+                <Button type="submit" disabled={loading}>
+                    {loading ? "Sending..." : "Submit"}
+                </Button>
+                {success && <p className="text-green-500">Details submitted successfully!</p>}
                 </form>
             </CardContent>
         </Card>
