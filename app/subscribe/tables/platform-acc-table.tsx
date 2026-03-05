@@ -29,18 +29,6 @@ export function PlatformAccessTable(props: any) {
                         <th className="px-4 text-2xl">Enterprise</th>
                     </tr>
                     <tr>
-                        <th></th>
-                        <th className="text-lg">£6,000</th>
-                        <th className="text-lg">£18,000</th>
-                        <th className="text-lg">£80,000</th>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <th className="text-sm">per year</th>
-                        <th className="text-sm">per year</th>
-                        <th className="text-sm">per year</th>
-                    </tr>
-                    <tr>
                         <th>Intended For</th>
                         <th className="px-8">SMEs & Suppliers</th>
                         <th className="px-8">Operators & Manufacturers</th>

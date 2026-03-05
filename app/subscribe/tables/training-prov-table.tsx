@@ -27,18 +27,6 @@ export function TrainingProviderTable(props: any) {
                         <th className="px-4 text-2xl">Strategic</th>
                     </tr>
                     <tr>
-                        <th></th>
-                        <th className="text-lg">£12,000</th>
-                        <th className="text-lg">£32,000</th>
-                        <th className="text-lg">£50,000+</th>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <th className="text-sm">per year</th>
-                        <th className="text-sm">per year</th>
-                        <th className="text-sm">per year</th>
-                    </tr>
-                    <tr>
                         <th>Intended For</th>
                         <th className="px-8">FE colleges, ITPs</th>
                         <th className="px-8">Funded / Regulated Delivery</th>
