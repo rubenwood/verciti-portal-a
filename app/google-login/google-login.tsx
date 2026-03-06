@@ -1,9 +1,9 @@
 "use client"
 import { useEffect, useState } from "react";
-import { supabaseMain } from '@/lib/supabase'
+import { supabaseMain, supabaseTest } from '@/lib/supabase'
 import { Button } from "@/components/ui/button";
 
-export default function GoogleLogin(){
+export default function GoogleLogin(props: any){
     const [deeplink, setDeeplink] = useState<string | null>(null);
     const [error, setError] = useState('');
     const [ready, setReady] = useState(false); // hydration flag
@@ -42,15 +42,14 @@ export default function GoogleLogin(){
         if(deeplink == null) return;
         window.location.href = deeplink;
     }
-    const openApp2 = () =>{
-        window.location.href = 'verciti://app';
-    }
 
     const handleLoginWithGoogle = async () => {
-        const { data, error } = await supabaseMain.auth.signInWithOAuth({
+        const client = props.client === "live" ? supabaseMain : supabaseTest;
+
+        const { data, error } = await client.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: 'https://vertciti-portal.vercel.app/google-login/'
+                redirectTo: `https://vertciti-portal.vercel.app/google-login/${props.client}`// TODO: update on supabase
             }
         });
         if(error){

@@ -1,21 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { SupabaseClient } from "@supabase/supabase-js";
 
-// called by auth webhook (user profile created / sign up)
-export async function POST(req: Request) {
-    const sec = req.headers.get('x-webhook-secret');
-    if (sec !== process.env.API_SEC_KEY) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const supabaseService = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_TEST_URL!,
-        process.env.SUPABASE_SEC_KEY!,
-    )
-
+export async function attributeLicence(req: Request, supabaseService: SupabaseClient){
     const request = await req.json();
-    console.log("API call to check-email-access with request:", request);
-
     const userId = request.record.id;
     const email = request.record.data.email.toLowerCase();
     console.log("email: ", email);
@@ -52,8 +38,5 @@ export async function POST(req: Request) {
         }
     }
 
-    
-
-    const response = {suffMatch:suffixMatch, addrMatch:emailAddressMatch};
-    return NextResponse.json({ response });
+    return {suffMatch:suffixMatch, addrMatch:emailAddressMatch};
 }

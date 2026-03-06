@@ -27,10 +27,6 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  // Do not run code between createServerClient and
-  // supabase.auth.getClaims(). A simple mistake could make it very hard to debug
-  // issues with users being randomly logged out.
-
   // IMPORTANT: If you remove getClaims() and you use server-side rendering
   // with the Supabase client, your users may be randomly logged out.
   const { data } = await supabase.auth.getClaims()
@@ -40,6 +36,7 @@ export async function updateSession(request: NextRequest) {
   const publicRoutes = [
     '/',
     '/login',
+    '/google-login',
     '/reset-password',
     '/update-password',
     '/subscribe',
@@ -53,7 +50,7 @@ export async function updateSession(request: NextRequest) {
 
 
   if (!user && !isPublicRoute) {
-    // no user, potentially respond by redirecting the user to the login page
+    // no user, respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
