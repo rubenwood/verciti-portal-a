@@ -66,7 +66,8 @@ export default function GoogleLogin(props: any){
         <div className="grid items-center justify-items-center min-h-screen">
             {deeplink == null ?
                 <>
-                    <p className="text-center">Logging in with Google...</p>
+                    <p className="text-center">Logging in with Google...</p><br/>
+                    <p>If you are not automatically logged in please click the button below.</p>
                     <Button className="green-shadcn-button" onClick={handleLoginWithGoogle}>
                         Login with Google
                     </Button>
