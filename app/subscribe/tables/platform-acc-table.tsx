@@ -64,43 +64,43 @@ export function PlatformAccessTable(props: any) {
                         <td className="py-4 text-center">✔️</td>
                     </tr>
                     <tr>
-                        <td className="py-4">Role-based Learning Pathways</td>
+                        <td className="py-4">Role-based Learning Pathways *</td>
                         <td className="py-4 text-center">❌</td>
                         <td className="py-4 text-center">✔️</td>
                         <td className="py-4 text-center">✔️</td>
                     </tr>
                     <tr>
-                        <td className="py-4">Manager / Supervisor Dashboards</td>
+                        <td className="py-4">Manager / Supervisor Dashboards *</td>
                         <td className="py-4 text-center">❌</td>
                         <td className="py-4 text-center">✔️</td>
                         <td className="py-4 text-center">✔️</td>
                     </tr>
                     <tr>
-                        <td className="py-4">Workforce Structuring (roles & cohorts)</td>
+                        <td className="py-4">Workforce Structuring (roles & cohorts) *</td>
                         <td className="py-4 text-center">❌</td>
                         <td className="py-4 text-center">✔️</td>
                         <td className="py-4 text-center">✔️</td>
                     </tr>
                     <tr>
-                        <td className="py-4">Reporting & analytics</td>
+                        <td className="py-4">Reporting & analytics * </td>
                         <td className="py-4 text-center">Basic</td>
                         <td className="py-4 text-center">Advanced</td>
                         <td className="py-4 text-center">Advanced & Custom</td>
                     </tr>
                     <tr>
-                        <td className="py-4">API Access</td>
+                        <td className="py-4">API Access *</td>
                         <td className="py-4 text-center">❌</td>
                         <td className="py-4 text-center">✔️</td>
                         <td className="py-4 text-center">✔️</td>
                     </tr>
                     <tr>
-                        <td className="py-4">Custom Role Frameworks</td>
+                        <td className="py-4">Custom Role Frameworks *</td>
                         <td className="py-4 text-center">❌</td>
                         <td className="py-4 text-center">❌</td>
                         <td className="py-4 text-center">✔️</td>
                     </tr>
                     <tr>
-                        <td className="py-4">SLA & Dedicated Account Manager</td>
+                        <td className="py-4">SLA & Dedicated Account Manager *</td>
                         <td className="py-4 text-center">❌</td>
                         <td className="py-4 text-center">❌</td>
                         <td className="py-4 text-center">✔️</td>
@@ -112,7 +112,7 @@ export function PlatformAccessTable(props: any) {
                         <td className="py-4 text-center">✔️</td>
                     </tr>
                     <tr>
-                        <td className="py-4">Eligible for Trace™</td>
+                        <td className="py-4">Eligible for Trace™ *</td>
                         <td className="py-4 text-center">❌</td>
                         <td className="py-4 text-center">❌</td>
                         <td className="py-4 text-center">✔️</td>
@@ -125,6 +125,7 @@ export function PlatformAccessTable(props: any) {
                     </tr>
                 </tbody>
             </table>
+            <p>* Features may be work in progress and/or vary per tier and specification</p>
 
             <OrgDetailsModal open={open} setOpen={setOpen} tiers={["Foundation", "Professional", "Enterprise"]} />
 

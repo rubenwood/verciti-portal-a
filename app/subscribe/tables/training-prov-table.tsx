@@ -56,7 +56,7 @@ export function TrainingProviderTable(props: any) {
                         <td className="py-4 text-center">✔️</td>
                     </tr>
                     <tr>
-                        <td className="py-4">Assessment Tools</td>
+                        <td className="py-4">Assessment Tools *</td>
                         <td className="py-4 text-center">✔️</td>
                         <td className="py-4 text-center">✔️</td>
                         <td className="py-4 text-center">✔️</td>
@@ -92,25 +92,25 @@ export function TrainingProviderTable(props: any) {
                         <td className="py-4 text-center">✔️</td>
                     </tr>
                     <tr>
-                        <td className="py-4">Employer Co-delivery Tools</td>
-                        <td className="py-4 text-center">❌</td>
-                        <td className="py-4 text-center">❌</td>
-                        <td className="py-4 text-center">✔️</td>
-                    </tr>
-                    <tr>
                         <td className="py-4">White Labelling</td>
                         <td className="py-4 text-center">❌</td>
                         <td className="py-4 text-center">❌</td>
                         <td className="py-4 text-center">✔️</td>
                     </tr>
                     <tr>
-                        <td className="py-4">API Integrations</td>
+                        <td className="py-4">API Integrations *</td>
+                        <td className="py-4 text-center">❌</td>
+                        <td className="py-4 text-center">❌</td>
+                        <td className="py-4 text-center">✔️</td>
+                    </tr>                    
+                    <tr>
+                        <td className="py-4">Employer Co-delivery Tools *</td>
                         <td className="py-4 text-center">❌</td>
                         <td className="py-4 text-center">❌</td>
                         <td className="py-4 text-center">✔️</td>
                     </tr>
                     <tr>
-                        <td className="py-4">Eligible for Trace™</td>
+                        <td className="py-4">Eligible for Trace™ *</td>
                         <td className="py-4 text-center">❌</td>
                         <td className="py-4 text-center">✔️</td>
                         <td className="py-4 text-center">✔️</td>
@@ -123,6 +123,7 @@ export function TrainingProviderTable(props: any) {
                     </tr>
                 </tbody>
             </table>
+            <p>* Features may be work in progress and/or vary per tier and specification</p>
 
             <OrgDetailsModal open={open} setOpen={setOpen} tiers={["Core", "Accredited", "Strategic"]} />
         </div>
