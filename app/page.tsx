@@ -17,7 +17,6 @@ export default function Home() {
     <div className="grid items-center justify-items-center min-h-screen p-8 pb-20">
       <div>
           <Image
-            className="dark:invert"
             src="https://cdn.prod.website-files.com/66fc1efd047a029224c72fb0/66fc28b252d9d3641f6b168b_Verciti_Logo_Dark_Background.svg"
             alt="Verciti logo"
             width={180}
