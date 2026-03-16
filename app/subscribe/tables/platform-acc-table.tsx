@@ -25,13 +25,13 @@ export function PlatformAccessTable(props: any) {
                         <th className="px-4 text-xl">Enterprise</th>
                     </tr>
                     <tr>
-                        <th className="text-sm text-right font-normal">Intended For</th>
+                        <th className="text-sm text-right font-normal italic">Intended For</th>
                         <th className="px-8 font-normal">SMEs & Suppliers</th>
                         <th className="px-8 font-normal">Operators & Manufacturers</th>
                         <th className="px-8 font-normal">Large employers & EPCs</th>
                     </tr>
                     <tr>
-                        <th className="py-4 text-lg text-left">Feature</th>
+                        <th className="py-2 text-lg text-left">Feature</th>
                     </tr>
                 </thead>
                 <tbody>

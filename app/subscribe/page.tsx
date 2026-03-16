@@ -15,8 +15,8 @@ export default function SubscribeLandingPage(){
                 height={38}
                 priority
             />
-            <br/ >
-            <br/ >
+            <br/>
+            <br/>
             <div className="mt-8 w-full max-w-6xl">
                 <h1 className="text-3xl font-semibold text-center mb-6">
                     Choose Your Subscription
@@ -31,8 +31,6 @@ export default function SubscribeLandingPage(){
                     <TabsTrigger value="employers">
                         Employers & Industry
                     </TabsTrigger>
-
-                    
                 </TabsList>
 
                 <TabsContent value="employers">

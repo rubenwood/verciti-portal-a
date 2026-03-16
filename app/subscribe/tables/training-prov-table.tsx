@@ -25,13 +25,13 @@ export function TrainingProviderTable(props: any) {
                         <th className="px-4 text-xl">Strategic</th>
                     </tr>
                     <tr>
-                        <th className="text-sm text-right font-normal">Intended For</th>
+                        <th className="text-sm text-right font-normal italic">Intended For</th>
                         <th className="px-8 font-normal">FE colleges, ITPs</th>
                         <th className="px-8 font-normal">Funded / Regulated Delivery</th>
                         <th className="px-8 font-normal">Anchor Partners</th>
                     </tr>
                     <tr>
-                        <th className="py-2 text-xl text-left">Feature</th>
+                        <th className="py-2 text-lg text-left">Feature</th>
                     </tr>
                 </thead>
                 <tbody>
