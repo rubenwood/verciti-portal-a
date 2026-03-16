@@ -4,28 +4,81 @@ import { Resend } from "resend"
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 const allowedOrigins = [
-    "http://localhost:3000",
+  "http://localhost:3000",
     process.env.VERCEL_URL
-]
+].filter(Boolean) as string[]
+
+type RateRecord = {
+  count: number
+  windowStart: number
+}
+
+const rateLimitMap = new Map<string, RateRecord>()
+
+const MAX_REQUESTS = 5
+const WINDOW_MS = (60 * 1000) * 2 // 2 minutes
+
+function cleanOldEntries() {
+  const now = Date.now()
+  for (const [ip, record] of rateLimitMap.entries()) {
+    if (now - record.windowStart > WINDOW_MS) {
+      rateLimitMap.delete(ip)
+    }
+  }
+}
 
 export async function POST(req: Request) {
   try {
     const origin = req.headers.get("origin")
+    
+    console.log(origin);
+
     if (!origin || !allowedOrigins.includes(origin)) {
       return NextResponse.json(
-        { error: "Unauthorized" },
+        { error: "Unauthorized - bad origin" },
         { status: 403 }
       )
     }
 
+
+    // rate limiting
+    const forwardedFor = req.headers.get("x-forwarded-for")
+    const ip = forwardedFor
+      ? forwardedFor.split(",")[0].trim()
+      : "unknown"
+
+    const now = Date.now()
+
+    cleanOldEntries()
+
+    const record = rateLimitMap.get(ip)
+
+    if (record) {
+      if (now - record.windowStart < WINDOW_MS) {
+        if (record.count >= MAX_REQUESTS) {
+          return NextResponse.json(
+            { error: "Too many requests. Please try again shortly." },
+            { status: 429 }
+          )
+        }
+        record.count += 1
+      } else {
+        rateLimitMap.set(ip, { count: 1, windowStart: now })
+      }
+    } else {
+      rateLimitMap.set(ip, { count: 1, windowStart: now })
+    }
+    //
+
     const { email, tier, orgName, orgType } = await req.json()
 
     console.log("Received subscription request:", { email, tier, orgName, orgType })
-    console.log("seding email")
+    console.log("sending email")
 
-    await resend.emails.send({
+    const resendResponse = await resend.emails.send({
       from: "Verciti Sales Enquiry <onboarding@resend.dev>", 
-      to: "ruben.wood@theblairproject.org",
+      to: "ruben.wood1@gmail.com",
+      replyTo: email,
       subject: "New Verciti Sales / Organisation Submission",
       html: `
         <h2>New Organisation Details</h2>
@@ -34,7 +87,9 @@ export async function POST(req: Request) {
         <p><strong>Organisation Name:</strong> ${orgName}</p>
         <p><strong>Organisation Type:</strong> ${orgType}</p>
       `,
-    })
+    });
+
+    console.log(resendResponse);
 
     return NextResponse.json({ success: true })
   } catch (error) {
