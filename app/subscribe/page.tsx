@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { PlatformAccessTable } from "./tables/platform-acc-table";
 import { TrainingProviderTable } from "./tables/training-prov-table";
+import { Separator } from "@/components/ui/separator";
 
 export default function SubscribeLandingPage(){
     return (
@@ -11,12 +12,33 @@ export default function SubscribeLandingPage(){
             <Image
                 src="https://cdn.prod.website-files.com/66fc1efd047a029224c72fb0/66fc28b252d9d3641f6b168b_Verciti_Logo_Dark_Background.svg"
                 alt="Verciti logo"
-                width={180}
-                height={38}
+                width={180*1.2}
+                height={38*1.2}
                 priority
             />
             <br/>
             <br/>
+            <p>Try the Vercit app now</p><br/>
+            <div className="flex flex-row space-x-4">
+                <Image 
+                    src="/google/GetItOnGooglePlay_Badge_Web_color_English.svg" 
+                    alt="get it on google play"
+                    width={478/2}
+                    height={142/2}
+                    className="cursor-pointer"
+                    onClick={()=> window.open("https://play.google.com/store/apps/details?id=com.verciti.edtechapp")}
+                />
+                <Image 
+                    src="/apple/Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg" 
+                    alt="get it on apple"
+                    width={478/2.23}
+                    height={142/2.23}
+                    className="cursor-pointer"
+                    onClick={()=> window.open("https://play.google.com/store/apps/details?id=com.verciti.edtechapp")}
+                />
+            </div>
+            <br/>
+            <Separator className="w-full max-w-6xl" />
             <div className="mt-8 w-full max-w-6xl">
                 <Tabs defaultValue="providers" className="w-full">
 
