@@ -34,7 +34,7 @@ export default function SubscribeLandingPage(){
                     width={478/2.23}
                     height={142/2.23}
                     className="cursor-pointer"
-                    onClick={()=> window.open("https://play.google.com/store/apps/details?id=com.verciti.edtechapp")}
+                    //onClick={()=> window.open("https://play.google.com/store/apps/details?id=com.verciti.edtechapp")}
                 />
             </div>
             <br/>
