@@ -18,7 +18,7 @@ export default function SubscribeLandingPage(){
             />
             <br/>
             <br/>
-            <p>Try the Vercit app now</p><br/>
+            <p>Try the Verciti app now</p><br/>
             <div className="flex flex-row space-x-4">
                 <Image 
                     src="/google/GetItOnGooglePlay_Badge_Web_color_English.svg" 

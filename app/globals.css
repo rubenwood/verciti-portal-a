@@ -212,14 +212,14 @@ body {
 
 
 .dark {
-  --background: hsl(0, 0%, 15%);
+  --background: hsl(0, 0%, 7%);
   --foreground: hsl(0, 0%, 98%);
-  --card: hsl(0, 0%, 20%);
+  --card: hsl(0, 0%, 15%);
   --card-foreground: hsl(0, 0%, 98%);
-  --popover: hsl(0, 0%, 20%);
+  --popover: hsl(0, 0%, 15%);
   --popover-foreground: hsl(0, 0%, 98%);
   --primary: hsl(0, 0%, 92%);
-  --primary-foreground: hsl(0, 0%, 20%);
+  --primary-foreground: hsl(0, 0%, 15%);
   --secondary: hsl(0, 0%, 27%);
   --secondary-foreground: hsl(0, 0%, 98%);
   --muted: hsl(0, 0%, 27%);
@@ -235,7 +235,7 @@ body {
   --chart-3: hsl(70, 52%, 73%);
   --chart-4: hsl(303, 66%, 54%);
   --chart-5: hsl(16, 55%, 64%);
-  --sidebar: hsl(0, 0%, 20%);
+  --sidebar: hsl(0, 0%, 15%);
   --sidebar-foreground: hsl(0, 0%, 98%);
   --sidebar-primary: hsl(264, 58%, 48%);
   --sidebar-primary-foreground: hsl(0, 0%, 98%);
