@@ -122,7 +122,7 @@ export function TrainingProviderTable(props: any) {
                 </tbody>
             </table>
             <p>* Features may be work in progress and/or vary per tier and specification</p>
-
+            
             <OrgDetailsModal open={open} setOpen={setOpen} tiers={["Core", "Accredited", "Strategic"]} />
         </div>
     );

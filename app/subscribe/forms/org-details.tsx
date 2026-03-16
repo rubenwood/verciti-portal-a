@@ -105,7 +105,6 @@ function OrganisationDetails(props: any){
 }
 
 export function OrgDetailsModal(props: any) {
-
     return (
         <Dialog open={props.open} onOpenChange={props.setOpen}>
             <DialogContent>

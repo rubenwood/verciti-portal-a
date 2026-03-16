@@ -18,10 +18,6 @@ export default function SubscribeLandingPage(){
             <br/>
             <br/>
             <div className="mt-8 w-full max-w-6xl">
-                <h1 className="text-3xl font-semibold text-center mb-6">
-                    Choose Your Subscription
-                </h1>
-
                 <Tabs defaultValue="employers" className="w-full">
 
                 <TabsList className="grid w-full grid-cols-2 mb-6">
