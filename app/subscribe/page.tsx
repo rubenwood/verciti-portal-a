@@ -18,7 +18,7 @@ export default function SubscribeLandingPage(){
             <br/>
             <br/>
             <div className="mt-8 w-full max-w-6xl">
-                <Tabs defaultValue="employers" className="w-full">
+                <Tabs defaultValue="providers" className="w-full">
 
                 <TabsList className="grid w-full grid-cols-2 mb-6">
                     <TabsTrigger value="providers">
