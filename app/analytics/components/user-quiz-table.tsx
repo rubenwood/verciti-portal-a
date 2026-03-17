@@ -1,5 +1,6 @@
 "use client"
 
+import { formatDuration, formatDate } from "@/app/db/general/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -113,7 +114,7 @@ function ActivitiesSection(props: any) {
 }
 
 
-export function UserProgressTable(props: any) {
+export function UserQuizTable(props: any) {
     const findQuizAttemptsByActivityAndUser = (quizData: any[], activityId: string, userId: string) => {
         const quizAttemptsByUserInActivity = quizData.filter(quiz => quiz.activity_id === activityId && quiz.user_id === userId);
         if(quizAttemptsByUserInActivity.length === 0){
@@ -123,36 +124,47 @@ export function UserProgressTable(props: any) {
         return quizAttemptsByUserInActivity;
     }
 
+    const countCorrect = (questionsAnswered: any[]) => {
+        let count = 0;
+        for(const answer of questionsAnswered){
+            if(answer.isCorrect){ count++; }
+        }
+        return count;
+    }
+
     const populateRows = () => {
         const rows: JSX.Element[] = [];
-        if (props.progressData == null) { return rows; }
+        if (props.quizData == null) { return rows; }
 
-        for (const userProg of props.progressData) {
-            console.log(`UP:`);
-            console.log(userProg);
+        for (const userQuizAttempt of props.quizData) {
+            console.log(`UQ:`);
+            console.log(userQuizAttempt);
             rows.push(
-                <TableRow key={`userprog-${userProg.id}`}>
+                <TableRow key={`userquiz-${userQuizAttempt.id}`}>
                     <TableCell>
                         <div className="flex items-center gap-3">
                             <Avatar className="h-8 w-8">
                                 <AvatarFallback className="bg-primary/20 text-foreground text-xs font-medium">AV</AvatarFallback>
                             </Avatar>
                             <div className="flex flex-col">
-                                <span className="font-medium text-foreground">{userProg.data.email}</span>
+                                <span className="font-medium text-foreground">{}</span>
                             </div>
                         </div>
                     </TableCell>
                     <TableCell>
-                        logins
                     </TableCell>
+                        {formatDate(userQuizAttempt?.attempted_at)}
                     <TableCell >
-                        <ActivitiesSection userProg={userProg} />
-                        {/* <QuizScoresDisplay quizAttempts={findQuizAttemptsByActivityAndUser(props.quizData, prog.activity_id, userProg.id)} /> */}
+                        {`${(userQuizAttempt?.score *100).toFixed(0)}%`}
                     </TableCell>
                     <TableCell>
-                        <Button variant="ghost" className="text-muted-foreground hover:text-primary">
-                            <Bell className="h-4 w-4" />
-                        </Button>
+                        {`${countCorrect(userQuizAttempt.questions_answered)} / ${userQuizAttempt.total_questions}`}
+                    </TableCell>
+                    <TableCell>
+                        {formatDuration(userQuizAttempt.duration)}
+                    </TableCell>
+                    <TableCell>
+
                     </TableCell>
                 </TableRow>
             );
@@ -164,17 +176,19 @@ export function UserProgressTable(props: any) {
     return (
         <Card className="bg-card border-border">
             <CardHeader>
-                <CardTitle className="text-foreground">User Activity</CardTitle>
-                <CardDescription>Track user logins, activity and detailed attempt data</CardDescription>
+                <CardTitle className="text-foreground">Quiz / Assesment Attempts</CardTitle>
+                <CardDescription>Detailed view of assessment attempts with questions and answers</CardDescription>
             </CardHeader>
             <CardContent>
                 <Table>
                     <TableHeader>
                         <TableRow className="border-border hover:bg-transparent">
                             <TableHead className="text-muted-foreground">User</TableHead>
-                            <TableHead className="text-muted-foreground">Logins</TableHead>
-                            <TableHead className="text-muted-foreground">Activity</TableHead>
-                            <TableHead className="text-muted-foreground w-[80px]">Actions</TableHead>
+                            <TableHead className="text-muted-foreground">Quiz / Assessment</TableHead>
+                            <TableHead className="text-muted-foreground">Date</TableHead>
+                            <TableHead className="text-muted-foreground">%</TableHead>
+                            <TableHead className="text-muted-foreground">#</TableHead>
+                            <TableHead className="text-muted-foreground">Time Taken</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

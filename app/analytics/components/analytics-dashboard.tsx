@@ -33,6 +33,7 @@ import {
 } from "@/app/db/user/user-quiz-analytics";
 import { BookIcon, BrainIcon, ClockIcon, TrendingUp, TrophyIcon, UsersIcon } from "lucide-react";
 import { formatDuration } from "@/app/db/general/utils";
+import { UserQuizTable } from "./user-quiz-table";
 
 
 export function AnalyticsDashboard(props: any) {
@@ -94,6 +95,7 @@ export function AnalyticsDashboard(props: any) {
             <br/>
             <UserProgressTable progressData={props.userProgressData} quizData={props.userQuizData} />
             <br/>
+            <UserQuizTable progressData={props.userProgressData} quizData={props.userQuizData} />
             <div className="grid grid-cols-3 gap-4">
                 <PopularModulesCard 
                     mostPlayed={calcMostPlayed(props.userProgressData)}
