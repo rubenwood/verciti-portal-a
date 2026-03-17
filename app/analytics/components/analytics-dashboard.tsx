@@ -34,6 +34,7 @@ import {
 import { BookIcon, BrainIcon, ClockIcon, TrendingUp, TrophyIcon, UsersIcon } from "lucide-react";
 import { formatDuration } from "@/app/db/general/utils";
 import { UserQuizTable } from "./user-quiz-table";
+import { Collapsible } from "@radix-ui/react-collapsible";
 
 
 export function AnalyticsDashboard(props: any) {
@@ -51,7 +52,7 @@ export function AnalyticsDashboard(props: any) {
                 icon: UsersIcon,
             },
             usageTime: {
-                label: "Usage Time",
+                label: "Total Usage Time",
                 value: formatDuration(calcTotalUsageTime(props.userProgressData)),
                 change: "",
                 icon: ClockIcon,
@@ -79,7 +80,7 @@ export function AnalyticsDashboard(props: any) {
 
 
     return (
-        <>
+        <div className="p-6">
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
                 {stats != null ?
                     <>
@@ -88,29 +89,29 @@ export function AnalyticsDashboard(props: any) {
                         <StatCard stat={stats.modules} />
                         <StatCard stat={stats.quizzes} />
                         <StatCard stat={stats.averageQuizScore} />
-                        <StatCard stat={stats.averageQuizScore} />
                     </>
                 : null}
             </div>
             <br/>
-            <UserProgressTable progressData={props.userProgressData} quizData={props.userQuizData} />
-            <br/>
-            <UserQuizTable progressData={props.userProgressData} quizData={props.userQuizData} />
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 gap-4">
+
                 <PopularModulesCard 
                     mostPlayed={calcMostPlayed(props.userProgressData)}
                     mostPlayedByUserCount={calcMostPopularByUserCount(props.userProgressData)}
                     mostPlayedTime={calcMostPlayedTime(props.userAttemptsData)}
                 />
-                <div />
                 <QuizCard 
                     totalQuizzes={calcTotalQuizStages(props.userQuizData)}
-                    totalQuizAttempts={userQuizData?.length || 0} 
+                    totalQuizAttempts={props.userQuizData?.length || 0} 
                     completedQuizzes={calcCompletedQuizzes(props.userQuizData)}
                     totalQuizDuration={calcTotalQuizDuration(props.userQuizData)} 
                     averageQuizScore={calcAverageQuizScore(props.userQuizData)} 
                 />
             </div>
+            <br/>
+            <UserProgressTable progressData={props.userProgressData} quizData={props.userQuizData} />
+            <br/>
+            <UserQuizTable progressData={props.userProgressData} quizData={props.userQuizData} />
             <br />
             <div className="grid grid-cols-2 gap-4">
                 <MonthlyTotalUserTable 
@@ -125,6 +126,6 @@ export function AnalyticsDashboard(props: any) {
                 />
             </div>
             
-        </>
+        </div>
     )
 }

@@ -1,34 +1,59 @@
 "use client"
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDuration } from "@/app/db/general/utils";
-import { Clock, Play, User } from "lucide-react";
+import { ChevronDown, ChevronRight, Clock, Play, User } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
-export function PopularModulesCard(props: any){
-    useEffect(() => {
+export function PopularModulesCard(props: any) {
+  const [isOpen, setIsOpen] = useState(false);
 
-    }, [props.mostPlayed, props.mostPlayedByUserCount, props.mostPlayedTime]);
-
-    return (
-        <Card className="mb-4 p-4 flex flex-col">
-            <CardHeader>
-                <CardTitle className="text-lg font-semibold text-center">
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="mb-2">
+        <CollapsibleTrigger asChild>
+            <CardHeader className="cursor-pointer flex flex-row items-center justify-between p-4">
+                <CardTitle className="text-lg font-semibold">
                     Most Popular Modules
                 </CardTitle>
+                {isOpen ? (
+                    <ChevronDown className="h-4 w-4" />
+                ) : (
+                    <ChevronRight className="h-4 w-4" />
+                )}
             </CardHeader>
-            <CardContent className="gridflex flex-1 items-center justify-center">                
-                <span className="grid grid-cols-3 border-b-2 border-t-2 w-full">
-                    <p className="border-1 p-2">Most Played Module <Play className="size-4"/></p>
-                    <p className="border-1 p-2">{props.mostPlayed?.moduleTitle}</p>
-                    <p className="border-1 p-2">{props.mostPlayed?.playCount}</p>
-                    <p className="border-1 p-2">Most Played Module <User className="size-4"/></p>
-                    <p className="border-1 p-2">{props.mostPlayedByUserCount.moduleTitles.join(", ")}</p>
-                    <p className="border-1 p-2">{props.mostPlayedByUserCount.userCount}</p>
-                    <p className="border-1 p-2">Most Played Module <Clock className="size-4"/></p>
-                    <p className="border-1 p-2">{props.mostPlayedTime?.moduleTitle}</p>
-                    <p className="border-1 p-2">{formatDuration(props.mostPlayedTime?.playTime)}</p>
-                </span>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+            <CardContent className="pt-0">
+                <div className="grid grid-cols-3 border-y w-full text-sm">                    
+                    <p className="px-4 py-6 flex items-center gap-1">
+                        Most Played <Play className="size-4" />
+                    </p>
+                    <p className="px-4 py-6">{props.mostPlayed?.moduleTitle}</p>
+                    <p className="px-4 py-6">{props.mostPlayed?.playCount}</p>
+
+                    <p className="px-4 py-6 flex items-center gap-1">
+                        Most Users <User className="size-4" />
+                    </p>
+                    <p className="px-4 py-6">
+                        {props.mostPlayedByUserCount?.moduleTitles?.join(", ")}
+                    </p>
+                    <p className="px-4 py-6">
+                    {props.mostPlayedByUserCount?.userCount}
+                    </p>
+
+                    <p className="px-4 py-6 flex items-center gap-1">
+                        Longest Played <Clock className="size-4" />
+                    </p>
+                    <p className="px-4 py-6">{props.mostPlayedTime?.moduleTitle}</p>
+                    <p className="px-4 py-6">
+                        {formatDuration(props.mostPlayedTime?.playTime)}
+                    </p>
+                </div>
             </CardContent>
-        </Card>
-    )
+        </CollapsibleContent>
+
+      </Card>
+    </Collapsible>
+  );
 }

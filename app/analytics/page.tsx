@@ -128,12 +128,12 @@ export default function AnalyticsLandingPage(){
             />
             {isLoaded ? 
             <>
-            <TopRibbon /><br/>
-            <AnalyticsDashboard 
-                userProgressData={userProgressData}
-                userAttemptsData={userAttemptsData}
-                userQuizData={userQuizData}
-            />
+                <TopRibbon /><br/>
+                <AnalyticsDashboard 
+                    userProgressData={userProgressData}
+                    userAttemptsData={userAttemptsData}
+                    userQuizData={userQuizData}
+                />
             </>
             : null }            
         </div>

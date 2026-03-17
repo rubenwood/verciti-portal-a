@@ -176,7 +176,7 @@ export function UserQuizTable(props: any) {
     return (
         <Card className="bg-card border-border">
             <CardHeader>
-                <CardTitle className="text-foreground">Quiz / Assesment Attempts</CardTitle>
+                <CardTitle className="text-foreground">Quiz / Assessment Attempts</CardTitle>
                 <CardDescription>Detailed view of assessment attempts with questions and answers</CardDescription>
             </CardHeader>
             <CardContent>
