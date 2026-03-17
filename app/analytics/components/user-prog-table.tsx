@@ -1,6 +1,11 @@
 "use client"
 
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge, Bell, ChevronDown, ChevronRight } from "lucide-react";
 import { JSX, useEffect, useState } from "react";
 
 
@@ -75,6 +80,39 @@ function QuizScoresDisplay(props: any){
     )
 }
 
+
+
+function ActivitiesSection(props: any) {
+  const [isOpen, setIsOpen] = useState(false)
+
+  return (
+    <>
+    {props.userProg.generic_activity_progress != null ?
+            
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+            {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+            <span className="font-medium text-foreground">{props.userProg.generic_activity_progress.length} activities</span>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+            <div className="mt-3 space-y-3 pl-6">
+            {props.userProg.generic_activity_progress.map((prog: any) => (
+                <div key={`prog-${prog?.activity_id}`} className="bg-secondary/50 rounded-md p-3">
+                <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-foreground">{prog?.external_title}</span>
+                </div>
+                {/* <AttemptsSection attempts={activity.attempts} /> */}
+                </div>
+            ))}
+            </div>
+        </CollapsibleContent>
+        </Collapsible> 
+    : null}
+    </>
+  )
+}
+
+
 export function UserProgressTable(props: any) {
     const findQuizAttemptsByActivityAndUser = (quizData: any[], activityId: string, userId: string) => {
         const quizAttemptsByUserInActivity = quizData.filter(quiz => quiz.activity_id === activityId && quiz.user_id === userId);
@@ -90,46 +128,60 @@ export function UserProgressTable(props: any) {
         if (props.progressData == null) { return rows; }
 
         for (const userProg of props.progressData) {
-            for (const prog of userProg.generic_activity_progress) {
-
-                rows.push(
-                    <tr key={`${userProg.id}-${prog.activity_id}`}>
-                        <td className="text-center border-2">
-                            {userProg.data.email}
-                        </td>
-                        <td className="text-center border-2">
-                            {prog.external_title}
-                        </td>
-                        <td className="text-center border-2">
-                            {Math.round(prog.completion * 100)} %
-                        </td>
-                        <td className="text-center border-2">
-                            <QuizScoresDisplay quizAttempts={findQuizAttemptsByActivityAndUser(props.quizData, prog.activity_id, userProg.id)} />
-                        </td>
-                        <td className="text-center border-2"></td>
-                        <td className="text-center border-2"></td>
-                    </tr>
-                );
-            }
+            console.log(`UP:`);
+            console.log(userProg);
+            rows.push(
+                <TableRow key={`userprog-${userProg.id}`}>
+                    <TableCell>
+                        <div className="flex items-center gap-3">
+                            <Avatar className="h-8 w-8">
+                                <AvatarFallback className="bg-primary/20 text-foreground text-xs font-medium">AV</AvatarFallback>
+                            </Avatar>
+                            <div className="flex flex-col">
+                                <span className="font-medium text-foreground">{userProg.data.email}</span>
+                            </div>
+                        </div>
+                    </TableCell>
+                    <TableCell>
+                        logins
+                    </TableCell>
+                    <TableCell >
+                        <ActivitiesSection userProg={userProg} />
+                        {/* <QuizScoresDisplay quizAttempts={findQuizAttemptsByActivityAndUser(props.quizData, prog.activity_id, userProg.id)} /> */}
+                    </TableCell>
+                    <TableCell>
+                        <Button variant="ghost" className="text-muted-foreground hover:text-primary">
+                            <Bell className="h-4 w-4" />
+                        </Button>
+                    </TableCell>
+                </TableRow>
+            );
+            
         }
         return rows;
     }
 
     return (
-        <table className="w-full mb-4 border-collapse border border-gray-300">
-            <thead className="bg-[#333333]">
-                <tr>
-                    <th className="text-center border-2">User</th>
-                    <th className="text-center border-2">Module</th>
-                    <th className="text-center border-2">Progress</th>
-                    <th className="text-center border-2">Score(s)</th>
-                    <th className="text-center border-2">100% Date</th>
-                    <th className="text-center border-2">Actions</th>
-                </tr>
-            </thead>
-            <tbody >
+    <Card className="bg-card border-border">
+        <CardHeader>
+            <CardTitle className="text-foreground">User Activity</CardTitle>
+            <CardDescription>Track user logins, activity and detailed attempt data</CardDescription>
+        </CardHeader>
+      <CardContent>
+        <Table>
+            <TableHeader>
+                <TableRow className="border-border hover:bg-transparent">
+                    <TableHead className="text-muted-foreground">User</TableHead>
+                    <TableHead className="text-muted-foreground">Logins</TableHead>
+                    <TableHead className="text-muted-foreground">Activity</TableHead>
+                    <TableHead className="text-muted-foreground w-[80px]">Actions</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
                 {populateRows()}
-            </tbody>
-        </table>
+            </TableBody>
+        </Table>
+    </CardContent>
+    </Card>
     )
 }

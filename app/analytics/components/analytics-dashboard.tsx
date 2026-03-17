@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { supabaseMain, supabaseTest } from "@/lib/supabase";
 import { getUsersProgress,
@@ -17,14 +17,10 @@ import {
     getUsersLoggedInTimePeriod
 } from "@/app/db/user/user-gen-analytics";
 
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { UserProgressTable } from "./user-prog-table";
-import { TotalUsersCard } from "./total-users-card";
-import { UserLoginsCard } from "./user-logins-card";
-import { ModulesCard } from "./total-modules-card"
-import { UsageTimeCard } from "./usage-time";
-import { NewRetUsersCard } from "./new-ret-users-card";
+
+import { StatCard } from "./general/stat-card";
 import { PopularModulesCard } from "./popular-modules";
 import { QuizCard } from "./quiz-card";
 import { MonthlyTable, MonthlyTotalUserTable } from "./tables/monthly-table";
@@ -35,117 +31,82 @@ import {
     calcTotalQuizStages,
     getUsersQuizAttempts
 } from "@/app/db/user/user-quiz-analytics";
+import { BookIcon, BrainIcon, ClockIcon, TrendingUp, TrophyIcon, UsersIcon } from "lucide-react";
+import { formatDuration } from "@/app/db/general/utils";
 
 
-export function AnalyticsDashboard() {
-    const [dbBranch, setDbBranch] = useState<string>("test");
-    const [clientToUse, setClientToUse] = useState<SupabaseClient>(supabaseTest);
-
-    const [cohortName, setCohortName] = useState<string>("Verciti");
-
-    const [userProgressData, setUserProgressData] = useState<any[]>();
-    const [userAttemptsData, setUserAttemptsData] = useState<any[]>();
+export function AnalyticsDashboard(props: any) {
     const [userQuizData, setUserQuizData] = useState<any[]>();
 
-    const setClient = (branch: string) => {
-        setDbBranch(branch);
-        if(branch === "test"){
-            setClientToUse(supabaseTest);
-        } else {
-            setClientToUse(supabaseMain);
-        }
-    }
+    // Stats
+    const stats = useMemo(() => {
+        if (!props.userProgressData || !props.userAttemptsData || !props.userQuizData) return null;
 
-    const getAllData = async () => {
-        if(!cohortName || cohortName.trim() === "") {
-            alert("Please enter a cohort name.");
-            return;
-        }
+        return {
+            totalUsers: {
+                label: "Total Users",
+                value: props.userProgressData.length,
+                change: "",
+                icon: UsersIcon,
+            },
+            usageTime: {
+                label: "Usage Time",
+                value: formatDuration(calcTotalUsageTime(props.userProgressData)),
+                change: "",
+                icon: ClockIcon,
+            },
+            modules: {
+                label: "Modules Completed",
+                value: calcTotalModulesCompleted(props.userProgressData),
+                change: "",
+                icon: BookIcon,
+            },
+            quizzes: {
+                label: "Quiz Attempts",
+                value: props.userQuizData.length,
+                change: "",
+                icon: TrophyIcon,
+            },
+            averageQuizScore:{
+                label: "Average Score",
+                value: `${(calcAverageQuizScore(props.userQuizData)*100).toFixed(2)}%`,
+                change: "",
+                icon: TrendingUp
+            }
+        };
+    }, [props.userProgressData, props.userAttemptsData, props.userQuizData]);
 
-        const data = await getUsersProgressByVisibility(clientToUse, cohortName);
-        setUserProgressData(data);
-        //console.log("User Progress Data:", data);
-
-        //TODO: use a list of promises to fetch all pages in parallel
-        const attempts = await getUserAttempts(clientToUse, data.map((user) => user.id), 0, 1000);
-        for(let i = 0; i < attempts.pageCount-1; i++){
-            const moreAttempts = await getUserAttempts(clientToUse, data.map((user) => user.id), i+1, 1000);
-            attempts.data = attempts.data.concat(moreAttempts.data);
-        }
-        setUserAttemptsData(attempts.data);
-        //console.log("User Attempts Data:", attempts);
-
-        const quizData = await getUsersQuizAttempts(clientToUse, data.map((user) => user.id));
-        for(let i = 0; i < quizData.pageCount-1; i++){
-            const moreQuizData = await getUsersQuizAttempts(clientToUse, data.map((user) => user.id), i+1, 1000);
-            quizData.data = quizData.data.concat(moreQuizData.data);
-        }
-        console.log(quizData.data);
-        setUserQuizData(quizData.data);
-        //console.log("User Quiz Data:", quizData);
-    }
-
-    const begin = async () => {
-        await getAllData();
-    }
-
-    useEffect(() => {
-        
-    }, [userProgressData, userAttemptsData, userQuizData, dbBranch]);
-
-    if(!userProgressData || !userAttemptsData || !userQuizData){
-        return (
-            <>
-                <select onChange={(e) => { setClient(e.target.value); }} value={dbBranch}>
-                    <option value="test">test</option>
-                    <option value="main">main</option>
-                </select>
-                <br/>
-                <input type="text" placeholder="cohort name" onChange={(e) => setCohortName(e.target.value)} />
-                <Button onClick={begin}>Begin</Button>
-                <br/>
-            </>
-        )
-    }
 
     return (
         <>
-            <input type="text" placeholder="cohort name" onChange={(e) => setCohortName(e.target.value)} />
-            <br/>            
-            <Button onClick={begin}>Begin</Button>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+                {stats != null ?
+                    <>
+                        <StatCard stat={stats.totalUsers} />
+                        <StatCard stat={stats.usageTime} />
+                        <StatCard stat={stats.modules} />
+                        <StatCard stat={stats.quizzes} />
+                        <StatCard stat={stats.averageQuizScore} />
+                        <StatCard stat={stats.averageQuizScore} />
+                    </>
+                : null}
+            </div>
             <br/>
-            Timefame
-            <br/>
-            start:
-            <input type="date" />
-            end:
-            <input type="date" />
+            <UserProgressTable progressData={props.userProgressData} quizData={props.userQuizData} />
             <br/>
             <div className="grid grid-cols-3 gap-4">
-                <TotalUsersCard totalUsers={userProgressData.length} />
-                <ModulesCard 
-                    totalModulesCompleted={calcTotalModulesCompleted(userProgressData)}
-                    uniqueModulesCompleted={calcTotalUniqueModulesCompleted(userProgressData)}
-                />
-                <UsageTimeCard totalUsageTime={calcTotalUsageTime(userProgressData)} />
-                <UserLoginsCard 
-                    loginsToday={getUsersLoggedInTimePeriod(userProgressData, new Date(Date.now() - 24*60*60*1000), new Date())}
-                    logins7Days={getUsersLoggedInTimePeriod(userProgressData, new Date(Date.now() - 7*24*60*60*1000), new Date())}
-                    logins30Days={getUsersLoggedInTimePeriod(userProgressData, new Date(Date.now() - 30*24*60*60*1000), new Date())}
-                />
-                <NewRetUsersCard data={userProgressData} />
                 <PopularModulesCard 
-                    mostPlayed={calcMostPlayed(userProgressData)}
-                    mostPlayedByUserCount={calcMostPopularByUserCount(userProgressData)}
-                    mostPlayedTime={calcMostPlayedTime(userAttemptsData)}
+                    mostPlayed={calcMostPlayed(props.userProgressData)}
+                    mostPlayedByUserCount={calcMostPopularByUserCount(props.userProgressData)}
+                    mostPlayedTime={calcMostPlayedTime(props.userAttemptsData)}
                 />
                 <div />
                 <QuizCard 
-                    totalQuizzes={calcTotalQuizStages(userQuizData)}
+                    totalQuizzes={calcTotalQuizStages(props.userQuizData)}
                     totalQuizAttempts={userQuizData?.length || 0} 
-                    completedQuizzes={calcCompletedQuizzes(userQuizData)}
-                    totalQuizDuration={calcTotalQuizDuration(userQuizData)} 
-                    averageQuizScore={calcAverageQuizScore(userQuizData)} 
+                    completedQuizzes={calcCompletedQuizzes(props.userQuizData)}
+                    totalQuizDuration={calcTotalQuizDuration(props.userQuizData)} 
+                    averageQuizScore={calcAverageQuizScore(props.userQuizData)} 
                 />
             </div>
             <br />
@@ -153,16 +114,15 @@ export function AnalyticsDashboard() {
                 <MonthlyTotalUserTable 
                     year={2025} 
                     metricName="# Users"
-                    data={(getUsersCreatedInTimePeriod(userProgressData, new Date("2025-01-01"), new Date("2025-12-31")))}
+                    data={(getUsersCreatedInTimePeriod(props.userProgressData, new Date("2025-01-01"), new Date("2025-12-31")))}
                 />
                 <MonthlyTotalUserTable 
                     year={2026} 
                     metricName="# Users"
-                    data={(getUsersCreatedInTimePeriod(userProgressData, new Date("2026-01-01"), new Date("2026-12-31")))}
+                    data={(getUsersCreatedInTimePeriod(props.userProgressData, new Date("2026-01-01"), new Date("2026-12-31")))}
                 />
             </div>
-            <br />
-            <UserProgressTable progressData={userProgressData} quizData={userQuizData} />
+            
         </>
     )
 }

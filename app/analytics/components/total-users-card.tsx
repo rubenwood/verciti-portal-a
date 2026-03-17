@@ -12,11 +12,11 @@ export function TotalUsersCard(props: any){
 
     return (
         <Card className="mb-4 p-4 flex flex-col" onClick={toggleBreakdown}>
-            <CardHeader className="text-lg font-semibold">
-                <CardTitle className="text-lg font-semibold text-center">Total Users</CardTitle>
+            <CardHeader>
+                <CardTitle className="text-sm font-semibold text-center">Total Users</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col items-center justify-center">
-                <p className="text-4xl text-justify">{props.totalUsers}</p><br/>                
+                <p className="text-2xl text-justify">{props.totalUsers}</p><br/>                
             </CardContent>
         </Card>
     )
