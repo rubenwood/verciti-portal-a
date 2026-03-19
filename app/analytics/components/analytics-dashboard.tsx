@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { supabaseMain, supabaseTest } from "@/lib/supabase";
 import { getUsersProgress,
-    getUsersProgressByVisibility,
+    getUsersProfilesByVisibility,
     getUserAttempts,
     calcTotalUniqueModulesCompleted,
     calcTotalModulesCompleted,

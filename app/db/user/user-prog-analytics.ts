@@ -15,9 +15,11 @@ export async function getUsersProgress(client: SupabaseClient, user_ids: string[
     return data as any[];
 }
 
-export async function getUsersProgressByVisibility(client: SupabaseClient, contentVisibility: string) {
+export async function getUsersProfilesByVisibility(client: SupabaseClient, contentVisibility: string) {
     // this query gets the user profiles that have a specific content visibility
     // and it also gets their associated generic activity progress
+
+    // TODO: split out the generic_activity_progress or this will return too much data
     const { data, error } = await client
     .from('user_profiles')
     .select(`

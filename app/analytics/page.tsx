@@ -5,7 +5,7 @@ import { checkUser } from "../db/general/get-user";
 
 import { SupabaseClient } from "@supabase/supabase-js";
 import { supabaseMain, supabaseTest } from "@/lib/supabase";
-import { getUsersProgressByVisibility, getUserAttempts } from "@/app/db/user/user-prog-analytics";
+import { getUsersProfilesByVisibility, getUserAttempts } from "@/app/db/user/user-prog-analytics";
 import { getUsersQuizAttempts } from "@/app/db/user/user-quiz-analytics";
 
 import { Button } from "@/components/ui/button";
@@ -51,6 +51,16 @@ export function BeginComp(props :any){
 }
 
 
+type UserProfileWithAttempts = {
+    Id: string,
+    Email: string,
+    TotalLogins:number,
+    TotalUsageTime:number,
+    PreviousLogins: any[],
+    ActivityAttempts: any[],
+    QuizAttempts: any[]
+}
+
 export default function AnalyticsLandingPage(){
     const [user, setUser] = useState<User | null>(null);
 
@@ -61,7 +71,8 @@ export default function AnalyticsLandingPage(){
 
     const [userProgressData, setUserProgressData] = useState<any[]>();
     const [userAttemptsData, setUserAttemptsData] = useState<any[]>();
-    const [userQuizData, setUserQuizData] = useState<any[]>();
+    const [userQuizAttemptsData, setUserQuizAttemptsData] = useState<any[]>();
+    const [userProfsWithAttempts, setUserProfsWithAttempts] = useState<UserProfileWithAttempts[]>();
 
     const setClient = (branch: string) => {
         setDbBranch(branch);
@@ -72,33 +83,69 @@ export default function AnalyticsLandingPage(){
         }
     }
 
+
+    const getAttemptsForId = (userProfAttempt: UserProfileWithAttempts, attemptData: any[], type: string) => {
+        const found = attemptData.filter(attempt => attempt.user_id == userProfAttempt.Id);
+        switch(type){
+            case "activity":
+                userProfAttempt.ActivityAttempts = found;
+                break;
+            case "quiz":
+                userProfAttempt.QuizAttempts = found;
+                break;
+        }        
+    }
+
     const getAllData = async () => {
         if(!cohortName || cohortName.trim() === "") {
             alert("Please enter a cohort name.");
             return;
         }
 
-        const data = await getUsersProgressByVisibility(clientToUse, cohortName);
-        setUserProgressData(data);
-        //console.log("User Progress Data:", data);
+        const profileData = await getUsersProfilesByVisibility(clientToUse, cohortName);
+        setUserProgressData(profileData);
+        console.log("User Profile Data:", profileData);
+
+        let userAttempts: UserProfileWithAttempts[] = [];
+        for(const user of profileData){
+            let userAttempt: UserProfileWithAttempts = {
+                Id: user.id,
+                Email: user.data.email,
+                TotalLogins:user.total_logins,
+                TotalUsageTime:user.total_usage_time,
+                PreviousLogins:user.previous_logins,
+                ActivityAttempts:[],
+                QuizAttempts:[]
+            }
+            userAttempts.push(userAttempt);
+        }
 
         //TODO: use a list of promises to fetch all pages in parallel
-        const attempts = await getUserAttempts(clientToUse, data.map((user) => user.id), 0, 1000);
+        const attempts = await getUserAttempts(clientToUse, profileData.map((user) => user.id), 0, 1000);
         for(let i = 0; i < attempts.pageCount-1; i++){
-            const moreAttempts = await getUserAttempts(clientToUse, data.map((user) => user.id), i+1, 1000);
+            const moreAttempts = await getUserAttempts(clientToUse, profileData.map((user) => user.id), i+1, 1000);
             attempts.data = attempts.data.concat(moreAttempts.data);
         }
         setUserAttemptsData(attempts.data);
         //console.log("User Attempts Data:", attempts);
 
-        const quizData = await getUsersQuizAttempts(clientToUse, data.map((user) => user.id));
+        const quizData = await getUsersQuizAttempts(clientToUse, profileData.map((user) => user.id));
         for(let i = 0; i < quizData.pageCount-1; i++){
-            const moreQuizData = await getUsersQuizAttempts(clientToUse, data.map((user) => user.id), i+1, 1000);
+            const moreQuizData = await getUsersQuizAttempts(clientToUse, profileData.map((user) => user.id), i+1, 1000);
             quizData.data = quizData.data.concat(moreQuizData.data);
         }
         //console.log(quizData.data);
-        setUserQuizData(quizData.data);
+        setUserQuizAttemptsData(quizData.data);
         //console.log("User Quiz Data:", quizData);
+
+        for(const user of userAttempts){
+            getAttemptsForId(user, attempts.data, "activity");
+            getAttemptsForId(user, quizData.data, "quiz");
+        }
+
+        console.log("USER ATT");
+        console.log(userAttempts);
+        setUserProfsWithAttempts(userAttempts);
     }
 
     
@@ -110,7 +157,7 @@ export default function AnalyticsLandingPage(){
         init();
     }, []);
 
-    const isLoaded = userProgressData && userAttemptsData && userQuizData;
+    const isLoaded = userProgressData && userAttemptsData && userQuizAttemptsData;
 
     if(!user){ return(<p>Not logged in</p>) }
 
@@ -124,15 +171,16 @@ export default function AnalyticsLandingPage(){
                 getAllData={getAllData}
                 userProgressData={userProgressData}
                 userAttemptsData={userAttemptsData}
-                userQuizData={userQuizData}
+                userQuizData={userQuizAttemptsData}
             />
             {isLoaded ? 
             <>
                 <TopRibbon /><br/>
                 <AnalyticsDashboard 
+                    userProfilesWithAttempts={userProfsWithAttempts}
                     userProgressData={userProgressData}
                     userAttemptsData={userAttemptsData}
-                    userQuizData={userQuizData}
+                    userQuizData={userQuizAttemptsData}
                 />
             </>
             : null }            
