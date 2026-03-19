@@ -96,9 +96,9 @@ export default function AnalyticsLandingPage(){
             const moreQuizData = await getUsersQuizAttempts(clientToUse, data.map((user) => user.id), i+1, 1000);
             quizData.data = quizData.data.concat(moreQuizData.data);
         }
-        console.log(quizData.data);
+        //console.log(quizData.data);
         setUserQuizData(quizData.data);
-        console.log("User Quiz Data:", quizData);
+        //console.log("User Quiz Data:", quizData);
     }
 
     
