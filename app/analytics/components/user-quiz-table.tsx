@@ -153,14 +153,16 @@ export function UserQuizTable(props: any) {
                     </TableCell>
                     <TableCell>
                     </TableCell>
+                    <TableCell className="font-extralight">
                         {formatDate(userQuizAttempt?.attempted_at)}
-                    <TableCell >
+                    </TableCell>
+                    <TableCell className="font-extralight">
                         {`${(userQuizAttempt?.score *100).toFixed(0)}%`}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="font-extralight">
                         {`${countCorrect(userQuizAttempt.questions_answered)} / ${userQuizAttempt.total_questions}`}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="font-extralight">
                         {formatDuration(userQuizAttempt.duration)}
                     </TableCell>
                     <TableCell>
@@ -188,7 +190,7 @@ export function UserQuizTable(props: any) {
                             <TableHead className="text-muted-foreground">Date</TableHead>
                             <TableHead className="text-muted-foreground">%</TableHead>
                             <TableHead className="text-muted-foreground">#</TableHead>
-                            <TableHead className="text-muted-foreground">Time Taken</TableHead>
+                            <TableHead className="text-muted-foreground">Duration</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

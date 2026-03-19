@@ -9,7 +9,9 @@ export async function getUsersQuizAttempts(client: SupabaseClient, user_ids: str
     const { count, error: errorCount } = await client
         .from('quiz_attempts')
         .select('*', { count: 'exact', head: true })
-        .in('user_id', user_ids);
+        .in('user_id', user_ids)
+        .gt('duration', 4);
+        
 
     if (errorCount) {
         console.error("Error fetching user quiz attempts:", errorCount);
@@ -27,6 +29,7 @@ export async function getUsersQuizAttempts(client: SupabaseClient, user_ids: str
         .from('quiz_attempts')
         .select('*')
         .in('user_id', user_ids)
+        .gt('duration', 4)
         .range(from, to);
 
     if (error) {

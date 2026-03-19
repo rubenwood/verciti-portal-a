@@ -42,7 +42,7 @@ export async function getUserAttempts(client: SupabaseClient, user_ids: string[]
         .from('generic_activity_attempts')
         .select('*', { count: 'exact', head: true })
         .in('user_id', user_ids)
-        .gte('duration', 1); // need attempts that are greater than 0 duration
+        .gt('duration', 4); // need attempts that are greater than 0 duration
 
     if (errorCount) {
         console.error('Error fetching attempts count:', errorCount);
@@ -60,7 +60,7 @@ export async function getUserAttempts(client: SupabaseClient, user_ids: string[]
         .from('generic_activity_attempts')
         .select('*')
         .in('user_id', user_ids)
-        .gte('duration', 1)
+        .gt('duration', 4)
         .range(from, to);
 
     if (error) {

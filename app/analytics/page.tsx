@@ -98,7 +98,7 @@ export default function AnalyticsLandingPage(){
         }
         console.log(quizData.data);
         setUserQuizData(quizData.data);
-        //console.log("User Quiz Data:", quizData);
+        console.log("User Quiz Data:", quizData);
     }
 
     
