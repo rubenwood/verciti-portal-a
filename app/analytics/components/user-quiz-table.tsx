@@ -137,8 +137,8 @@ export function UserQuizTable(props: any) {
         if (props.quizData == null) { return rows; }
 
         for (const userQuizAttempt of props.quizData) {
-            console.log(`UQ:`);
-            console.log(userQuizAttempt);
+            //console.log(`UQ:`);
+            //console.log(userQuizAttempt);
             rows.push(
                 <TableRow key={`userquiz-${userQuizAttempt.id}`}>
                     <TableCell>
