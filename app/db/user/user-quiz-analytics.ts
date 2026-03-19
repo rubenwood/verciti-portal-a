@@ -2,6 +2,21 @@ import { PostgrestError, SupabaseClient, User } from '@supabase/supabase-js';
 import confetti from 'canvas-confetti';
 import type { RefObject } from 'react';
 
+
+export async function getUserQuizAttemptsCount(client: SupabaseClient, user_ids: string[]){
+    const { count, error: errorCount } = await client
+        .from('quiz_attempts')
+        .select('*', { count: 'exact', head: true })
+        .in('user_id', user_ids);
+
+    if (errorCount) {
+        console.error("Error fetching user quiz attempts:", errorCount);
+        return 0;
+    }
+
+    return count;
+}
+
 export async function getUsersQuizAttempts(client: SupabaseClient, user_ids: string[], page: number = 0, pageSize: number = 1000){
     const from = page * pageSize;
     const to = from + pageSize - 1;

@@ -147,22 +147,22 @@ export function UserQuizTable(props: any) {
                                 <AvatarFallback className="bg-primary/20 text-foreground text-xs font-medium">AV</AvatarFallback>
                             </Avatar>
                             <div className="flex flex-col">
-                                <span className="font-medium text-foreground">{}</span>
+                                <span className="text-foreground">{}</span>
                             </div>
                         </div>
                     </TableCell>
                     <TableCell>
                     </TableCell>
-                    <TableCell className="font-extralight">
+                    <TableCell className="font-light">
                         {formatDate(userQuizAttempt?.attempted_at)}
                     </TableCell>
-                    <TableCell className="font-extralight">
+                    <TableCell className="font-light">
                         {`${(userQuizAttempt?.score *100).toFixed(0)}%`}
                     </TableCell>
-                    <TableCell className="font-extralight">
+                    <TableCell className="font-light">
                         {`${countCorrect(userQuizAttempt.questions_answered)} / ${userQuizAttempt.total_questions}`}
                     </TableCell>
-                    <TableCell className="font-extralight">
+                    <TableCell className="font-light">
                         {formatDuration(userQuizAttempt.duration)}
                     </TableCell>
                     <TableCell>

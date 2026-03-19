@@ -5,111 +5,72 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge, Bell, ChevronDown, ChevronRight } from "lucide-react";
+import { Badge, Bell, ChevronDown, ChevronRight, Clock } from "lucide-react";
 import { JSX, useEffect, useState } from "react";
-
-
-function QuizScoresDetailElement(props: any){
-    return (
-        <span key={props.attempt.id}>
-            Score: {(props.attempt.score * 100).toFixed(2)}% <br/>
-            Achieved On: {props.attempt.attempted_at || ""}<br/>
-            Completed On: {props.attempt.completed_on || ""}<br/>
-        </span>
-    )
-}
-
-function QuizScoresDisplay(props: any){
-    const [detailsVisible, setDetailsVisible] = useState(false);
-
-    const populateAllScoresDetails = (quizAttempts: any[]) => {
-        const elements: JSX.Element[] = [];
-        quizAttempts.map(attempt => {
-            elements.push(
-                <>
-                    <br/>
-                    <QuizScoresDetailElement key={attempt.id} attempt={attempt} />
-                </>
-            );
-        });
-
-        return elements;
-    }
-
-    useEffect(() => {
-
-    }, [detailsVisible]);
-
-    const showDetails = () => {
-        setDetailsVisible(!detailsVisible);
-    }
-
-    const getPrimaryScore = (quizAttempts: any[]) => {
-        const completedAttempts = quizAttempts.filter(attempt => attempt.completed_on != null && attempt.completed_on !== "");
-        const highestMostRecentAttempt = completedAttempts.sort((a, b) => {
-            if(b.score === a.score){ // TODO: check this
-                return new Date(b.completed_on).getTime() - new Date(a.completed_on).getTime();
-            }
-            return b.score - a.score;
-        })[0];
-
-        if(highestMostRecentAttempt){
-            return (
-                <span key={highestMostRecentAttempt?.id} className="cursor-pointer underline">
-                    {(highestMostRecentAttempt?.score * 100).toFixed(2)}%
-                </span>
-            )
-        }else if(quizAttempts.length > 0){
-            return (
-                <span key={quizAttempts[0]?.id} className="cursor-pointer underline">
-                    {(quizAttempts[0]?.score * 100).toFixed(2)}%
-                </span>
-            )
-        }else{
-            return <span className="text-gray-500">N/A</span>;
-        }
-        
-    }
-
-    return (
-        <span onClick={showDetails}>
-            {getPrimaryScore(props.quizAttempts)}
-            {detailsVisible ? 
-                populateAllScoresDetails(props.quizAttempts) : <></>}        
-        </span>
-    )
-}
-
-
 
 function ActivitiesSection(props: any) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
     <>
-    {props.userProg.generic_activity_progress != null ?
+    {props.userActivityAttempts != null ?
             
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-            <span className="font-medium text-foreground">{props.userProg.generic_activity_progress.length} activities</span>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-            <div className="mt-3 space-y-3 pl-6">
-            {props.userProg.generic_activity_progress.map((prog: any) => (
-                <div key={`prog-${prog?.activity_id}`} className="bg-secondary/50 rounded-md p-3">
-                <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-foreground">{prog?.external_title}</span>
+            <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                <span className="text-foreground">{props.userActivityAttempts.length} modules</span>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+                <div className="mt-3 space-y-3 pl-6">
+                {props.userActivityAttempts.map((attempt: any) => (
+                    <div key={`prog-${attempt?.activity_id}`} className="bg-secondary/50 rounded-md p-3">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm text-foreground">{attempt?.external_title}</span>
+                        </div>
+                        {/* <AttemptsSection attempts={activity.attempts} /> */}
+                    </div>
+                ))}
                 </div>
-                {/* <AttemptsSection attempts={activity.attempts} /> */}
-                </div>
-            ))}
-            </div>
-        </CollapsibleContent>
+            </CollapsibleContent>
         </Collapsible> 
     : null}
     </>
   )
+}
+
+function LoginsSection(props: any){
+    const [isOpen, setIsOpen] = useState(false)
+
+    const formatLoginString = (login: string) => {
+        const date = login.split('T')[0];
+        const time = login.split('T')[1].split('+')[0];
+
+        return `${date} ${time}`
+    }
+
+    return (
+        <>
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+            <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                <span className="text-foreground">{props.userProf.TotalLogins} logins</span>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+                <div className="mt-3 space-y-3 pl-3">
+                {props.userProf?.PreviousLogins.map((login: any) => (
+                    <div key={`login-${login}`} className="bg-secondary/50 rounded-md p-3">
+                        <div className="flex items-center justify-between">
+                            <span className="flex text-xs font-light gap-1">
+                                <Clock className="size-3 text-muted-foreground"/>{formatLoginString(login)}
+                            </span>
+                        </div>
+                    </div>
+                ))}
+                </div>
+            </CollapsibleContent>
+        </Collapsible> 
+        </>
+    )
 }
 
 
@@ -124,29 +85,33 @@ export function UserProgressTable(props: any) {
     }
 
     const populateRows = () => {
-        const rows: JSX.Element[] = [];
-        if (props.progressData == null) { return rows; }
+        console.log("PROPS");
+        console.log(props);
 
-        for (const userProg of props.progressData) {
+        const rows: JSX.Element[] = [];
+        if (props.userProfilesWithAttempts == null) { return rows; }
+
+        for (const userProf of props.userProfilesWithAttempts) {
             console.log(`UP:`);
-            console.log(userProg);
+            console.log(userProf);
+            //const userProf = props.userProfilesWithAttempts.find((element: any) => element.Id == userProg.id)
             rows.push(
-                <TableRow key={`userprog-${userProg.id}`}>
+                <TableRow key={`userprog-${userProf.Id}`}>
                     <TableCell>
                         <div className="flex items-center gap-3">
                             <Avatar className="h-8 w-8">
                                 <AvatarFallback className="bg-primary/20 text-foreground text-xs font-medium">AV</AvatarFallback>
                             </Avatar>
                             <div className="flex flex-col">
-                                <span className="font-medium text-foreground">{userProg.data.email}</span>
+                                <span className="text-foreground">{userProf.Email}</span>
                             </div>
                         </div>
                     </TableCell>
                     <TableCell>
-                        logins
+                        <LoginsSection userProf={userProf} />
                     </TableCell>
                     <TableCell >
-                        <ActivitiesSection userProg={userProg} />
+                        <ActivitiesSection userActivityAttempts={userProf.ActivityAttempts} />
                         {/* <QuizScoresDisplay quizAttempts={findQuizAttemptsByActivityAndUser(props.quizData, prog.activity_id, userProg.id)} /> */}
                     </TableCell>
                     <TableCell>

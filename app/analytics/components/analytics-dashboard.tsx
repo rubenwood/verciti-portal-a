@@ -109,11 +109,19 @@ export function AnalyticsDashboard(props: any) {
                 />
             </div>
             <br/>
-            <UserProgressTable progressData={props.userProgressData} quizData={props.userQuizData} />
+            <UserProgressTable 
+                userProfilesWithAttempts={props.userProfilesWithAttempts} 
+                progressData={props.userProgressData} 
+                quizData={props.userQuizData}
+            />
             <br/>
-            <UserQuizTable progressData={props.userProgressData} quizData={props.userQuizData} />
+            <UserQuizTable 
+                userProfilesWithAttempts={props.userProfilesWithAttempts}
+                progressData={props.userProgressData}
+                quizData={props.userQuizData}
+            />
             <br />
-            <div className="grid grid-cols-2 gap-4">
+            {/* <div className="grid grid-cols-2 gap-4">
                 <MonthlyTotalUserTable 
                     year={2025} 
                     metricName="# Users"
@@ -124,7 +132,7 @@ export function AnalyticsDashboard(props: any) {
                     metricName="# Users"
                     data={(getUsersCreatedInTimePeriod(props.userProgressData, new Date("2026-01-01"), new Date("2026-12-31")))}
                 />
-            </div>
+            </div> */}
             
         </div>
     )
