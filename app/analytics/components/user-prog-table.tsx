@@ -13,16 +13,16 @@ function ActivitiesSection(props: any) {
 
   return (
     <>
-    {props.userActivityAttempts != null ?
+    {props.userProf.ActivityAttempts != null ?
             
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
             <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
                 {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                <span className="text-foreground">{props.userActivityAttempts.length} modules</span>
+                <span className="text-foreground">{props.userProf.ActivityAttempts.length} modules</span>
             </CollapsibleTrigger>
             <CollapsibleContent>
                 <div className="mt-3 space-y-3 pl-6">
-                {props.userActivityAttempts.map((attempt: any) => (
+                {props.userProf.ActivityAttempts.map((attempt: any) => (
                     <div key={`prog-${attempt?.activity_id}`} className="bg-secondary/50 rounded-md p-3">
                         <div className="flex items-center justify-between mb-2">
                             <span className="text-sm text-foreground">{attempt?.external_title}</span>
@@ -75,26 +75,11 @@ function LoginsSection(props: any){
 
 
 export function UserProgressTable(props: any) {
-    const findQuizAttemptsByActivityAndUser = (quizData: any[], activityId: string, userId: string) => {
-        const quizAttemptsByUserInActivity = quizData.filter(quiz => quiz.activity_id === activityId && quiz.user_id === userId);
-        if(quizAttemptsByUserInActivity.length === 0){
-            return [];
-        }
-
-        return quizAttemptsByUserInActivity;
-    }
-
     const populateRows = () => {
-        console.log("PROPS");
-        console.log(props);
-
         const rows: JSX.Element[] = [];
         if (props.userProfilesWithAttempts == null) { return rows; }
 
         for (const userProf of props.userProfilesWithAttempts) {
-            console.log(`UP:`);
-            console.log(userProf);
-            //const userProf = props.userProfilesWithAttempts.find((element: any) => element.Id == userProg.id)
             rows.push(
                 <TableRow key={`userprog-${userProf.Id}`}>
                     <TableCell>
@@ -111,7 +96,7 @@ export function UserProgressTable(props: any) {
                         <LoginsSection userProf={userProf} />
                     </TableCell>
                     <TableCell >
-                        <ActivitiesSection userActivityAttempts={userProf.ActivityAttempts} />
+                        <ActivitiesSection userProf={userProf} />
                         {/* <QuizScoresDisplay quizAttempts={findQuizAttemptsByActivityAndUser(props.quizData, prog.activity_id, userProg.id)} /> */}
                     </TableCell>
                     <TableCell>

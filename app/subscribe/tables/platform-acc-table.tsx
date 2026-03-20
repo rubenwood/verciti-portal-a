@@ -78,7 +78,7 @@ export function PlatformAccessTable(props: any) {
                         <td className="py-2 text-center">✔️</td>
                     </tr>
                     <tr>
-                        <td className="py-2">Reporting & analytics * </td>
+                        <td className="py-2">Reporting & analytics *</td>
                         <td className="py-2 text-center">Basic</td>
                         <td className="py-2 text-center">Advanced</td>
                         <td className="py-2 text-center">Advanced & Custom</td>
@@ -96,7 +96,7 @@ export function PlatformAccessTable(props: any) {
                         <td className="py-2 text-center">✔️</td>
                     </tr>
                     <tr>
-                        <td className="py-2">SLA & Dedicated Account Manager *</td>
+                        <td className="py-2">SLA & Dedicated Account Manager</td>
                         <td className="py-2 text-center">❌</td>
                         <td className="py-2 text-center">❌</td>
                         <td className="py-2 text-center">✔️</td>

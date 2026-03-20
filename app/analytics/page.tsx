@@ -16,7 +16,9 @@ import { AnalyticsDashboard } from "./components/analytics-dashboard"
 
 // This component is just for dev purposes and will be removed eventually
 export function BeginComp(props :any){
-    const begin = async () => { await props.getAllData(); }
+    const begin = async () => { 
+        await props.getAllData(); 
+    }
 
     if(!props.userProgressData || !props.userAttemptsData || !props.userQuizData){
         return (
@@ -69,6 +71,7 @@ export default function AnalyticsLandingPage(){
 
     const [cohortName, setCohortName] = useState<string>("Verciti");
 
+    const [totalsData, setTotalsData] = useState<any>();
     const [userProgressData, setUserProgressData] = useState<any[]>();
     const [userAttemptsData, setUserAttemptsData] = useState<any[]>();
     const [userQuizAttemptsData, setUserQuizAttemptsData] = useState<any[]>();
@@ -101,6 +104,20 @@ export default function AnalyticsLandingPage(){
             alert("Please enter a cohort name.");
             return;
         }
+
+        const resp = await fetch(`/api/analytics/get-totals/${dbBranch}`, {
+            method:'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                orgName:cohortName
+            })
+        });
+        const totalsData = await resp.json();
+        console.log(totalsData);
+        setTotalsData(totalsData);
+
 
         const profileData = await getUsersProfilesByVisibility(clientToUse, cohortName);
         setUserProgressData(profileData);
@@ -177,6 +194,7 @@ export default function AnalyticsLandingPage(){
             <>
                 <TopRibbon /><br/>
                 <AnalyticsDashboard 
+                    totals={totalsData}
                     userProfilesWithAttempts={userProfsWithAttempts}
                     userProgressData={userProgressData}
                     userAttemptsData={userAttemptsData}
