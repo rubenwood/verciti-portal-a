@@ -26,7 +26,9 @@ export async function POST(req: Request) {
     const emailSuffixes = parseCommaSeparated(data.get('suffixes'));
     const emailAddresses = parseCommaSeparated(data.get('email_addresses'));
     const contentTags = parseCommaSeparated(data.get('content_tags'));
-    contentTags.push("Production");
+    contentTags.push("Free");    
+    contentTags.push("Premium");
+    
 
     const { error } = await serverClient.from(process.env.ORG_TABLE_NAME!).insert({
         id: orgName,
