@@ -70,32 +70,31 @@ async function setupData(supabaseService: SupabaseClient, userId: string, orgId:
     }
 
     // update the remaining licence count
-    const {data:licRemainData, error:licRemainError} = await supabaseService
+    const {data:licUsedData, error:licUsedError} = await supabaseService
         .from(process.env.ORG_TABLE_NAME!)
-        .select('lic_remain')
+        .select('lic_used')
         .eq('id', orgId)
         .single();
 
-    if(licRemainError){
-        console.error("Error getting  lic count: ", licRemainError);
+    if(licUsedError){
+        console.error("Error getting  lic count: ", licUsedError);
     }else{
-        console.log("Success getting lic count: ", licRemainData);
+        console.log("Success getting lic count: ", licUsedData);
     }
 
-    let licRemain = licRemainData?.lic_remain;
+    let licUsed = licUsedData?.lic_used;
     
-    if(licRemain === null || licRemain === undefined){
-        console.error("Error: lic_remain is null or undefined");
-        return {licRemain};
+    if(licUsed === null || licUsed === undefined){
+        console.error("Error: lic_used is null or undefined");
+        return { licUsed };
     }
 
-    licRemain -= 1;
-    console.log(licRemain);
-    console.log(orgId);
+    licUsed += 1;
+    console.log(licUsed);
 
     const {data:licData, error:licError} = await supabaseService
         .from(`${process.env.ORG_TABLE_NAME}`)
-        .update({lic_remain:licRemain})
+        .update({lic_used:licUsed})
         .eq('id', orgId);
 
     if(licError){

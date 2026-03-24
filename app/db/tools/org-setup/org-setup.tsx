@@ -6,7 +6,7 @@ export function OrgSetupTool(){
     const submitBtnRef = useRef<any>(null);
 
     async function createOrg(formData: FormData) {
-        const output = await fetch('/api/db/create-org', {
+        const output = await fetch('/api/db/org/create-org', {
             method: 'POST',
             body: formData
         });
