@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     const request = await req.json();
     console.log("API call to check-email-access with request:", request);
 
-    const output = await attributeLicence(req, supabaseLiveService);
+    const output = await attributeLicence(request, supabaseLiveService);
 
     const response = { output };
     return NextResponse.json({ response });

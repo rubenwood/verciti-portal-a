@@ -1,7 +1,6 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 
-export async function attributeLicence(req: Request, supabaseService: SupabaseClient){
-    const request = await req.json();
+export async function attributeLicence(request: any, supabaseService: SupabaseClient){
     const userId = request.record.id;
     const email = request.record.data.email.toLowerCase();
     console.log("email: ", email);
