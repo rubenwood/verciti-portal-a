@@ -2,6 +2,11 @@ import { SupabaseClient } from "@supabase/supabase-js";
 
 export async function attributeLicence(request: any, supabaseService: SupabaseClient){
     const userId = request.record.id;
+    const {data, error} = await supabaseService
+        .from('user_profiles')
+        .update({content_visibility:["Free"]}) // force the free content tag
+        .eq('id', userId);
+
     const email = request.record.data.email.toLowerCase();
     console.log("email: ", email);
     const suffix = email.split('@')[1];
@@ -21,7 +26,7 @@ export async function attributeLicence(request: any, supabaseService: SupabaseCl
         const tagsFromOrg = suffixMatch.data[0].content_tags ?? [];
         const newContentTags = Array.from(
             new Set(["Free", "Premium", ...tagsFromOrg])
-        ); // must always have production
+        );
 
         // update the user account with these content tags
         const {data, error} = await supabaseService
@@ -51,7 +56,7 @@ export async function attributeLicence(request: any, supabaseService: SupabaseCl
         
         if(licRemain === null || licRemain === undefined){
             console.error("Error: lic_remain is null or undefined");
-            return {suffMatch:suffixMatch, addrMatch:emailAddressMatch};
+            return {licRemain:licRemain};
         }
 
         const {data:licData, error:licError} = await supabaseService
