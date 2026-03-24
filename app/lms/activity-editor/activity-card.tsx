@@ -8,6 +8,7 @@ import {
     BookOpen,
     Clock,
     Edit3,
+    Badge,
 } from "lucide-react"
 import { Button } from "@/components/ui/button";
 
@@ -15,7 +16,9 @@ import { EditingActivityContext } from "./activity-editor-simple-component";
 
 export function StatusIcon({ activity }: { activity: Activity }) {
     switch (activity.status?.toString()) {
-        case "Production":
+        case "Free":
+            return <Badge className="h-4 w-4" />;
+        case "Premium":
             return <BadgeCheck className="h-4 w-4" />;
         case "Testing":
             return <Wrench className="h-4 w-4" />;
