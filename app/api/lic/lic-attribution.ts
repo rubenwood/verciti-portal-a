@@ -21,61 +21,19 @@ export async function attributeLicence(request: any, supabaseService: SupabaseCl
     console.log("addr match:", emailAddressMatch);
 
     if(suffixMatch.data){
-        // add content_tags to acc, using first result for now
         const orgId = suffixMatch.data[0].id;
-        const tagsFromOrg = suffixMatch.data[0].content_tags ?? [];
-        const newContentTags = Array.from(
-            new Set(["Free", "Premium", ...tagsFromOrg])
-        );
+        const tagsFromOrg = suffixMatch.data[0].content_tags ?? [];        
 
-        // update the user account with these content tags
-        const {data, error} = await supabaseService
-            .from('user_profiles')
-            .update({content_visibility:newContentTags, org_id: orgId})
-            .eq('id', userId);
-
-        if(error){
-            console.error("Error updating content tags: ", error);
-        }else{
-            console.log("Success updating content tags: ", data);
-        }
-
-        // update the remaining licence count
-        const {data:licRemainData, error:licRemainError} = await supabaseService
-            .from(`${process.env.ORG_TABLE_NAME}`)
-            .select('lic_remain')
-            .eq('id', orgId);
-
-        if(licRemainError){
-            console.error("Error getting  lic count: ", licRemainError);
-        }else{
-            console.log("Success getting lic count: ", licRemainData);
-        }
-
-        const licRemain = licRemainData?.[0]?.lic_remain;
-        
-        if(licRemain === null || licRemain === undefined){
-            console.error("Error: lic_remain is null or undefined");
-            return {licRemain:licRemain};
-        }
-
-        const {data:licData, error:licError} = await supabaseService
-            .from(`${process.env.ORG_TABLE_NAME}`)
-            .update({lic_remain:(licRemain-1)})
-            .eq('id', orgId);
-
-        if(licError){
-            console.error("Error updating lic count: ", licError);
-        }else{
-            console.log("Success updating lic count: ", licData);
-        }
+        setupData(supabaseService, userId, orgId, tagsFromOrg);
     }
 
     if(emailAddressMatch.data){
-
+        const orgId = emailAddressMatch.data[0].id;
+        const tagsFromOrg = emailAddressMatch.data[0].content_tags ?? [];   
+        setupData(supabaseService, userId, orgId, tagsFromOrg);
     }
 
-
+    // set the "server has data" flag
     const {data:flagData, error:flagError} = await supabaseService
         .from('user_profiles')
         .update({has_server_set_data:true})
@@ -88,4 +46,54 @@ export async function attributeLicence(request: any, supabaseService: SupabaseCl
     }
 
     return {suffMatch:suffixMatch, addrMatch:emailAddressMatch};
+}
+
+
+
+async function setupData(supabaseService: SupabaseClient, userId: string, orgId: string, tagsFromOrg: string[]){
+    const newContentTags = Array.from(
+        new Set(["Free", "Premium", ...tagsFromOrg])
+    );
+    // update the user account with these content tags
+    const {data, error} = await supabaseService
+        .from('user_profiles')
+        .update({content_visibility:newContentTags, org_id: orgId})
+        .eq('id', userId);
+
+    if(error){
+        console.error("Error updating content tags: ", error);
+    }else{
+        console.log("Success updating content tags: ", data);
+    }
+
+    // update the remaining licence count
+    const {data:licRemainData, error:licRemainError} = await supabaseService
+        .from(`${process.env.ORG_TABLE_NAME}`)
+        .select('lic_remain')
+        .eq('id', orgId);
+
+    if(licRemainError){
+        console.error("Error getting  lic count: ", licRemainError);
+    }else{
+        console.log("Success getting lic count: ", licRemainData);
+    }
+
+    const licRemain = licRemainData?.[0]?.lic_remain;
+    
+    if(licRemain === null || licRemain === undefined){
+        console.error("Error: lic_remain is null or undefined");
+        return {licRemain:licRemain};
+    }
+
+    const {data:licData, error:licError} = await supabaseService
+        .from(`${process.env.ORG_TABLE_NAME}`)
+        .update({lic_remain:(licRemain-1)})
+        .eq('id', orgId);
+
+    if(licError){
+        console.error("Error updating lic count: ", licError);
+    }else{
+        console.log("Success updating lic count: ", licData);
+    }
+
 }
