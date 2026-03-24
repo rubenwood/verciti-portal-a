@@ -33,6 +33,7 @@ export async function POST(req: Request) {
     const { error } = await serverClient.from(process.env.ORG_TABLE_NAME!).insert({
         id: orgName,
         licence_count: licenceCount,
+        lic_remain: licenceCount,
         email_suffixes: emailSuffixes,
         email_addresses: emailAddresses,
         content_tags: contentTags,

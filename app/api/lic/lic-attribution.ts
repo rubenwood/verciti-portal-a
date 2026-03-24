@@ -71,5 +71,21 @@ export async function attributeLicence(request: any, supabaseService: SupabaseCl
         }
     }
 
+    if(emailAddressMatch.data){
+
+    }
+
+
+    const {data:flagData, error:flagError} = await supabaseService
+        .from('user_profiles')
+        .update({has_server_set_data:true})
+        .eq('id', userId);
+
+    if(flagError){
+        console.error("Error setting account flag: ", flagError);
+    }else{
+        console.error("Success setting account flag: ", flagData);
+    }
+
     return {suffMatch:suffixMatch, addrMatch:emailAddressMatch};
 }
