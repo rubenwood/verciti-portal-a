@@ -68,7 +68,7 @@ export async function getUsersQuizAttempts(client: SupabaseClient, user_ids: str
 }
 
 
-//
+// =============== Metrics Calculations ===============
 export function calcTotalQuizStages(quizAttemptsData: any[]){
     const uniqueQuizStages = new Set<string>();
 
@@ -92,7 +92,6 @@ export function calcCompletedQuizzes(quizAttemptsData: any[]){
         const completedDate = new Date(attempt.completed_on);
         const zeroDate = new Date("0001-01-01T00:00:00Z");
         if(!isNaN(completedDate.getTime()) && completedDate.getTime() !== zeroDate.getTime()){
-            console.log(attempt.completed_on);
             completedQuizAttempts.push(attempt);
         }
     }

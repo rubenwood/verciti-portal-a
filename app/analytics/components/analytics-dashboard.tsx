@@ -42,36 +42,36 @@ export function AnalyticsDashboard(props: any) {
 
     // Stats
     const stats = useMemo(() => {
-        if (!props.userProgressData || !props.userAttemptsData || !props.userQuizData) return null;
+        if (!props.totals) return null;
 
         return {
             totalUsers: {
                 label: "Total Users",
-                value: props.userProgressData.length,
+                value: props.totals.total_users,
                 change: "",
                 icon: UsersIcon,
             },
             usageTime: {
                 label: "Total Usage Time",
-                value: formatDuration(calcTotalUsageTime(props.userProgressData)),
+                value: formatDuration(props.totals.total_usage_time),
                 change: "",
                 icon: ClockIcon,
             },
             modules: {
                 label: "Modules Completed",
-                value: calcTotalModulesCompleted(props.userProgressData),
+                value: props.totals.activities_completed,
                 change: "",
                 icon: BookIcon,
             },
             quizzes: {
                 label: "Quiz Attempts",
-                value: props.userQuizData.length,
+                value: props.totals.quiz_attempts,
                 change: "",
                 icon: TrophyIcon,
             },
             averageQuizScore:{
                 label: "Average Score",
-                value: `${(calcAverageQuizScore(props.userQuizData)*100).toFixed(2)}%`,
+                value: `${(props.totals.average_score*100).toFixed(2)}%`,
                 change: "",
                 icon: TrendingUp
             }
@@ -111,8 +111,6 @@ export function AnalyticsDashboard(props: any) {
             <br/>
             <UserProgressTable 
                 userProfilesWithAttempts={props.userProfilesWithAttempts} 
-                progressData={props.userProgressData} 
-                quizData={props.userQuizData}
             />
             <br/>
             <UserQuizTable 
