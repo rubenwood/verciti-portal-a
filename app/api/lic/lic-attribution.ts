@@ -47,13 +47,11 @@ export async function attributeLicence(request: any, supabaseService: SupabaseCl
     if(flagError){
         console.error("Error setting account flag: ", flagError);
     }else{
-        console.error("Success setting account flag: ", flagData);
+        console.log("Success setting account flag: ", flagData);
     }
 
     return {suffMatch:suffixMatch, addrMatch:emailAddressMatch};
 }
-
-
 
 async function setupData(supabaseService: SupabaseClient, userId: string, orgId: string, tagsFromOrg: string[]){
     const newContentTags = Array.from(
