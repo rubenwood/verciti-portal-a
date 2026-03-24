@@ -71,9 +71,10 @@ async function setupData(supabaseService: SupabaseClient, userId: string, orgId:
 
     // update the remaining licence count
     const {data:licRemainData, error:licRemainError} = await supabaseService
-        .from(`${process.env.ORG_TABLE_NAME}`)
+        .from(process.env.ORG_TABLE_NAME!)
         .select('lic_remain')
-        .eq('id', orgId);
+        .eq('id', orgId)
+        .single();
 
     if(licRemainError){
         console.error("Error getting  lic count: ", licRemainError);
@@ -81,7 +82,7 @@ async function setupData(supabaseService: SupabaseClient, userId: string, orgId:
         console.log("Success getting lic count: ", licRemainData);
     }
 
-    let licRemain = licRemainData?.[0]?.lic_remain;
+    let licRemain = licRemainData?.lic_remain;
     
     if(licRemain === null || licRemain === undefined){
         console.error("Error: lic_remain is null or undefined");
