@@ -25,7 +25,7 @@ export async function attributeLicence(request: any, supabaseService: SupabaseCl
             const orgId = suffixMatch.data[0].id;
             const tagsFromOrg = suffixMatch.data[0].content_tags ?? [];        
 
-            setupData(supabaseService, userId, orgId, tagsFromOrg);
+            await setupData(supabaseService, userId, orgId, tagsFromOrg);
         }
     }
 
@@ -34,7 +34,7 @@ export async function attributeLicence(request: any, supabaseService: SupabaseCl
             console.log(emailAddressMatch.data);
             const orgId = emailAddressMatch.data[0].id;
             const tagsFromOrg = emailAddressMatch.data[0].content_tags ?? [];   
-            setupData(supabaseService, userId, orgId, tagsFromOrg);
+            await setupData(supabaseService, userId, orgId, tagsFromOrg);
         }
     }
 
@@ -85,7 +85,7 @@ async function setupData(supabaseService: SupabaseClient, userId: string, orgId:
     
     if(licRemain === null || licRemain === undefined){
         console.error("Error: lic_remain is null or undefined");
-        return {licRemain:licRemain};
+        return {licRemain};
     }
 
     licRemain -= 1;
