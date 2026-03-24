@@ -90,6 +90,7 @@ async function setupData(supabaseService: SupabaseClient, userId: string, orgId:
 
     licRemain -= 1;
     console.log(licRemain);
+    console.log(orgId);
 
     const {data:licData, error:licError} = await supabaseService
         .from(`${process.env.ORG_TABLE_NAME}`)
