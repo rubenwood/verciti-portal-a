@@ -21,19 +21,24 @@ export async function attributeLicence(request: any, supabaseService: SupabaseCl
     console.log("addr match:", emailAddressMatch);
 
     if(suffixMatch.data){
-        const orgId = suffixMatch.data[0].id;
-        const tagsFromOrg = suffixMatch.data[0].content_tags ?? [];        
+        if(suffixMatch.data.length > 0){
+            const orgId = suffixMatch.data[0].id;
+            const tagsFromOrg = suffixMatch.data[0].content_tags ?? [];        
 
-        setupData(supabaseService, userId, orgId, tagsFromOrg);
+            setupData(supabaseService, userId, orgId, tagsFromOrg);
+        }
     }
 
     if(emailAddressMatch.data){
-        const orgId = emailAddressMatch.data[0].id;
-        const tagsFromOrg = emailAddressMatch.data[0].content_tags ?? [];   
-        setupData(supabaseService, userId, orgId, tagsFromOrg);
+        if(emailAddressMatch.data.length > 0){
+            console.log(emailAddressMatch.data);
+            const orgId = emailAddressMatch.data[0].id;
+            const tagsFromOrg = emailAddressMatch.data[0].content_tags ?? [];   
+            setupData(supabaseService, userId, orgId, tagsFromOrg);
+        }
     }
 
-    // set the "server has data" flag
+    // set the "server has data"
     const {data:flagData, error:flagError} = await supabaseService
         .from('user_profiles')
         .update({has_server_set_data:true})
