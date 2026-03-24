@@ -81,16 +81,19 @@ async function setupData(supabaseService: SupabaseClient, userId: string, orgId:
         console.log("Success getting lic count: ", licRemainData);
     }
 
-    const licRemain = licRemainData?.[0]?.lic_remain;
+    let licRemain = licRemainData?.[0]?.lic_remain;
     
     if(licRemain === null || licRemain === undefined){
         console.error("Error: lic_remain is null or undefined");
         return {licRemain:licRemain};
     }
 
+    licRemain -= 1;
+    console.log(licRemain);
+
     const {data:licData, error:licError} = await supabaseService
         .from(`${process.env.ORG_TABLE_NAME}`)
-        .update({lic_remain:(licRemain-1)})
+        .update({lic_remain:licRemain})
         .eq('id', orgId);
 
     if(licError){
