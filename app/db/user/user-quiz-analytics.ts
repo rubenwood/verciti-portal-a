@@ -1,6 +1,4 @@
-import { PostgrestError, SupabaseClient, User } from '@supabase/supabase-js';
-import confetti from 'canvas-confetti';
-import type { RefObject } from 'react';
+import { SupabaseClient } from '@supabase/supabase-js';
 
 
 export async function getUserQuizAttemptsCount(client: SupabaseClient, user_ids: string[]){
