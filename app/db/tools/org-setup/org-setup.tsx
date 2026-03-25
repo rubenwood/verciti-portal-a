@@ -51,10 +51,6 @@ export function UpdateOrg(){
 
     const submitBtnRef = useRef<any>(null);
 
-    function selectionChanged(){
-    
-    }
-
     async function getOrgs(){
         console.log("get orgs for " + testOrLive);
         const resp = await fetch('/api/db/org/get-orgs', {
@@ -111,21 +107,21 @@ export function UpdateOrg(){
         </div>
         <Separator className='m-4' />
         {selectedOrg != null ?
-        <form action={async (formData) => { await updateOrg(formData); }}>
-            
-            <p>Max Licences</p>
-            <input 
-                name="licence_count"
-                type="text"
-                defaultValue={selectedOrg.licence_count}
-                className="border p-2 mb-4 w-64" />
-            <p>Licences Used</p>
-            <input 
-                name="licence_count"
-                type="text"
-                defaultValue={selectedOrg.lic_used}
-                className="border p-2 mb-4 w-64" />
-        </form>
+            <form action={async (formData) => { await updateOrg(formData); }}>
+                
+                <p>Max Licences</p>
+                <input 
+                    name="licence_count"
+                    type="text"
+                    defaultValue={selectedOrg.licence_count}
+                    className="border p-2 mb-4 w-64" />
+                <p>Licences Used</p>
+                <input 
+                    name="licence_count"
+                    type="text"
+                    defaultValue={selectedOrg.lic_used}
+                    className="border p-2 mb-4 w-64" />
+            </form>
         : null }
         </>
     );

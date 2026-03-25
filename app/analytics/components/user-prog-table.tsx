@@ -57,15 +57,18 @@ function LoginsSection(props: any){
             </CollapsibleTrigger>
             <CollapsibleContent>
                 <div className="mt-3 space-y-3 pl-3">
-                {props.userProf?.PreviousLogins.map((login: any) => (
-                    <div key={`login-${login}`} className="bg-secondary/50 rounded-md p-3">
-                        <div className="flex items-center justify-between">
-                            <span className="flex text-xs font-light gap-1">
-                                <Clock className="size-3 text-muted-foreground"/>{formatLoginString(login)}
-                            </span>
+                {props.userProf.PreviousLogins != null ? 
+                    props.userProf.PreviousLogins.map((login: any) => (
+                        <div key={`login-${login}`} className="bg-secondary/50 rounded-md p-3">
+                            <div className="flex items-center justify-between">
+                                <span className="flex text-xs font-light gap-1">
+                                    <Clock className="size-3 text-muted-foreground"/>{formatLoginString(login)}
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                )) : 
+                    null
+                }
                 </div>
             </CollapsibleContent>
         </Collapsible> 
