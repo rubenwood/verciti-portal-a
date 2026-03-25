@@ -118,7 +118,6 @@ export default function AnalyticsLandingPage(){
         console.log(totalsData);
         setTotalsData(totalsData);
 
-
         const profileData = await getUsersProfilesByVisibility(clientToUse, cohortName);
         setUserProgressData(profileData);
         console.log("User Profile Data:", profileData);

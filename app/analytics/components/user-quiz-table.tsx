@@ -82,7 +82,6 @@ function QuizScoresDisplay(props: any){
 }
 
 
-
 function ActivitiesSection(props: any) {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -115,13 +114,9 @@ function ActivitiesSection(props: any) {
 
 
 export function UserQuizTable(props: any) {
-    const findQuizAttemptsByActivityAndUser = (quizData: any[], activityId: string, userId: string) => {
-        const quizAttemptsByUserInActivity = quizData.filter(quiz => quiz.activity_id === activityId && quiz.user_id === userId);
-        if(quizAttemptsByUserInActivity.length === 0){
-            return [];
-        }
-
-        return quizAttemptsByUserInActivity;
+    const getProfile = (userId:string) => {
+        console.log(props.userProfilesWithAttempts);
+        return props.userProfilesWithAttempts.find((prof: any) => prof.Id == userId);
     }
 
     const countCorrect = (questionsAnswered: any[]) => {
@@ -137,8 +132,10 @@ export function UserQuizTable(props: any) {
         if (props.quizData == null) { return rows; }
 
         for (const userQuizAttempt of props.quizData) {
-            //console.log(`UQ:`);
-            //console.log(userQuizAttempt);
+            console.log(`UQ:`);
+            console.log(userQuizAttempt);
+            const profile = getProfile(userQuizAttempt.user_id);
+            console.log(profile);
             rows.push(
                 <TableRow key={`userquiz-${userQuizAttempt.id}`}>
                     <TableCell>
@@ -147,11 +144,12 @@ export function UserQuizTable(props: any) {
                                 <AvatarFallback className="bg-primary/20 text-foreground text-xs font-medium">AV</AvatarFallback>
                             </Avatar>
                             <div className="flex flex-col">
-                                <span className="text-foreground">{}</span>
+                                <span className="text-foreground">{profile?.Email}</span>
                             </div>
                         </div>
                     </TableCell>
                     <TableCell>
+                        {userQuizAttempt.activity.external_title}
                     </TableCell>
                     <TableCell className="font-light">
                         {formatDate(userQuizAttempt?.attempted_at)}

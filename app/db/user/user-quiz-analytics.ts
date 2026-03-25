@@ -25,7 +25,7 @@ export async function getUsersQuizAttempts(client: SupabaseClient, user_ids: str
         .from('quiz_attempts')
         .select('*', { count: 'exact', head: true })
         .in('user_id', user_ids)
-        .gt('duration', 4);
+        .gt('duration', 29);
         
 
     if (errorCount) {
@@ -42,9 +42,14 @@ export async function getUsersQuizAttempts(client: SupabaseClient, user_ids: str
     const pageCount = Math.ceil((count || 0) / pageSize);
     const { data, error } = await client
         .from('quiz_attempts')
-        .select('*')
+        .select(`
+            *,
+            activity:activity_id (
+            external_title
+            )
+        `)
         .in('user_id', user_ids)
-        .gt('duration', 4)
+        .gt('duration', 29)
         .range(from, to);
 
     if (error) {
