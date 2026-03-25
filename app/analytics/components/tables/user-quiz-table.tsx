@@ -176,7 +176,7 @@ export function UserQuizTable(props: any) {
     return (
         <Card className="bg-card border-border">
             <CardHeader>
-                <CardTitle className="text-foreground">Quiz / Assessment Attempts</CardTitle>
+                <CardTitle className="text-foreground">Assessment Attempts</CardTitle>
                 <CardDescription>Detailed view of assessment attempts with questions and answers</CardDescription>
             </CardHeader>
             <CardContent>
@@ -184,7 +184,7 @@ export function UserQuizTable(props: any) {
                     <TableHeader>
                         <TableRow className="border-border hover:bg-transparent">
                             <TableHead className="text-muted-foreground">User</TableHead>
-                            <TableHead className="text-muted-foreground">Quiz / Assessment</TableHead>
+                            <TableHead className="text-muted-foreground">Assessment</TableHead>
                             <TableHead className="text-muted-foreground">Date</TableHead>
                             <TableHead className="text-muted-foreground">%</TableHead>
                             <TableHead className="text-muted-foreground">#</TableHead>

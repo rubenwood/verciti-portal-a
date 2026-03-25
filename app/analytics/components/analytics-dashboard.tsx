@@ -31,10 +31,10 @@ import {
     calcTotalQuizStages,
     getUsersQuizAttempts
 } from "@/app/db/user/user-quiz-analytics";
-import { BookIcon, BrainIcon, ClockIcon, TrendingUp, TrophyIcon, UsersIcon } from "lucide-react";
+import { BookIcon, BrainIcon, ClockIcon, TrendingUp, TrophyIcon, UsersIcon, Key } from "lucide-react";
 import { formatDuration } from "@/app/db/general/utils";
 import { UserQuizTable } from "./tables/user-quiz-table";
-import { Collapsible } from "@radix-ui/react-collapsible";
+import { PlatformTotalsTable } from "./tables/platform-totals-table";
 
 
 export function AnalyticsDashboard(props: any) {
@@ -64,7 +64,7 @@ export function AnalyticsDashboard(props: any) {
                 icon: BookIcon,
             },
             quizzes: {
-                label: "Quiz Attempts",
+                label: "Assessment Attempts",
                 value: props.totals.quiz_attempts,
                 change: "",
                 icon: TrophyIcon,
@@ -74,6 +74,12 @@ export function AnalyticsDashboard(props: any) {
                 value: `${(props.totals.average_score*100).toFixed(2)}%`,
                 change: "",
                 icon: TrendingUp
+            },
+            licencesRemaining:{
+                label:"Licences Remaining",
+                value:195,
+                change:"",
+                icon:Key
             }
         };
     }, [props.userProgressData, props.userAttemptsData, props.userQuizData]);
@@ -89,6 +95,7 @@ export function AnalyticsDashboard(props: any) {
                         <StatCard stat={stats.modules} />
                         <StatCard stat={stats.quizzes} />
                         <StatCard stat={stats.averageQuizScore} />
+                        <StatCard stat={stats.licencesRemaining} />
                     </>
                 : null}
             </div>
@@ -120,6 +127,7 @@ export function AnalyticsDashboard(props: any) {
             <br />
             {props.role != null && props.role == "admin" ?
                 <div className="grid grid-cols-2 gap-4">
+                    <PlatformTotalsTable />
                     <MonthlyTotalUserTable 
                         year={2025} 
                         metricName="# Users"
