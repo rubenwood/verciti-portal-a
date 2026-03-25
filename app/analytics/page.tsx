@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 
 import { TopRibbon } from "./components/general/ribbon";
 import { AnalyticsDashboard } from "./components/analytics-dashboard"
+import { getUserProfile } from "../db/general/utils";
 
 
 // This component is just for dev purposes and will be removed eventually
@@ -65,6 +66,7 @@ type UserProfileWithAttempts = {
 
 export default function AnalyticsLandingPage(){
     const [user, setUser] = useState<User | null>(null);
+    const [role, setRole] = useState<string>("");
 
     const [dbBranch, setDbBranch] = useState<string>("test");
     const [clientToUse, setClientToUse] = useState<SupabaseClient>(supabaseTest);
@@ -168,7 +170,20 @@ export default function AnalyticsLandingPage(){
     useEffect(() => {
         const init = async () => {
             const users = await checkUser();
-            if (users) { setUser(users.testUser); }
+            if (users) { 
+                console.log("US: ");
+                console.log(users);
+                
+                if(users.testUser){ // prefer test user
+                    setUser(users.testUser);
+                    const profile = await getUserProfile(supabaseTest, users.testUser);
+                    setRole(profile?.data?.role || null);
+                }else if(users.liveUser){
+                    setUser(users.liveUser);
+                    const profile = await getUserProfile(supabaseMain, users.liveUser);
+                    setRole(profile?.data?.role || null);
+                }                
+            }
         };
         init();
     }, []);
@@ -193,6 +208,7 @@ export default function AnalyticsLandingPage(){
             <>
                 <TopRibbon /><br/>
                 <AnalyticsDashboard 
+                    role={role}
                     totals={totalsData}
                     userProfilesWithAttempts={userProfsWithAttempts}
                     userProgressData={userProgressData}

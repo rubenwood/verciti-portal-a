@@ -18,11 +18,11 @@ import {
 } from "@/app/db/user/user-gen-analytics";
 
 import { Button } from "@/components/ui/button";
-import { UserProgressTable } from "./user-prog-table";
+import { UserProgressTable } from "./tables/user-prog-table";
 
 import { StatCard } from "./general/stat-card";
-import { PopularModulesCard } from "./popular-modules";
-import { QuizCard } from "./quiz-card";
+import { PopularModulesCard } from "./cards/popular-modules-card";
+import { QuizCard } from "./cards/quiz-card";
 import { MonthlyTable, MonthlyTotalUserTable } from "./tables/monthly-table";
 import { 
     calcAverageQuizScore, 
@@ -33,7 +33,7 @@ import {
 } from "@/app/db/user/user-quiz-analytics";
 import { BookIcon, BrainIcon, ClockIcon, TrendingUp, TrophyIcon, UsersIcon } from "lucide-react";
 import { formatDuration } from "@/app/db/general/utils";
-import { UserQuizTable } from "./user-quiz-table";
+import { UserQuizTable } from "./tables/user-quiz-table";
 import { Collapsible } from "@radix-ui/react-collapsible";
 
 
@@ -105,7 +105,6 @@ export function AnalyticsDashboard(props: any) {
                     totalQuizAttempts={props.userQuizData?.length || 0} 
                     completedQuizzes={calcCompletedQuizzes(props.userQuizData)}
                     totalQuizDuration={calcTotalQuizDuration(props.userQuizData)} 
-                    averageQuizScore={calcAverageQuizScore(props.userQuizData)} 
                 />
             </div>
             <br/>
@@ -119,19 +118,20 @@ export function AnalyticsDashboard(props: any) {
                 quizData={props.userQuizData}
             />
             <br />
-            {/* <div className="grid grid-cols-2 gap-4">
-                <MonthlyTotalUserTable 
-                    year={2025} 
-                    metricName="# Users"
-                    data={(getUsersCreatedInTimePeriod(props.userProgressData, new Date("2025-01-01"), new Date("2025-12-31")))}
-                />
-                <MonthlyTotalUserTable 
-                    year={2026} 
-                    metricName="# Users"
-                    data={(getUsersCreatedInTimePeriod(props.userProgressData, new Date("2026-01-01"), new Date("2026-12-31")))}
-                />
-            </div> */}
-            
+            {props.role != null && props.role == "admin" ?
+                <div className="grid grid-cols-2 gap-4">
+                    <MonthlyTotalUserTable 
+                        year={2025} 
+                        metricName="# Users"
+                        data={(getUsersCreatedInTimePeriod(props.userProgressData, new Date("2025-01-01"), new Date("2025-12-31")))}
+                    />
+                    <MonthlyTotalUserTable 
+                        year={2026} 
+                        metricName="# Users"
+                        data={(getUsersCreatedInTimePeriod(props.userProgressData, new Date("2026-01-01"), new Date("2026-12-31")))}
+                    />
+                </div>
+            : null}            
         </div>
     )
 }

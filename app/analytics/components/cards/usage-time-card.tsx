@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatDuration } from "../../db/general/utils";
+import { formatDuration } from "../../../db/general/utils";
 
 export function UsageTimeCard(props: any){
     if(props.totalUsageTime == null ) { return null; }

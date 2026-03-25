@@ -8,6 +8,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 export function QuizCard(props: any){
     const [isOpen, setIsOpen] = useState(false);
 
+    // TODO: change this to use the totals
+
     return (
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
               <Card className="mb-2">
@@ -35,8 +37,6 @@ export function QuizCard(props: any){
                             <p className="border-1 p-1">{props.completedQuizzes.length}</p>
                             <p className="border-1 p-1">Total Time spent</p>
                             <p className="border-1 p-1">{formatDuration(props.totalQuizDuration)}</p>
-                            <p className="border-1 p-1">Average Quiz score</p>
-                            <p className="border-1 p-1">{(props.averageQuizScore * 100).toFixed(2)}%</p>
                         </span>          
                     </CardContent>
                 </CollapsibleContent>
