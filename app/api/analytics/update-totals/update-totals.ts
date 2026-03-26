@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { 
     getUsersProfilesByVisibility,
+    getUsersProfilesByOrgId,
     getUserAttempts,
     calcTotalUsageTime,
     calcTotalModulesCompleted 
@@ -9,8 +10,26 @@ import { calcAverageQuizScore } from '@/app/db/user/user-quiz-analytics';
 import { getUsersQuizAttempts } from "@/app/db/user/user-quiz-analytics";
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-export async function updateTotals(client: SupabaseClient, orgName:string){
-    const profileData = await getUsersProfilesByVisibility(client, orgName);
+export async function updateTotals(client: SupabaseClient){
+    const {data:orgs, error:orgIdsError} = await client.from(process.env.ORG_TABLE_NAME!).select('id,content_tags');
+    console.log(orgs);
+
+    if(orgIdsError){
+        console.error(orgIdsError);
+        return null;
+    }
+
+    const results = [];
+    for(const org of orgs){
+        const updateResp = await updateForOrg(client, org.id); 
+        results.push(updateResp);
+    }
+
+    return results;
+}
+
+async function updateForOrg(client: SupabaseClient, orgId:string){
+    const profileData = await getUsersProfilesByOrgId(client, orgId);
     console.log(profileData);
     const attempts = await getUserAttempts(client, profileData.map((user) => user.id), 0, 1000);
     for(let i = 0; i < attempts.pageCount-1; i++){
@@ -35,7 +54,7 @@ export async function updateTotals(client: SupabaseClient, orgName:string){
     }
 
     const { error } = await client.from(process.env.ORG_DATA_TABLE_NAME!).upsert({
-        id:orgName.toLowerCase(),
+        id:orgId.toLowerCase(),
         total_users:output.TotalUsers,
         total_usage_time:output.TotalUsageTime,
         activities_completed:output.ActivitiesCompleted,
@@ -49,7 +68,6 @@ export async function updateTotals(client: SupabaseClient, orgName:string){
         console.error(error);
         return error;
     }
-
 
     return output;
 }
