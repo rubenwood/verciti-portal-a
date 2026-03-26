@@ -46,6 +46,7 @@ async function updateForOrg(client: SupabaseClient, orgId:string){
     const output = {
         data:null,
         error:null,
+        orgId:orgId.toLowerCase(),
         TotalUsers:profileData.length,
         TotalUsageTime:calcTotalUsageTime(profileData),
         ActivitiesCompleted:calcTotalModulesCompleted(profileData),

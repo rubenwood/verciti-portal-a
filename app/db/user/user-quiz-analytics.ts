@@ -23,7 +23,7 @@ export async function getUsersQuizAttempts(client: SupabaseClient, user_ids: str
         .from('quiz_attempts')
         .select('*', { count: 'exact', head: true })
         .in('user_id', user_ids)
-        .gt('duration', 29);
+        .gt('duration', 10);
         
 
     if (errorCount) {
@@ -47,7 +47,7 @@ export async function getUsersQuizAttempts(client: SupabaseClient, user_ids: str
             )
         `)
         .in('user_id', user_ids)
-        .gt('duration', 29)
+        .gt('duration', 10)
         .range(from, to);
 
     if (error) {
