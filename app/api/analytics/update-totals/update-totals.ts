@@ -12,7 +12,6 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 export async function updateTotals(client: SupabaseClient){
     const {data:orgs, error:orgIdsError} = await client.from(process.env.ORG_TABLE_NAME!).select('id,content_tags');
-    console.log(orgs);
 
     if(orgIdsError){
         console.error(orgIdsError);
@@ -30,7 +29,6 @@ export async function updateTotals(client: SupabaseClient){
 
 async function updateForOrg(client: SupabaseClient, orgId:string){
     const profileData = await getUsersProfilesByOrgId(client, orgId);
-    console.log(profileData);
     const attempts = await getUserAttempts(client, profileData.map((user) => user.id), 0, 1000);
     for(let i = 0; i < attempts.pageCount-1; i++){
         const moreAttempts = await getUserAttempts(client, profileData.map((user) => user.id), i+1, 1000);
