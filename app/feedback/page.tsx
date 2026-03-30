@@ -25,11 +25,7 @@ export default function FeedbackPage(){
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-                type: feedbackType,
-                email: (document.getElementById("email") as HTMLInputElement)?.value,
-                content: (document.getElementById("content") as HTMLTextAreaElement)?.value
-            })
+            body: formData
         });
 
         const result = await resp.json();
