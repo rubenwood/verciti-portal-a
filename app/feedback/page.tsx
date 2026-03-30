@@ -19,7 +19,7 @@ export default function FeedbackPage(){
         e.preventDefault();
         const form = e.currentTarget;
         const formData = new FormData(form);
-        
+
         const resp = await fetch(`/api/test/feedback`, {
             method: "POST",
             headers: {
@@ -85,11 +85,13 @@ export function GeneralSection(){
 }
 
 export function BugSection(){
+    const [page, setPage] = useState("");
+
     return(
         <>
             <p>Where did you encounter the issue?</p>
             <br/>
-            <Select name="page" required>
+            <Select onValueChange={v => setPage(v)} name="page" required>
                 <SelectTrigger className="w-full max-w-48">
                     <SelectValue placeholder="Select a page" />
                 </SelectTrigger>

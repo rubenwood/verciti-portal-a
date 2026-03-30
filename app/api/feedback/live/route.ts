@@ -12,7 +12,8 @@ export async function POST(req: Request) {
         process.env.SUPABASE_SEC_LIVE_KEY!,
     )
 
-    const output = await addFeedback(supabaseTestService, await req.json());
+    const formData = await req.formData();
+    const output = await addFeedback(supabaseTestService, formData);
 
     return NextResponse.json(output);
 }
