@@ -40,6 +40,7 @@ export async function updateSession(request: NextRequest) {
     '/reset-password',
     '/update-password',
     '/subscribe',
+    '/feedback'
   ]
 
   const isPublicRoute =
