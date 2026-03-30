@@ -28,6 +28,8 @@ export default function GoogleLogin(props: any){
             localStorage.setItem("verciti_deeplink", newDeeplink);
             setDeeplink(newDeeplink);
 
+            window.history.replaceState(null, "", window.location.pathname);
+
             window.location.href = newDeeplink;
             return;
         }
@@ -35,6 +37,7 @@ export default function GoogleLogin(props: any){
         const stored = localStorage.getItem("verciti_deeplink");
         if (stored) {
             setDeeplink(stored);
+            localStorage.removeItem("verciti_deeplink");
         }
     }, []);
 
