@@ -147,6 +147,7 @@ export function BugSection(){
             </Select>
             {page === "in-module" && (
                 <>
+                    <br/>
                     <p>Please specify which module:</p>
                     <br/>
                     <Input name="module-name" type="text" placeholder="Module name" className="p-2 border rounded mt-4 w-full" />
