@@ -122,7 +122,6 @@ export default function AnalyticsLandingPage(){
 
         const profileData = await getUsersProfilesByVisibility(clientToUse, cohortName);
         setUserProgressData(profileData);
-        console.log("User Profile Data:", profileData);
 
         let userAttempts: UserProfileWithAttempts[] = [];
         for(const user of profileData){
@@ -170,10 +169,7 @@ export default function AnalyticsLandingPage(){
     useEffect(() => {
         const init = async () => {
             const users = await checkUser();
-            if (users) { 
-                console.log("US: ");
-                console.log(users);
-                
+            if (users) {                 
                 if(users.testUser){ // prefer test user
                     setUser(users.testUser);
                     const profile = await getUserProfile(supabaseTest, users.testUser);

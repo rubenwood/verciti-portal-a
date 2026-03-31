@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { updateTotals } from "../update-totals";
+import { updateOrgTotals } from "../update-totals";
 import { createClient } from "@supabase/supabase-js";
 
 export async function POST(req: Request) {
@@ -13,7 +13,7 @@ export async function POST(req: Request) {
         process.env.SUPABASE_SEC_TEST_KEY!,
     )
 
-    const output = await updateTotals(supabaseTestService);
+    const output = await updateOrgTotals(supabaseTestService);
 
     return NextResponse.json(output);
 }

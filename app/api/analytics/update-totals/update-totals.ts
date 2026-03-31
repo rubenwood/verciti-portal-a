@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server';
 import { 
     getUsersProfilesByVisibility,
     getUsersProfilesByOrgId,
@@ -8,9 +7,9 @@ import {
 } from '@/app/db/user/user-prog-analytics';
 import { calcAverageQuizScore } from '@/app/db/user/user-quiz-analytics';
 import { getUsersQuizAttempts } from "@/app/db/user/user-quiz-analytics";
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { SupabaseClient } from '@supabase/supabase-js';
 
-export async function updateTotals(client: SupabaseClient){
+export async function updateOrgTotals(client: SupabaseClient){
     const {data:orgs, error:orgIdsError} = await client.from(process.env.ORG_TABLE_NAME!).select('id,content_tags');
 
     if(orgIdsError){
