@@ -153,6 +153,8 @@ export function BugSection(){
                     <Input name="module-name" type="text" placeholder="Module name" className="p-2 border rounded mt-4 w-full" />
                 </>
             )}
+            <p>Please describe the issue you encountered:</p>
+            <textarea name="content" className="mb-4 w-full p-2 border rounded" rows={5} placeholder="Describe the issue..."></textarea>
         </>
     )
 }
