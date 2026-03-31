@@ -14,24 +14,45 @@ import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 
 export default function FeedbackPage(){
-    const [feedbackType, setFeedbackType] = useState(""); 
+    const [feedbackType, setFeedbackType] = useState("");
+    const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+    const [message, setMessage] = useState("");
 
     const submitFeedback = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const form = e.currentTarget;
         const formData = new FormData(form);
 
-        const resp = await fetch(`/api/test/feedback`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: formData
-        });
+         try {
+            const resp = await fetch(`/api/feedback/test`, {
+                method: "POST",
+                body: formData
+            });
 
-        const result = await resp.json();
-        console.log(result);
+            let result;
+            try {
+                result = await resp.json();
+            } catch {
+                throw new Error("Invalid server response");
+            }
 
+            if (!resp.ok) {
+                throw new Error(result?.error || "Something went wrong");
+            }
+
+            setStatus("success");
+            setMessage(
+                formData.get("feedback-type") === "delete"
+                    ? "Account deletion request submitted."
+                    : "Feedback submitted successfully!"
+            );
+
+            form.reset(); // optional: clear form
+
+        } catch (err: any) {
+            setStatus("error");
+            setMessage(err.message || "Failed to submit feedback");
+        }
     }
 
 
@@ -81,9 +102,23 @@ export default function FeedbackPage(){
                         <br/>
                     </>
                 )}
-                <Button type="submit" disabled>Submit</Button>
-            </form>
 
+                {status === "loading" && (
+                    <p className="text-gray-500 mb-2">Submitting...</p>
+                )}
+
+                {status === "success" && (
+                    <p className="text-green-600 mb-2">{message}</p>
+                )}
+
+                {status === "error" && (
+                    <p className="text-red-600 mb-2">{message}</p>
+                )}
+
+                <Button type="submit" disabled={status === "loading"}>
+                    {status === "loading" ? "Submitting..." : "Submit"}
+                </Button>
+            </form>
         </div>
     );
 }
@@ -150,10 +185,12 @@ export function BugSection(){
                     <br/>
                     <p>Please specify which module:</p>
                     <br/>
-                    <Input name="module-name" type="text" placeholder="Module name" className="p-2 border rounded mt-4 w-full" />
+                    <Input name="module-name" type="text" placeholder="Module name" className="p-2 border rounded w-full" />
                 </>
             )}
+            <br/>
             <p>Please describe the issue you encountered:</p>
+            <br/>
             <textarea name="content" className="mb-4 w-full p-2 border rounded" rows={5} placeholder="Describe the issue..."></textarea>
         </>
     )

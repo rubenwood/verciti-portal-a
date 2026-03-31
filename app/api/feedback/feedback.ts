@@ -18,5 +18,5 @@ export async function addFeedback(client: SupabaseClient, formData: any){
         return { success: false, error };
     }
 
-    return { success: true, data };
+    return { success: true };
 }
