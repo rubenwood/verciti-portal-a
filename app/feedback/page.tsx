@@ -10,10 +10,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 
 export default function FeedbackPage(){
-    const [feedbackType, setFeedbackType] = useState("");
+    const [feedbackType, setFeedbackType] = useState(""); 
 
     const submitFeedback = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -38,37 +39,78 @@ export default function FeedbackPage(){
         <div className="dark grid items-center justify-items-center min-h-screen p-8 pb-20">
             <form onSubmit={submitFeedback}>
                 <h1 className="text-2xl font-bold mb-4">We value your feedback!</h1>
-                <p className="mb-6 text-center">Please let us know your thoughts and suggestions to help us improve.</p>
-                <p className="mb-">First, tell us what kind of feedback you have:</p>
+                <p className="mb-6">Please let us know your thoughts and suggestions to help us improve.</p>
+                <p>First, tell us what kind of feedback you have:</p>
                 <br/>
-                <Select name="type" onValueChange={v => setFeedbackType(v)} required>
+                <Select name="feedback-type" onValueChange={v => setFeedbackType(v)} required>
                     <SelectTrigger className="w-full max-w-48">
                         <SelectValue placeholder="Type of feedback" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
                             <SelectLabel>Type</SelectLabel>
-                            <SelectItem value="general">General Feedback</SelectItem>
                             <SelectItem value="bug">Report a Bug</SelectItem>
+                            <SelectItem value="general">General Feedback</SelectItem>
                             <SelectItem value="feature">Request a Feature</SelectItem>
+                            <SelectItem value="delete">Delete my account</SelectItem>
                         </SelectGroup>
                     </SelectContent>
                 </Select>
-                <br />
-                <p>Enter your email address</p>
-                <Input name="email" type="text" placeholder="email@example.com" className="p-2 border rounded mt-4 w-full" />
-                <br />
-                {feedbackType === "general" && <GeneralSection />}
-                {feedbackType === "bug" && <BugSection />}
-                {feedbackType === "feature" && <FeatureRequestSection />}
+                                <Separator className="my-4" />
                 <br/>
-                <Button type="submit" disabled>Submit Feedback</Button>
+                <p>Enter your email address (the same as your Verciti app account)</p>
+                <Input name="email" type="text" placeholder="email@example.com" className="p-2 border rounded mt-4 w-full" />
+                <br/>
+                {feedbackType === "delete" ? (
+                    <>
+                        <br/>
+                        <p className="text-red-600 mt-4">
+                        Warning: Selecting this option will delete your account and all associated data.                        
+                        </p>
+                        <p className="text-red-600 mb-4">
+                        This action is cannot be undone.
+                        </p>
+                        <br/>
+                    </>
+                    ) : (
+                    <>                        
+                        <br />
+                        {feedbackType === "general" && <GeneralSection />}
+                        {feedbackType === "bug" && <BugSection />}
+                        {feedbackType === "feature" && <FeatureRequestSection />}
+                        <br/>
+                    </>
+                )}
+                <Button type="submit" disabled>Submit</Button>
             </form>
 
         </div>
     );
 }
 
+
+export function OperatingSystemSelect(){
+    const [operatingSystem, setOperatingSystem] = useState("");
+
+    return(
+        <>
+            <p>Which operating system are you using?</p>
+            <br/>
+            <Select name="operating-system" onValueChange={v => setOperatingSystem(v)} required>
+                <SelectTrigger className="w-full max-w-48">
+                    <SelectValue placeholder="Operating System" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectGroup>
+                        <SelectLabel>Android / iOS</SelectLabel>
+                        <SelectItem value="android">Android</SelectItem>
+                        <SelectItem value="ios">iOS</SelectItem>
+                    </SelectGroup>
+                </SelectContent>
+            </Select>
+        </>
+    )
+}
 
 export function GeneralSection(){
     return(
@@ -85,6 +127,8 @@ export function BugSection(){
 
     return(
         <>
+            <OperatingSystemSelect />
+            <br/>
             <p>Where did you encounter the issue?</p>
             <br/>
             <Select onValueChange={v => setPage(v)} name="page" required>
@@ -101,6 +145,13 @@ export function BugSection(){
                     </SelectGroup>
                 </SelectContent>
             </Select>
+            {page === "in-module" && (
+                <>
+                    <p>Please specify which module:</p>
+                    <br/>
+                    <Input name="module-name" type="text" placeholder="Module name" className="p-2 border rounded mt-4 w-full" />
+                </>
+            )}
         </>
     )
 }

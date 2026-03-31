@@ -2,8 +2,9 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 export async function addFeedback(client: SupabaseClient, formData: any){
     const inputData = {
-        type: formData.get("type"),
+        type: formData.get("feedback-type"),
         email_address: formData.get("email"),
+        operating_system: formData.get("operating-system"),
         content: formData.get("content"),
         page: formData.get("page")
     }
