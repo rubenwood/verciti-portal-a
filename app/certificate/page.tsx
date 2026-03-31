@@ -1,5 +1,28 @@
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
-export default function Certificate() {
+
+export default function CertificatePage() {
+
+    return (
+        <>
+            <CertificateForm />
+            <CertificatePreview />
+        </>
+    )
+}
+
+export function CertificateForm(){
+    return (
+        <>
+            <form className="flex flex-col gap-4 w-[400px]">
+                <textarea placeholder="Your custom message" className="border p-2 rounded" />
+                <Button type="submit">Generate Certificate</Button>
+            </form>
+        </>
+    );
+}
+
+export function CertificatePreview() {
 
     return (
         <div className="relative w-[717px] h-[1000px]">
