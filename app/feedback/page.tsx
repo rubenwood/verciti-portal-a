@@ -77,7 +77,7 @@ export default function FeedbackPage(){
                         </SelectGroup>
                     </SelectContent>
                 </Select>
-                                <Separator className="my-4" />
+                <Separator className="my-4" />
                 <br/>
                 <p>Enter your email address (the same as your Verciti app account)</p>
                 <Input name="email" type="text" placeholder="email@example.com" className="p-2 border rounded mt-4 w-full" />

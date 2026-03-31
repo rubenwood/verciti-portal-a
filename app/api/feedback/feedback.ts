@@ -6,7 +6,8 @@ export async function addFeedback(client: SupabaseClient, formData: any){
         email_address: formData.get("email"),
         operating_system: formData.get("operating-system"),
         content: formData.get("content"),
-        page: formData.get("page")
+        page: formData.get("page"),
+        activity_name: formData.get("module-name"),
     }
 
     const { data, error } = await client
