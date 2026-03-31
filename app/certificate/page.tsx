@@ -1,28 +1,77 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+
+import { createContext, useContext, useState } from "react";
+
+interface CertificateContextType {
+  name: string;
+  setName: (value: string) => void;
+  message: string;
+  setMessage: (value: string) => void;
+}
+
+const CertificateContext = createContext<CertificateContextType | null>(null);
+export function CertificateProvider({ children }: { children: React.ReactNode }) {
+  const [name, setName] = useState("");
+  const [message, setMessage] = useState("");
+
+  return (
+    <CertificateContext.Provider
+      value={{ name, setName, message, setMessage }}
+    >
+      {children}
+    </CertificateContext.Provider>
+  );
+}
+
+export function useCertificate() {
+  const context = useContext(CertificateContext);
+  if (!context) {
+    throw new Error("useCertificate must be used within CertificateProvider");
+  }
+  return context;
+}
 
 export default function CertificatePage() {
 
     return (
         <>
-            <CertificateForm />
-            <CertificatePreview />
+            <CertificateProvider>
+                <CertificateForm />
+                <CertificatePreview />
+            </CertificateProvider>
         </>
     )
 }
 
 export function CertificateForm(){
+    const { message, setMessage } = useCertificate();
+
     return (
         <>
             <form className="flex flex-col gap-4 w-[400px]">
-                <textarea placeholder="Your custom message" className="border p-2 rounded" />
+                <textarea 
+                    placeholder="Your custom message" 
+                    className="border p-2 rounded"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                />
                 <Button type="submit">Generate Certificate</Button>
             </form>
         </>
     );
 }
 
-export function CertificatePreview() {
+/* Default message:
+Awarded in recognition of completing the Green Energy Bootcamp
+and actively engaging in studies of Hydrogen, Solar, Energy
+Conversion, and Electrical Theory, equipping the learner with
+essential knowledge and skills for the clean energy workforce
+*/
+
+export function CertificatePreview(props: any) {
+    const { message } = useCertificate();
 
     return (
         <div className="relative w-[717px] h-[1000px]">
@@ -50,10 +99,7 @@ export function CertificatePreview() {
             {/* Lower Section*/}
             <div className="absolute bottom-[25%] left-1/2 -translate-x-1/2">
                 <p className="text-black text-sm font-light">
-                    Awarded in recognition of completing the Green Energy Bootcamp
-                    and actively engaging in studies of Hydrogen, Solar, Energy
-                    Conversion, and Electrical Theory, equipping the learner with
-                    essential knowledge and skills for the clean energy workforce
+                    {message}
                 </p>
                 <p className="text-black text-sm font-light mt-4">
                     Issued on: 04/03/2026
