@@ -24,7 +24,7 @@ export default function FeedbackPage(){
         const formData = new FormData(form);
 
          try {
-            const resp = await fetch(`/api/feedback/test`, {
+            const resp = await fetch(`/api/feedback/live`, {
                 method: "POST",
                 body: formData
             });
