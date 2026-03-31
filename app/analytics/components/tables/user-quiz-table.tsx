@@ -1,121 +1,14 @@
 "use client"
-
 import { formatDuration, formatDate } from "@/app/db/general/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge, Bell, ChevronDown, ChevronRight } from "lucide-react";
 import { JSX, useEffect, useState } from "react";
-
-
-function QuizScoresDetailElement(props: any){
-    return (
-        <span key={props.attempt.id}>
-            Score: {(props.attempt.score * 100).toFixed(2)}% <br/>
-            Achieved On: {props.attempt.attempted_at || ""}<br/>
-            Completed On: {props.attempt.completed_on || ""}<br/>
-        </span>
-    )
-}
-
-function QuizScoresDisplay(props: any){
-    const [detailsVisible, setDetailsVisible] = useState(false);
-
-    const populateAllScoresDetails = (quizAttempts: any[]) => {
-        const elements: JSX.Element[] = [];
-        quizAttempts.map(attempt => {
-            elements.push(
-                <>
-                    <br/>
-                    <QuizScoresDetailElement key={attempt.id} attempt={attempt} />
-                </>
-            );
-        });
-
-        return elements;
-    }
-
-    useEffect(() => {
-
-    }, [detailsVisible]);
-
-    const showDetails = () => {
-        setDetailsVisible(!detailsVisible);
-    }
-
-    const getPrimaryScore = (quizAttempts: any[]) => {
-        const completedAttempts = quizAttempts.filter(attempt => attempt.completed_on != null && attempt.completed_on !== "");
-        const highestMostRecentAttempt = completedAttempts.sort((a, b) => {
-            if(b.score === a.score){ // TODO: check this
-                return new Date(b.completed_on).getTime() - new Date(a.completed_on).getTime();
-            }
-            return b.score - a.score;
-        })[0];
-
-        if(highestMostRecentAttempt){
-            return (
-                <span key={highestMostRecentAttempt?.id} className="cursor-pointer underline">
-                    {(highestMostRecentAttempt?.score * 100).toFixed(2)}%
-                </span>
-            )
-        }else if(quizAttempts.length > 0){
-            return (
-                <span key={quizAttempts[0]?.id} className="cursor-pointer underline">
-                    {(quizAttempts[0]?.score * 100).toFixed(2)}%
-                </span>
-            )
-        }else{
-            return <span className="text-gray-500">N/A</span>;
-        }
-        
-    }
-
-    return (
-        <span onClick={showDetails}>
-            {getPrimaryScore(props.quizAttempts)}
-            {detailsVisible ? 
-                populateAllScoresDetails(props.quizAttempts) : <></>}        
-        </span>
-    )
-}
-
-
-function ActivitiesSection(props: any) {
-  const [isOpen, setIsOpen] = useState(false)
-
-  return (
-    <>
-    {props.userProg.generic_activity_progress != null ?
-            
-        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-            <span className="font-medium text-foreground">{props.userProg.generic_activity_progress.length} activities</span>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-            <div className="mt-3 space-y-3 pl-6">
-            {props.userProg.generic_activity_progress.map((prog: any) => (
-                <div key={`prog-${prog?.activity_id}`} className="bg-secondary/50 rounded-md p-3">
-                <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-foreground">{prog?.external_title}</span>
-                </div>
-                {/* <AttemptsSection attempts={activity.attempts} /> */}
-                </div>
-            ))}
-            </div>
-        </CollapsibleContent>
-        </Collapsible> 
-    : null}
-    </>
-  )
-}
 
 
 export function UserQuizTable(props: any) {
     const getProfile = (userId:string) => {
-        console.log(props.userProfilesWithAttempts);
+        //console.log(props.userProfilesWithAttempts);
         return props.userProfilesWithAttempts.find((prof: any) => prof.Id == userId);
     }
 
@@ -132,10 +25,7 @@ export function UserQuizTable(props: any) {
         if (props.quizData == null) { return rows; }
 
         for (const userQuizAttempt of props.quizData) {
-            console.log(`UQ:`);
-            console.log(userQuizAttempt);
             const profile = getProfile(userQuizAttempt.user_id);
-            console.log(profile);
             rows.push(
                 <TableRow key={`userquiz-${userQuizAttempt.id}`}>
                     <TableCell>
