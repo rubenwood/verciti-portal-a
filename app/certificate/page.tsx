@@ -5,20 +5,23 @@ import Image from "next/image";
 import { createContext, useContext, useState } from "react";
 
 interface CertificateContextType {
-  name: string;
-  setName: (value: string) => void;
-  message: string;
-  setMessage: (value: string) => void;
+    name: string;
+    setName: (value: string) => void;
+    date: string;
+    setDate: (value: string) => void;
+    message: string;
+    setMessage: (value: string) => void;
 }
 
 const CertificateContext = createContext<CertificateContextType | null>(null);
 export function CertificateProvider({ children }: { children: React.ReactNode }) {
   const [name, setName] = useState("");
+  const [date, setDate] = useState("");
   const [message, setMessage] = useState("");
 
   return (
     <CertificateContext.Provider
-      value={{ name, setName, message, setMessage }}
+      value={{ name, setName, date, setDate, message, setMessage }}
     >
       {children}
     </CertificateContext.Provider>
@@ -46,11 +49,17 @@ export default function CertificatePage() {
 }
 
 export function CertificateForm(){
+    const { name, setName } = useCertificate();
+    const { date, setDate } = useCertificate();
     const { message, setMessage } = useCertificate();
 
     return (
         <>
             <form className="flex flex-col gap-4 w-[400px]">
+                <input type="text" placeholder="Recipient's Name" className="border p-2 rounded" />
+                <br/>
+                <input type="date" placeholder="Date of Issuance" className="border p-2 rounded" />
+                <br/>
                 <textarea 
                     placeholder="Your custom message" 
                     className="border p-2 rounded"
@@ -70,8 +79,8 @@ Conversion, and Electrical Theory, equipping the learner with
 essential knowledge and skills for the clean energy workforce
 */
 
-export function CertificatePreview(props: any) {
-    const { message } = useCertificate();
+export function CertificatePreview() {
+    const { message, name, date } = useCertificate();
 
     return (
         <div className="relative w-[717px] h-[1000px]">
@@ -93,7 +102,7 @@ export function CertificatePreview(props: any) {
             </div>
             {/* Name */}
             <div className="absolute top-[55%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-center w-[80%] text-black">
-                Ruben Wood
+                {name}
             </div>
 
             {/* Lower Section*/}
@@ -102,12 +111,9 @@ export function CertificatePreview(props: any) {
                     {message}
                 </p>
                 <p className="text-black text-sm font-light mt-4">
-                    Issued on: 04/03/2026
+                    Issued on: {date}
                 </p>
             </div>
-
         </div>
-
-
     )
 }

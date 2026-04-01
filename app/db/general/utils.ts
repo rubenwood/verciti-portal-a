@@ -2,6 +2,7 @@
 import { PostgrestError, SupabaseClient, User } from '@supabase/supabase-js';
 import confetti from 'canvas-confetti';
 import type { RefObject } from 'react';
+import crypto from "crypto";
 
 
 export async function getUserProfile(client: SupabaseClient, user: User) {
@@ -539,3 +540,11 @@ export function formatDate(iso: any) {
 
   return `${day}/${month}/${year}`;
 };
+
+
+export function getUserFolder(userId: string, email: string) {
+  return crypto
+    .createHash("sha256")
+    .update(`${userId}:${email}`)
+    .digest("hex");
+}
