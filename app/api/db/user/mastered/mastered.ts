@@ -1,4 +1,3 @@
-// app/lib/activityUtils.ts
 import { SupabaseClient } from "@supabase/supabase-js";
 
 export type SupabaseStage = {
@@ -135,9 +134,9 @@ export async function getMasteredCourseActivityIds(supabase: SupabaseClient, use
         const key = `${a.caj_id}_${a.activity_attempt_id}`;
         if (!grouped.has(key)) {
             grouped.set(key, {
-            cajId: a.caj_id!,
-            sessionId: a.activity_attempt_id,
-            stageIdsAttempted: [],
+                cajId: a.caj_id!,
+                sessionId: a.activity_attempt_id,
+                stageIdsAttempted: [],
             });
         }
         if (a.stage_id) {
