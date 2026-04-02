@@ -23,7 +23,7 @@ function ActivitiesSection(props: any) {
             <CollapsibleContent>
                 <div className="mt-3 space-y-3 pl-6">
                 {props.userProf.ActivityAttempts.map((attempt: any) => (
-                    <div key={`prog-${attempt?.activity_id}`} className="bg-secondary/50 rounded-md p-3">
+                    <div key={`prog-${attempt?.id}-${attempt?.activity_id}`} className="bg-secondary/50 rounded-md p-3">
                         <div className="flex items-center justify-between mb-2">
                             <span className="text-sm text-foreground">{attempt?.external_title}</span>
                         </div>
