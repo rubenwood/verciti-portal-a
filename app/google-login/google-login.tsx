@@ -66,7 +66,7 @@ export default function GoogleLogin(props: any){
     if(!ready){ return null; }
 
     return(
-        <div className="grid items-center justify-items-center min-h-screen">
+        <div className="grid grid-cols-1 gap-20 mt-20 p-5 items-center justify-items-center">
             {deeplink == null ?
                 <>
                     <p className="text-center">Logging in with Google...</p><br/>
