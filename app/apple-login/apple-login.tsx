@@ -1,5 +1,4 @@
 "use client"
-import Link from "next/link";
 import { useEffect, useRef } from "react";
 
 export default function AppleLogin(props: any){
@@ -15,7 +14,7 @@ export default function AppleLogin(props: any){
 
     return (
         <>
-            <span
+            <button
                 ref={buttonRef}
                 style={{
                     position: "fixed",
@@ -32,8 +31,8 @@ export default function AppleLogin(props: any){
                 }}
                 onClick={handleClick}
             >
-                TEST
-            </span>
+                <span>TEST</span>
+            </button>
         </>
     )
 }
