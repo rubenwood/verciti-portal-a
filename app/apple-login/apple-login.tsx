@@ -82,7 +82,7 @@ export default function AppleLogin(props: any){
                             Sign in with Apple
                         </Button>
                         
-                        <button onClick={openApp} className="z-50 relative">
+                        <button onClick={login} className="z-50 relative">
                             Sign in with Apple
                         </button>
                     </>                
@@ -92,6 +92,10 @@ export default function AppleLogin(props: any){
                         <Button onClick={openApp} className="z-50 relative">
                             Open App
                         </Button>
+
+                        <button onClick={openApp} className="z-50 relative">
+                            Sign in with Apple
+                        </button>
                     </>
                 )}
             </div>
