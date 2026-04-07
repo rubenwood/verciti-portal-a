@@ -18,18 +18,21 @@ export default function GoogleLogin(props: any){
         const refreshToken = hashParams.get("refresh_token");
         const tokenType = hashParams.get("token_type");
 
+        // Detect iOS
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+        const scheme = isIOS ? "unitydl://" : "verciti://";
+
         if (accessToken) {
             const atStr = `&at=${encodeURIComponent(accessToken)}`;
             const rtStr = refreshToken ? `&rt=${encodeURIComponent(refreshToken)}` : "";
             const ttStr = tokenType ? `&tt=${encodeURIComponent(tokenType)}` : "";
 
-            const newDeeplink = `verciti://app?glogin${atStr}${rtStr}${ttStr}`;
+            const newDeeplink = `${scheme}app?glogin${atStr}${rtStr}${ttStr}`;
 
             localStorage.setItem("verciti_deeplink", newDeeplink);
             setDeeplink(newDeeplink);
 
             window.history.replaceState(null, "", window.location.pathname);
-
             window.location.href = newDeeplink;
             return;
         }
