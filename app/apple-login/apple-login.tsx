@@ -17,14 +17,15 @@ export default function AppleLogin(props: any){
 
         const accessToken = params.get("access_token");
         const refreshToken = params.get("refresh_token");
-        console.log('Apple Login tokens from URL:', { accessToken, refreshToken });
+        const tokenType = params.get("token_type");
         if(accessToken == null) return;
 
         const atStr = `&at=${encodeURIComponent(accessToken)}`;
         const rtStr = refreshToken ? `&rt=${encodeURIComponent(refreshToken)}` : "";
+        const ttStr = tokenType ? `&tt=${encodeURIComponent(tokenType)}` : "";
 
         if (accessToken) {
-            const newDeeplink = `unitydl://app?alogin${atStr}${rtStr}`;
+            const newDeeplink = `unitydl://app?alogin${atStr}${rtStr}${ttStr}`;
             localStorage.setItem("verciti_deeplink", newDeeplink);
             setDeeplink(newDeeplink);
         }
