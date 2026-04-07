@@ -78,9 +78,9 @@ export default function AppleLogin(props: any){
                 {deeplink == null ? (
                     <>
                         <p>If you are not automatically logged in please click the button below.</p>
-                        {/* <Button onClick={login} className="z-50 relative">
+                        <Button onClick={login} className="z-50 relative">
                             Sign in with Apple
-                        </Button> */}
+                        </Button>
                         
                         <button onClick={openApp} className="z-50 relative">
                             Sign in with Apple
