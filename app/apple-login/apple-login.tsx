@@ -13,6 +13,10 @@ export default function AppleLogin(props: any){
         const env = window.location.pathname.includes('/test') ? 'test' : 'live';
         const client = env === 'test' ? supabaseTest : supabaseMain;
         console.log(`Apple Login page loaded for ${env} environment. URL hash:`, hash);
+        if (env === 'test') {
+            supabaseMain.auth.signOut(); // prevent live client from auto-refreshing
+        }
+
 
         if (!hash) return;
 
