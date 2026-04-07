@@ -37,6 +37,7 @@ export async function updateSession(request: NextRequest) {
     '/',
     '/login',
     '/google-login',
+    '/apple-login',
     '/reset-password',
     '/update-password',
     '/subscribe',

@@ -7,7 +7,7 @@ export default function AppleLogin(props: any){
 
     const login = async () => {
         const client = props.client === "live" ? supabaseMain : supabaseTest;
-         const { data, error } = await client.auth.signInWithOAuth({
+        const { data, error } = await client.auth.signInWithOAuth({
             provider: "apple",
             options: {
                 redirectTo: `https://vertciti-portal.vercel.app/apple-login/${props.client}`
