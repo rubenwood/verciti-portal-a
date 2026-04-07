@@ -73,6 +73,18 @@ export default function AppleLogin(props: any){
                     {/* <Button onClick={login} className="z-50 relative">
                         Sign in with Apple
                     </Button> */}
+                    <button
+                        style={{
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            zIndex: 999999,
+                            background: "red",
+                        }}
+                        onClick={() => alert("WORKS")}
+                        >
+                        TEST
+                        </button>
                     <button onClick={openApp} className="z-50 relative">
                         Sign in with Apple
                     </button>
