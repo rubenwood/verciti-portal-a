@@ -38,7 +38,7 @@ export default function AppleLogin(props: any){
             const newDeeplink = `verciti://app?alogin${atStr}${rtStr}`;
             localStorage.setItem("verciti_deeplink", newDeeplink);
             setDeeplink(newDeeplink);
-            window.location.href = newDeeplink;
+            //window.location.href = newDeeplink;
         }
     }, []);
 
@@ -70,14 +70,14 @@ export default function AppleLogin(props: any){
             {deeplink == null ? (
                 <>
                     <p>If you are not automatically logged in please click the button below.</p>
-                    <Button onClick={login}>
+                    <Button onClick={login} className="z-50 relative">
                         Sign in with Apple
                     </Button>            
                 </>                
             ) : (
                 <>
                     <p className="text-center">If you are not redirected automatically, please click the button below to return to the Verciti App.</p>
-                    <Button onClick={openApp}>
+                    <Button onClick={openApp} className="z-50 relative">
                         Open App
                     </Button>
                 </>
