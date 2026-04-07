@@ -1,13 +1,57 @@
 "use client"
 import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { supabaseMain, supabaseTest } from '@/lib/supabase'
+
 
 export default function AppleLogin(props: any){
-    const [flag, setFlag] = useState(false);
+    const [error, setError] = useState('');
+    const [deeplink, setDeeplink] = useState<string | null>(null);
 
+    useEffect(() => {
+        const hash = window.location.hash;
 
-    const clicked = () => {
-        setFlag(true);
-        alert("Clicked");
+        if (!hash) return;
+
+        const params = new URLSearchParams(hash.replace("#", ""));
+
+        const accessToken = params.get("access_token");
+        const refreshToken = params.get("refresh_token");
+        console.log('Apple Login tokens from URL:', { accessToken, refreshToken });
+        if(accessToken == null) return;
+
+        const atStr = `&at=${encodeURIComponent(accessToken)}`;
+        const rtStr = refreshToken ? `&rt=${encodeURIComponent(refreshToken)}` : "";
+
+        if (accessToken) {
+            const newDeeplink = `verciti://app?alogin${atStr}${rtStr}`;
+            localStorage.setItem("verciti_deeplink", newDeeplink);
+            setDeeplink(newDeeplink);
+            //window.location.href = newDeeplink;
+        }
+    }, []);
+
+    const login = async () => {
+        console.log('Initiating Apple Login for client:', props.client);
+        const client = props.client === "live" ? supabaseMain : supabaseTest;
+        const { data, error } = await client.auth.signInWithOAuth({
+            provider: "apple",
+            options: {
+                redirectTo: `https://vertciti-portal.vercel.app/apple-login/${props.client}`
+            }
+        });
+
+        if(error){
+            setError(error.message);
+            console.error('Apple Login error:', error.message);
+        } else {
+            console.log('Apple Login initiated:', data);
+        }
+    };
+
+    const openApp = () =>{
+        if(deeplink == null) return;
+        window.location.href = deeplink;
     }
 
     return(
@@ -15,24 +59,36 @@ export default function AppleLogin(props: any){
             <button
                 style={{
                     position: "fixed",
-                    top: 40, // avoid safe area
-                    left: 20,
-                    zIndex: 1000,
+                    top: 0,
+                    left: 0,
+                    zIndex: 999999,
                     background: "red",
-                    cursor: "pointer",
-                    padding: "10px 20px",
-                    touchAction: "manipulation",
-                    WebkitTapHighlightColor: "transparent",
                 }}
-                onClick={clicked}
-                onTouchEnd={(e) => {
-                    e.preventDefault();
-                    clicked();
-                }}
-            >
-            TEST
+                onClick={() => alert("WORKS")}
+                >
+                TEST
             </button>
-            {flag ? <p>test</p> : null }
+            <div className="grid grid-cols-1 gap-20 mt-20 p-5 items-center justify-items-center">
+                {deeplink == null ? (
+                    <>
+                        <p>If you are not automatically logged in please click the button below.</p>
+                        <Button onClick={login} className="z-50 relative">
+                            Sign in with Apple
+                        </Button>
+                        
+                        <button onClick={login} className="z-50 relative">
+                            Sign in with Apple
+                        </button>
+                    </>                
+                ) : (
+                    <>
+                        <p className="text-center">If you are not redirected automatically, please click the button below to return to the Verciti App.</p>
+                        <Button onClick={openApp} className="z-50 relative">
+                            Open App
+                        </Button>
+                    </>
+                )}
+            </div>
         </>
     )
 }
