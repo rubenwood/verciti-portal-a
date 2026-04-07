@@ -1,8 +1,3 @@
-"use client"
-import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { supabaseMain, supabaseTest } from '@/lib/supabase'
-
 
 export default function AppleLogin(props: any){
 
