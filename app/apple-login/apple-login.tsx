@@ -9,17 +9,6 @@ export default function AppleLogin(props: any){
     const [deeplink, setDeeplink] = useState<string | null>(null);
 
     useEffect(() => {
-        if (typeof window !== "undefined") {
-            localStorage.removeItem("sb-live");
-            localStorage.removeItem("sb-test");
-        }
-
-        document.cookie.split(';').forEach((c) => {
-            if(c.includes('sb-live') || c.includes('sb-test')) {
-                document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
-            }
-        });
-
         const hash = window.location.hash;
 
         if (!hash) return;
