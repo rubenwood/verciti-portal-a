@@ -10,6 +10,10 @@ export default function AppleLogin(props: any){
     useEffect(() => {
         const hash = window.location.hash;
 
+        const env = window.location.pathname.includes('/test') ? 'test' : 'live';
+        const client = env === 'test' ? supabaseTest : supabaseMain;
+        console.log(`Apple Login page loaded for ${env} environment. URL hash:`, hash);
+
         if (!hash) return;
 
         const params = new URLSearchParams(hash.replace("#", ""));
