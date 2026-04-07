@@ -25,7 +25,10 @@ export default function AppleLogin(props: any){
         const ttStr = tokenType ? `&tt=${encodeURIComponent(tokenType)}` : "";
 
         if (accessToken) {
-            const newDeeplink = `unitydl://app?alogin${atStr}${rtStr}${ttStr}`;
+            // Detect iOS
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+            const scheme = isIOS ? "unitydl://" : "verciti://"; // TODO: iOS uses unitydl for now, may change in future
+            const newDeeplink = `${scheme}app?alogin${atStr}${rtStr}${ttStr}`;
             localStorage.setItem("verciti_deeplink", newDeeplink);
             setDeeplink(newDeeplink);
         }

@@ -71,12 +71,7 @@ export async function attributeLicence(request: any, supabaseService: SupabaseCl
     };
 }
 
-async function setupData(
-    supabaseService: SupabaseClient,
-    userId: string,
-    orgId: string,
-    tagsFromOrg: string[]
-) {
+async function setupData(supabaseService: SupabaseClient, userId: string, orgId: string, tagsFromOrg: string[]) {
     const { data: existingUser, error: fetchError } = await supabaseService
         .from('user_profiles')
         .select('content_visibility')
