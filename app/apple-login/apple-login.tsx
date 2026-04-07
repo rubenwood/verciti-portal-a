@@ -9,11 +9,11 @@ export default function AppleLogin(props: any){
     const [deeplink, setDeeplink] = useState<string | null>(null);
 
     useEffect(() => {
-        document.body.style.display = "none";
-
-        requestAnimationFrame(() => {
-            document.body.style.display = "block";
-        });
+        if (window.location.hash && !sessionStorage.getItem("oauth_reloaded")) {
+            sessionStorage.setItem("oauth_reloaded", "true");
+            window.location.reload();
+            return;
+        }
 
         const hash = window.location.hash;
 
