@@ -31,7 +31,7 @@ export default function AppleLogin(props: any){
         const rtStr = refreshToken ? `&rt=${encodeURIComponent(refreshToken)}` : "";
 
         if (accessToken) {
-            const deeplink = `verciti://app?glogin${atStr}${rtStr}`;
+            const deeplink = `verciti://app?alogin${atStr}${rtStr}`;
             window.location.href = deeplink;
         }
   }, []);
