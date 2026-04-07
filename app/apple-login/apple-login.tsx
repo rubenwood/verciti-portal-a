@@ -54,7 +54,7 @@ export default function AppleLogin(props: any){
     }
 
     const openAppFallback = () => {
-        window.location.href = "verciti://app";
+        window.location.href = "unitydl://app";
     }
 
     return(
