@@ -1,6 +1,8 @@
+"use client"
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { supabaseMain, supabaseTest } from '@/lib/supabase'
-import { useState } from 'react';
+
 
 export default function AppleLogin(props: any){
     const [error, setError] = useState('');
