@@ -19,6 +19,7 @@ export default function AppleLogin(props: any){
                     left: 0,
                     zIndex: 999999,
                     background: "red",
+                    cursor: "pointer",
                 }}
                 onClick={() => clicked()}
                 >
