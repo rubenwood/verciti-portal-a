@@ -1,7 +1,9 @@
 "use client"
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export default function AppleLogin(props: any){
+    const buttonRef = useRef<HTMLButtonElement | null>(null);
+
     useEffect(() => {
         const ua = navigator.userAgent || navigator.vendor || (window as any).opera;
         if (/FBAN|FBAV|Instagram/.test(ua)) {
@@ -11,22 +13,33 @@ export default function AppleLogin(props: any){
         }
     }, []);
 
-    return(
+    const handleClick = () => {
+        if (buttonRef.current) {
+            // Change color when clicked
+            buttonRef.current.style.backgroundColor = "#00FF00"; // green
+        }
+        alert("WORKS");
+    };
+
+    return (
         <>
             <button
+                ref={buttonRef}
                 style={{
                     position: "fixed",
-                    top: 0,
-                    left: 0,
+                    top: 20,
+                    left: 20,
                     zIndex: 999999,
                     background: "red",
                     cursor: "pointer",
                     padding: "10px 20px",
                     border: "none",
                     borderRadius: "5px",
+                    color: "white",
+                    fontWeight: "bold",
                 }}
-                onClick={() => alert("WORKS")}
-                >
+                onClick={handleClick}
+            >
                 TEST
             </button>
         </>
