@@ -66,37 +66,40 @@ export default function AppleLogin(props: any){
     }
 
     return(
-        <div className="grid grid-cols-1 gap-20 mt-20 p-5 items-center justify-items-center">
-            {deeplink == null ? (
-                <>
-                    <p>If you are not automatically logged in please click the button below.</p>
-                    {/* <Button onClick={login} className="z-50 relative">
-                        Sign in with Apple
-                    </Button> */}
-                    <button
-                        style={{
-                            position: "fixed",
-                            top: 0,
-                            left: 0,
-                            zIndex: 999999,
-                            background: "red",
-                        }}
-                        onClick={() => alert("WORKS")}
-                        >
-                        TEST
+        <>
+            <button
+                style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    zIndex: 999999,
+                    background: "red",
+                }}
+                onClick={() => alert("WORKS")}
+                >
+                TEST
+            </button>
+            <div className="grid grid-cols-1 gap-20 mt-20 p-5 items-center justify-items-center">
+                {deeplink == null ? (
+                    <>
+                        <p>If you are not automatically logged in please click the button below.</p>
+                        {/* <Button onClick={login} className="z-50 relative">
+                            Sign in with Apple
+                        </Button> */}
+                        
+                        <button onClick={openApp} className="z-50 relative">
+                            Sign in with Apple
                         </button>
-                    <button onClick={openApp} className="z-50 relative">
-                        Sign in with Apple
-                    </button>
-                </>                
-            ) : (
-                <>
-                    <p className="text-center">If you are not redirected automatically, please click the button below to return to the Verciti App.</p>
-                    <Button onClick={openApp} className="z-50 relative">
-                        Open App
-                    </Button>
-                </>
-            )}
-        </div>
+                    </>                
+                ) : (
+                    <>
+                        <p className="text-center">If you are not redirected automatically, please click the button below to return to the Verciti App.</p>
+                        <Button onClick={openApp} className="z-50 relative">
+                            Open App
+                        </Button>
+                    </>
+                )}
+            </div>
+        </>
     )
 }
