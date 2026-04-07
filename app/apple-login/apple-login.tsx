@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import { supabaseMain, supabaseTest } from '@/lib/supabase'
 import { useState } from 'react';
 
@@ -15,17 +16,17 @@ export default function AppleLogin(props: any){
 
         if(error){
             setError(error.message);
-            console.error('Google Login error:', error.message);
+            console.error('Apple Login error:', error.message);
         } else {
-            console.log('Google Login initiated:', data);
+            console.log('Apple Login initiated:', data);
         }
     };
 
     return(
         <div className="grid grid-cols-1 gap-20 mt-20 p-5 items-center justify-items-center">
-            <button onClick={login}>
+            <Button onClick={login}>
                 Sign in with Apple
-            </button>
+            </Button>
         </div>
     )
 }
