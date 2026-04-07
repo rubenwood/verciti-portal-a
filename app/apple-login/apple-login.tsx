@@ -53,6 +53,10 @@ export default function AppleLogin(props: any){
         window.location.href = deeplink;
     }
 
+    const openAppFallback = () => {
+        window.location.href = "verciti://app";
+    }
+
     return(
         <>
             <div className="grid grid-cols-1 gap-20 mt-40 p-5 items-center justify-items-center">
@@ -61,6 +65,9 @@ export default function AppleLogin(props: any){
                         <p>If you are not automatically logged in please click the button below.</p>
                         <Button onClick={login} className="z-50 relative">
                             Sign in with Apple
+                        </Button>
+                        <Button onClick={openAppFallback} className="z-50 relative">
+                            Open App
                         </Button>
                     </>                
                 ) : (
