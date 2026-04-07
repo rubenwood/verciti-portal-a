@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { supabaseMainApple, supabaseTestApple } from '@/lib/supabase'
+import { supabaseMain, supabaseTest } from '@/lib/supabase'
 
 
 export default function AppleLogin(props: any){
@@ -44,7 +44,7 @@ export default function AppleLogin(props: any){
 
     const login = async () => {
         console.log('Initiating Apple Login for client:', props.client);
-        const client = props.client === "live" ? supabaseMainApple : supabaseTestApple;
+        const client = props.client === "live" ? supabaseMain : supabaseTest;
         const { data, error } = await client.auth.signInWithOAuth({
             provider: "apple",
             options: {
