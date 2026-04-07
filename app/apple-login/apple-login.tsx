@@ -1,8 +1,6 @@
 "use client"
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { supabaseMain, supabaseTest } from '@/lib/supabase'
-
 
 export default function AppleLogin(props: any){
     const [error, setError] = useState('');
@@ -11,7 +9,6 @@ export default function AppleLogin(props: any){
         const hash = window.location.hash;
 
         const env = window.location.pathname.includes('/test') ? 'test' : 'live';
-        const client = env === 'test' ? supabaseTest : supabaseMain;
         console.log(`Apple Login page loaded for ${env} environment. URL hash:`, hash);
 
         if (!hash) return;
@@ -34,8 +31,7 @@ export default function AppleLogin(props: any){
 
     const login = async () => {
         console.log('Initiating Apple Login for client:', props.client);
-        const client = props.client === "live" ? supabaseMain : supabaseTest;
-        const { data, error } = await client.auth.signInWithOAuth({
+        const { data, error } = await props.client.auth.signInWithOAuth({
             provider: "apple",
             options: {
                 redirectTo: `https://vertciti-portal.vercel.app/apple-login/${props.client}`
