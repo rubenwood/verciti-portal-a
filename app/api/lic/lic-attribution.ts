@@ -1,107 +1,140 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 
-export async function attributeLicence(request: any, supabaseService: SupabaseClient){
+export async function attributeLicence(request: any, supabaseService: SupabaseClient) {
     const userId = request.record.id;
-    const {data, error} = await supabaseService
+
+    const { data: existingUser, error: fetchError } = await supabaseService
         .from('user_profiles')
-        .update({content_visibility:["Free"]}) // force the free content tag
+        .select('content_visibility, has_server_set_data')
+        .eq('id', userId)
+        .single();
+
+    if (fetchError) {
+        console.error("Error fetching user profile:", fetchError);
+        return;
+    }
+
+    const currentTags = existingUser?.content_visibility ?? [];
+
+    const baseTags = Array.from(new Set([
+        ...currentTags,
+        "Free"
+    ]));
+
+    await supabaseService
+        .from('user_profiles')
+        .update({ content_visibility: baseTags })
         .eq('id', userId);
 
     const rawEmail = request.record.data.email;
     const email = (rawEmail ? rawEmail.toLowerCase() : "default@unknown.com");
-    console.log("email: ", email);
     const suffix = email.split('@')[1];
-    
+
+    console.log("email:", email);
+
     const orgTableName = process.env.ORG_TABLE_NAME!;
     const sufColName = process.env.SUFF_COL!;
     const addrColName = process.env.ADDR_COL!;
 
-    const suffixMatch = await supabaseService.from(orgTableName).select('*').contains(sufColName, [suffix]);
-    const emailAddressMatch = await supabaseService.from(orgTableName).select('*').contains(addrColName, [email]);
-    console.log("suf match: ", suffixMatch);
-    console.log("addr match:", emailAddressMatch);
+    const [suffixMatch, emailAddressMatch] = await Promise.all([
+        supabaseService.from(orgTableName).select('*').contains(sufColName, [suffix]),
+        supabaseService.from(orgTableName).select('*').contains(addrColName, [email])
+    ]);
 
-    if(suffixMatch.data){
-        if(suffixMatch.data.length > 0){
-            const orgId = suffixMatch.data[0].id;
-            const tagsFromOrg = suffixMatch.data[0].content_tags ?? [];        
+    console.log("suffix match:", suffixMatch);
+    console.log("email match:", emailAddressMatch);
 
-            await setupData(supabaseService, userId, orgId, tagsFromOrg);
-        }
+    const match = suffixMatch.data?.[0] || emailAddressMatch.data?.[0];
+
+    if (match) {
+        const orgId = match.id;
+        const tagsFromOrg = match.content_tags ?? [];
+
+        await setupData(supabaseService, userId, orgId, tagsFromOrg);
     }
 
-    if(emailAddressMatch.data){
-        if(emailAddressMatch.data.length > 0){
-            console.log(emailAddressMatch.data);
-            const orgId = emailAddressMatch.data[0].id;
-            const tagsFromOrg = emailAddressMatch.data[0].content_tags ?? [];   
-            await setupData(supabaseService, userId, orgId, tagsFromOrg);
-        }
-    }
-
-    // set the "server has data"
-    const {data:flagData, error:flagError} = await supabaseService
+    const { error: flagError } = await supabaseService
         .from('user_profiles')
-        .update({has_server_set_data:true})
-        .eq('id', userId);
+        .update({ has_server_set_data: true })
+        .eq('id', userId)
+        .is('has_server_set_data', false);
 
-    if(flagError){
-        console.error("Error setting account flag: ", flagError);
-    }else{
-        console.log("Success setting account flag: ", flagData);
+    if (flagError) {
+        console.error("Error setting account flag:", flagError);
+    } else {
+        console.log("has_server_set_data set to true");
     }
 
-    return {suffMatch:suffixMatch, addrMatch:emailAddressMatch};
+    return {
+        suffMatch: suffixMatch,
+        addrMatch: emailAddressMatch
+    };
 }
 
-async function setupData(supabaseService: SupabaseClient, userId: string, orgId: string, tagsFromOrg: string[]){
-    const newContentTags = Array.from(
-        new Set(["Free", "Premium", ...tagsFromOrg])
-    );
-    // update the user account with these content tags
-    const {data, error} = await supabaseService
+async function setupData(
+    supabaseService: SupabaseClient,
+    userId: string,
+    orgId: string,
+    tagsFromOrg: string[]
+) {
+    const { data: existingUser, error: fetchError } = await supabaseService
         .from('user_profiles')
-        .update({content_visibility:newContentTags, org_id: orgId})
-        .eq('id', userId);
+        .select('content_visibility')
+        .eq('id', userId)
+        .single();
 
-    if(error){
-        console.error("Error updating content tags: ", error);
-    }else{
-        console.log("Success updating content tags: ", data);
+    if (fetchError) {
+        console.error("Error fetching user before update:", fetchError);
+        return;
     }
 
-    // update the remaining licence count
-    const {data:licUsedData, error:licUsedError} = await supabaseService
+    const mergedTags = Array.from(new Set([
+        ...(existingUser?.content_visibility ?? []),
+        "Free",
+        "Premium",
+        ...tagsFromOrg
+    ]));
+
+    const { error: updateError } = await supabaseService
+        .from('user_profiles')
+        .update({
+            content_visibility: mergedTags,
+            org_id: orgId
+        })
+        .eq('id', userId);
+
+    if (updateError) {
+        console.error("Error updating content tags:", updateError);
+    } else {
+        console.log("Updated user tags safely");
+    }
+
+    // --- LICENCE COUNT ---
+    const { data: licUsedData, error: licUsedError } = await supabaseService
         .from(process.env.ORG_TABLE_NAME!)
         .select('lic_used')
         .eq('id', orgId)
         .single();
 
-    if(licUsedError){
-        console.error("Error getting  lic count: ", licUsedError);
-    }else{
-        console.log("Success getting lic count: ", licUsedData);
+    if (licUsedError) {
+        console.error("Error getting lic count:", licUsedError);
+        return;
     }
 
     let licUsed = licUsedData?.lic_used;
-    
-    if(licUsed === null || licUsed === undefined){
-        console.error("Error: lic_used is null or undefined");
-        return { licUsed };
+
+    if (licUsed === null || licUsed === undefined) {
+        console.error("lic_used is null/undefined");
+        return;
     }
-
-    licUsed += 1;
-    console.log(licUsed);
-
-    const {data:licData, error:licError} = await supabaseService
-        .from(`${process.env.ORG_TABLE_NAME}`)
-        .update({lic_used:licUsed})
+    const { error: licError } = await supabaseService
+        .from(process.env.ORG_TABLE_NAME!)
+        .update({ lic_used: licUsed + 1 })
         .eq('id', orgId);
 
-    if(licError){
-        console.error("Error updating lic count: ", licError);
-    }else{
-        console.log("Success updating lic count: ", licData);
+    if (licError) {
+        console.error("Error updating lic count:", licError);
+    } else {
+        console.log("Licence count incremented");
     }
-
 }
