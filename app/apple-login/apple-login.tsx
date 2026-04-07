@@ -8,22 +8,25 @@ export default function AppleLogin(props: any){
     const clicked = () => {
         setFlag(true);
         alert("Clicked");
-            }
+    }
 
     return(
         <>
             <button
                 style={{
-                    position: "fixed",
-                    top: 0,
-                    left: 0,
-                    zIndex: 999999,
-                    background: "red",
-                    cursor: "pointer",
+                position: "fixed",
+                top: 40, // avoid safe area
+                left: 20,
+                zIndex: 1000,
+                background: "red",
+                cursor: "pointer",
+                padding: "10px 20px",
+                touchAction: "manipulation",
+                WebkitTapHighlightColor: "transparent",
                 }}
-                onClick={() => clicked()}
-                >
-                TEST
+                onClick={clicked}
+            >
+            TEST
             </button>
             {flag ? <p>test</p> : null }
         </>
