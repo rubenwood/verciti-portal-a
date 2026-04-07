@@ -29,6 +29,7 @@ export default function AppleLogin(props: any){
   }, []);
 
     const login = async () => {
+        console.log('Initiating Apple Login for client:', props.client);
         const client = props.client === "live" ? supabaseMain : supabaseTest;
         const { data, error } = await client.auth.signInWithOAuth({
             provider: "apple",
