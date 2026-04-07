@@ -14,17 +14,21 @@ export default function AppleLogin(props: any){
         <>
             <button
                 style={{
-                position: "fixed",
-                top: 40, // avoid safe area
-                left: 20,
-                zIndex: 1000,
-                background: "red",
-                cursor: "pointer",
-                padding: "10px 20px",
-                touchAction: "manipulation",
-                WebkitTapHighlightColor: "transparent",
+                    position: "fixed",
+                    top: 40, // avoid safe area
+                    left: 20,
+                    zIndex: 1000,
+                    background: "red",
+                    cursor: "pointer",
+                    padding: "10px 20px",
+                    touchAction: "manipulation",
+                    WebkitTapHighlightColor: "transparent",
                 }}
                 onClick={clicked}
+                onTouchEnd={(e) => {
+                    e.preventDefault();
+                    clicked();
+                }}
             >
             TEST
             </button>
