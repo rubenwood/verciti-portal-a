@@ -38,8 +38,6 @@ export async function updateSession(request: NextRequest) {
     '/login',
     '/google-login',
     '/apple-login',
-    '/apple-login/test',
-    '/apple-login/live',
     '/reset-password',
     '/update-password',
     '/subscribe',
