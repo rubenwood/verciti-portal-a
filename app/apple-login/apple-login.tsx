@@ -1,13 +1,19 @@
 "use client"
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { supabaseTest } from '@/lib/supabase'
+import { supabaseMain, supabaseTest } from '@/lib/supabase'
 
 
 export default function AppleLogin(props: any){
     const [error, setError] = useState('');
+    const [deeplink, setDeeplink] = useState<string | null>(null);
 
     useEffect(() => {
+        if (typeof window !== "undefined") {
+            localStorage.removeItem("sb-live");
+            localStorage.removeItem("sb-test");
+        }
+
         const hash = window.location.hash;
 
         if (!hash) return;
@@ -23,15 +29,17 @@ export default function AppleLogin(props: any){
         const rtStr = refreshToken ? `&rt=${encodeURIComponent(refreshToken)}` : "";
 
         if (accessToken) {
-            const deeplink = `verciti://app?alogin${atStr}${rtStr}`;
-            window.location.href = deeplink;
+            const newDeeplink = `verciti://app?alogin${atStr}${rtStr}`;
+            localStorage.setItem("verciti_deeplink", newDeeplink);
+            setDeeplink(newDeeplink);
+            window.location.href = newDeeplink;
         }
-  }, []);
+    }, []);
 
     const login = async () => {
         console.log('Initiating Apple Login for client:', props.client);
-        //const client = props.client === "live" ? supabaseMain : supabaseTest;
-        const { data, error } = await supabaseTest.auth.signInWithOAuth({
+        const client = props.client === "live" ? supabaseMain : supabaseTest;
+        const { data, error } = await client.auth.signInWithOAuth({
             provider: "apple",
             options: {
                 redirectTo: `https://vertciti-portal.vercel.app/apple-login/${props.client}`
@@ -46,11 +54,22 @@ export default function AppleLogin(props: any){
         }
     };
 
+    const openApp = () =>{
+        if(deeplink == null) return;
+        window.location.href = deeplink;
+    }
+
     return(
         <div className="grid grid-cols-1 gap-20 mt-20 p-5 items-center justify-items-center">
-            <Button onClick={login}>
-                Sign in with Apple
-            </Button>
+            {deeplink == null ? (
+                <Button onClick={login}>
+                    Sign in with Apple
+                </Button>
+            ) : (
+                <Button onClick={openApp}>
+                    Open App
+                </Button>
+            )}
         </div>
     )
 }
