@@ -1,11 +1,32 @@
 "use client"
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { supabaseMain, supabaseTest } from '@/lib/supabase'
 
 
 export default function AppleLogin(props: any){
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        const hash = window.location.hash;
+
+        if (!hash) return;
+
+        const params = new URLSearchParams(hash.replace("#", ""));
+
+        const accessToken = params.get("access_token");
+        const refreshToken = params.get("refresh_token");
+        console.log('Apple Login tokens from URL:', { accessToken, refreshToken });
+        if(accessToken == null) return;
+
+        const atStr = `&at=${encodeURIComponent(accessToken)}`;
+        const rtStr = refreshToken ? `&rt=${encodeURIComponent(refreshToken)}` : "";
+
+        if (accessToken) {
+            const deeplink = `verciti://app?glogin${atStr}${rtStr}`;
+            window.location.href = deeplink;
+        }
+  }, []);
 
     const login = async () => {
         const client = props.client === "live" ? supabaseMain : supabaseTest;
