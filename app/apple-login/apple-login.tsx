@@ -49,7 +49,8 @@ export default function AppleLogin(props: any){
     };
 
     const openApp = () =>{
-        if(deeplink == null) return;
+        if(deeplink == null) { alert("no dl"); return; }
+        alert(deeplink);
         window.location.href = deeplink;
     }
 
@@ -65,9 +66,6 @@ export default function AppleLogin(props: any){
                         <p>If you are not automatically logged in please click the button below.</p>
                         <Button onClick={login} className="z-50 relative">
                             Sign in with Apple
-                        </Button>
-                        <Button onClick={openAppFallback} className="z-50 relative">
-                            Open App
                         </Button>
                     </>                
                 ) : (
