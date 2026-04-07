@@ -24,7 +24,7 @@ export default function AppleLogin(props: any){
         const rtStr = refreshToken ? `&rt=${encodeURIComponent(refreshToken)}` : "";
 
         if (accessToken) {
-            const newDeeplink = `verciti://app?alogin${atStr}${rtStr}`;
+            const newDeeplink = `unitydl://app?alogin${atStr}${rtStr}`;
             localStorage.setItem("verciti_deeplink", newDeeplink);
             setDeeplink(newDeeplink);
         }
