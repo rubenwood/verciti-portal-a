@@ -9,6 +9,12 @@ export default function AppleLogin(props: any){
     const [deeplink, setDeeplink] = useState<string | null>(null);
 
     useEffect(() => {
+        document.body.style.display = "none";
+
+        requestAnimationFrame(() => {
+            document.body.style.display = "block";
+        });
+
         const hash = window.location.hash;
 
         if (!hash) return;
