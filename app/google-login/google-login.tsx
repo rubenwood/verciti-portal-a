@@ -20,7 +20,7 @@ export default function GoogleLogin(props: any){
 
         // Detect iOS
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
-        const scheme = isIOS ? "unitydl://" : "verciti://";
+        const scheme = isIOS ? "unitydl://" : "verciti://"; // TODO: iOS uses unitydl for now, may change in future
 
         if (accessToken) {
             const atStr = `&at=${encodeURIComponent(accessToken)}`;
