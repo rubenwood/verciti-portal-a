@@ -7,7 +7,8 @@ export async function attributeLicence(request: any, supabaseService: SupabaseCl
         .update({content_visibility:["Free"]}) // force the free content tag
         .eq('id', userId);
 
-    const email = request.record.data.email.toLowerCase();
+    const rawEmail = request.record.data.email;
+    const email = (rawEmail ? rawEmail.toLowerCase() : "default@unknown.com");
     console.log("email: ", email);
     const suffix = email.split('@')[1];
     
