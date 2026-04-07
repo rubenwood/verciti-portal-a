@@ -1,17 +1,9 @@
 "use client"
+import Link from "next/link";
 import { useEffect, useRef } from "react";
 
 export default function AppleLogin(props: any){
     const buttonRef = useRef<HTMLButtonElement | null>(null);
-
-    useEffect(() => {
-        const ua = navigator.userAgent || navigator.vendor || (window as any).opera;
-        if (/FBAN|FBAV|Instagram/.test(ua)) {
-            alert("You are inside an in-app browser — buttons may not work. Please open in Safari.");
-        } else {
-            alert("You are in Safari / normal browser — buttons should work.");
-        }
-    }, []);
 
     const handleClick = () => {
         if (buttonRef.current) {
@@ -23,7 +15,7 @@ export default function AppleLogin(props: any){
 
     return (
         <>
-            <button
+            <span
                 ref={buttonRef}
                 style={{
                     position: "fixed",
@@ -41,7 +33,7 @@ export default function AppleLogin(props: any){
                 onClick={handleClick}
             >
                 TEST
-            </button>
+            </span>
         </>
     )
 }
