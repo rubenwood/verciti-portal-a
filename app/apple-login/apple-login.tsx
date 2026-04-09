@@ -35,7 +35,7 @@ export default function AppleLogin(props: any){
     }, []);
 
     const login = async () => {
-        console.log('Initiating Apple Login for client:', props.client);
+        //console.log('Initiating Apple Login for client:', props.client);
         const client = props.client === "live" ? supabaseMain : supabaseTest;
         const { data, error } = await client.auth.signInWithOAuth({
             provider: "apple",
@@ -53,8 +53,11 @@ export default function AppleLogin(props: any){
     };
 
     const openApp = () =>{
-        if(deeplink == null) { alert("no dl"); return; }
-        alert(deeplink);
+        if(deeplink == null) { 
+            //alert("no dl");
+            return; 
+        }
+        //alert(deeplink);
         window.location.href = deeplink;
     }
 
