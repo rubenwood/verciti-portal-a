@@ -1,5 +1,6 @@
 "use client"
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { supabaseMain, supabaseTest } from '@/lib/supabase'
 
@@ -67,16 +68,20 @@ export default function AppleLogin(props: any){
 
     return(
         <>
-            <div className="grid grid-cols-1 gap-20 mt-40 p-5 items-center justify-items-center">
+            <div className="grid grid-cols-1 gap-20 mt-20 p-5 items-center justify-items-center">
                 {deeplink == null ? (
                     <>
+                        <Image src="/Bright_Green_No_Tagline_1024x224.png" alt="Verciti Logo" width={512} height={112}/>
+                        <p>Login to the Verciti App</p>
                         <p>If you are not automatically logged in please click the button below.</p>
                         <Button onClick={login} className="z-50 relative">
                             Sign in with Apple
                         </Button>
                     </>                
                 ) : (
-                    <>
+                    <>  
+                        <Image src="/Bright_Green_No_Tagline_1024x224.png" alt="Verciti Logo" width={512} height={112}/>
+                        <p>Login to the Verciti App</p>
                         <p className="text-center">If you are not redirected automatically, please click the button below to return to the Verciti App.</p>
                         <Button onClick={openApp} className="z-50 relative">
                             Open App
