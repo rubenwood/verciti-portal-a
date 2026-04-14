@@ -542,9 +542,9 @@ export function formatDate(iso: any) {
 };
 
 
-export function getUserFolder(userId: string, email: string) {
+export function getUserFolder(userId: string) {
   return crypto
     .createHash("sha256")
-    .update(`${userId}:${email}`)
+    .update(userId)
     .digest("hex");
 }
