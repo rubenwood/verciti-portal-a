@@ -1,5 +1,6 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { getUserFolder } from "../../db/general/utils";
+import crypto from "crypto";
 
 export async function generateCertificate(client: SupabaseClient, certificateData: any) {
     //const folder = getUserFolder(userId, email);
@@ -30,13 +31,22 @@ export async function generateCertificate(client: SupabaseClient, certificateDat
     const respJson = await resp.json();
     console.log("PDF Monkey response:", respJson), "\n";
 
-    //const path = await uploadToStorage(client, folder);
+    // hash of uid
+    const hash = crypto.createHash('sha256').update(certificateData.uid).digest('hex');
+    //const path = await uploadToStorage(client, hash, null);
 
-    return respJson.document.preview_url;
+    // need to also send an email with this certificate
+
+    const response = {
+        folder: hash,
+        preview_url: respJson.document.preview_url,
+    }
+
+    return response;
 }
 
-async function uploadToStorage(client: SupabaseClient, folder: string, fileBuffer: Buffer) {
-    const filePath = `dev/public/certificates/${folder}/certificate-${Date.now()}.pdf`;
+async function uploadToStorage(client: SupabaseClient, uid: string, fileBuffer: Buffer) {
+    const filePath = `dev/public/certificates/${uid}/certificate-${Date.now()}.pdf`;
 
     const { error } = await client.storage
         .from("certificates")
