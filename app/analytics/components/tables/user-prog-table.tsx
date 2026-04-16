@@ -4,16 +4,56 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {  Dialog,  DialogContent,  DialogHeader,  DialogTitle,  DialogDescription } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge, Bell, ChevronDown, ChevronRight, Clock } from "lucide-react";
 import { JSX, useEffect, useState } from "react";
 
+function ActivityAttemptsModal(props: any) {
+    return (
+        <Dialog open={props.isOpen} onOpenChange={props.setIsOpen}>
+            <DialogContent className="w-[80vw] !max-w-[80vw] sm:!max-w-[80vw] max-h-[80vh] overflow-y-auto p-0">
+                <div className="inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+                    <div className="bottom-0 left-0 right-0 p-6">
+                        <DialogHeader>
+                        <DialogTitle className="text-3xl font-bold text-foreground">
+                            Attempts
+                        </DialogTitle>
+                        <DialogDescription className="flex items-center gap-3 text-base">
+                            {props.userProf?.Email} attempts for {props.activity?.external_title}
+                        </DialogDescription>
+                        </DialogHeader>
+                        <div className="mt-6">
+                            {props.activity?.attempts?.map((attempt: any, index: number) => (
+                                <div key={`attempt-${attempt.id}`} className="bg-secondary/50 rounded-md p-3 mb-3">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="text-sm text-foreground">Attempt {index + 1} </span>
+                                        <span className="text-sm text-muted-foreground">Attempted on {attempt.attempted_at}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
 function ActivitiesSection(props: any) {
-  const [isOpen, setIsOpen] = useState(false)
+    const [isOpen, setIsOpen] = useState(false)
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedActivity, setSelectedActivity] = useState<any[]>([]);
+
+    const openModalWithAttempts = (activity: any) => {
+        console.log("Opening modal with attempts:", activity?.attempts);
+        setSelectedActivity(activity);
+        setIsModalOpen(true);
+    }
 
   return (
     <>
-    {props.userProf.GroupedActivityAttempts != null ?            
+    {props.userProf.GroupedActivityAttempts != null ?
+        <>            
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
             <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
                 {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
@@ -22,16 +62,23 @@ function ActivitiesSection(props: any) {
             <CollapsibleContent>
                 <div className="mt-3 space-y-3 pl-6">
                 {props.userProf.GroupedActivityAttempts.map((activity: any) => (
-                    <div key={`activity-${activity?.id}`} className="bg-secondary/50 rounded-md p-3">
+                    <div onClick={() => openModalWithAttempts(activity)} key={`activity-${activity?.id}`} className="bg-secondary/50 rounded-md p-3">
                         <div className="flex items-center justify-between mb-2">
                             <span className="text-sm text-foreground">{activity?.external_title}</span>
-                        </div>
-                        {/* <AttemptsSection attempts={activity.attempts} /> */}
+                            <span className="text-sm text-muted-foreground font-light">{activity?.attempts?.length || 0} attempts</span>
+                        </div>                        
                     </div>
                 ))}
                 </div>
             </CollapsibleContent>
         </Collapsible> 
+        <ActivityAttemptsModal 
+            isOpen={isModalOpen}
+            setIsOpen={setIsModalOpen}
+            userProf={props.userProf}
+            activity={selectedActivity}
+        />
+        </>
     : null}
     </>
   )
@@ -99,7 +146,6 @@ export function UserProgressTable(props: any) {
                     </TableCell>
                     <TableCell >
                         <ActivitiesSection userProf={userProf} />
-                        {/* <QuizScoresDisplay quizAttempts={findQuizAttemptsByActivityAndUser(props.quizData, prog.activity_id, userProg.id)} /> */}
                     </TableCell>
                     <TableCell>
                         <Button variant="ghost" className="text-muted-foreground hover:text-primary">
