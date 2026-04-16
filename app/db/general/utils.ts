@@ -301,7 +301,7 @@ export async function updateStage(client: SupabaseClient, stage: Stage) {
     }
     return data;
 }
-export async function fetchStagesWithInfoTexts(client: SupabaseClient, batchId: string): Promise<StageWithInfoText[] | PostgrestError> {
+export async function fetchStagesWithInfoTextsByBatchId(client: SupabaseClient, batchId: string): Promise<StageWithInfoText[] | PostgrestError> {
    const { data: stages, error: stagesError } = await client
         .from('stages')
         .select('*')
@@ -360,6 +360,61 @@ export async function fetchStagesWithInfoTexts(client: SupabaseClient, batchId: 
         const sheetB = b.related_info_text?.sheet_id ?? Number.MAX_SAFE_INTEGER;
         return sheetA - sheetB;
     });
+    return results;
+}
+export async function fetchStagesWithInfoTexts(client: SupabaseClient, stageIds: string[]): Promise<StageWithInfoText[] | PostgrestError> {
+   const { data: stages, error: stagesError } = await client
+        .from('stages')
+        .select('*')
+        .in('id', stageIds);
+
+    if (stagesError) {
+        console.error('Error fetching stages:', stagesError);
+        return stagesError;
+    }
+
+    const infoTextIds = stages
+        .map((stage) => {
+            try {
+                const params = typeof stage.params === 'string' ? JSON.parse(stage.params) : stage.params;
+                return params?.infoTextId;
+            } catch {
+                return null;
+            }
+        })
+        .filter((id): id is string => !!id);
+
+    const uniqueInfoTextIds = Array.from(new Set(infoTextIds));
+
+    const { data: infoTexts, error: infoTextError } = await client
+        .from('info_texts')
+        .select('*')
+        .in('id', uniqueInfoTextIds);
+
+    if (infoTextError) {
+        console.error('Error fetching info texts:', infoTextError);
+        return infoTextError;
+    }
+
+    const infoTextMap = new Map(infoTexts.map((txt) => [txt.id, txt]));
+
+    const results: StageWithInfoText[] = stages.map((stage) => {
+        let related_info_text: InfoText | null = null;
+
+        try {
+            const params = typeof stage.params === 'string' ? JSON.parse(stage.params) : stage.params;
+            const infoTextId = params?.infoTextId;
+            related_info_text = infoTextMap.get(infoTextId) || null;
+        } catch {
+            related_info_text = null;
+        }
+
+        return {
+            stage,
+            related_info_text,
+        };
+    });
+
     return results;
 }
 export async function fetchStagesByIds(client: SupabaseClient, stageIds: string[]): Promise<Stage[] | PostgrestError> {
@@ -531,15 +586,27 @@ export function showConfetti<T extends HTMLElement = HTMLElement>(ref: RefObject
     });
 }
 
-export function formatDate(iso: any) {
+export function formatDate(
+  iso: any,
+  options?: { includeTime?: boolean }
+) {
   const d = new Date(iso);
 
   const day = String(d.getDate()).padStart(2, "0");
   const month = String(d.getMonth() + 1).padStart(2, "0");
   const year = d.getFullYear();
 
-  return `${day}/${month}/${year}`;
-};
+  let result = `${day}/${month}/${year}`;
+
+  if (options?.includeTime) {
+    const hours = String(d.getHours()).padStart(2, "0");
+    const minutes = String(d.getMinutes()).padStart(2, "0");
+
+    result += ` ${hours}:${minutes}`;
+  }
+
+  return result;
+}
 
 
 export function getUserFolder(userId: string) {

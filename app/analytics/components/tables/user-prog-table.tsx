@@ -4,12 +4,93 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import {  Dialog,  DialogContent,  DialogHeader,  DialogTitle,  DialogDescription } from "@/components/ui/dialog"
+import { Dialog,  DialogContent,  DialogHeader,  DialogTitle,  DialogDescription } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge, Bell, ChevronDown, ChevronRight, Clock } from "lucide-react";
 import { JSX, useEffect, useState } from "react";
+import { fetchStagesWithInfoTexts, formatDuration, formatDate } from "@/app/db/general/utils";
+
+import { supabaseMain, supabaseTest } from "@/lib/supabase";
+
+
+// TODO: when we open this modal, start pulling in the stage data for each stage in each attempt
+function AttemptedStagesCollapsible(props: any) {
+    const [isOpen, setIsOpen] = useState(false)
+
+    return (
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+            <CollapsibleTrigger className="w-full flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                <div className="w-full bg-secondary/50 rounded-md p-3 mb-2">
+                    <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm text-foreground">
+                            Attempt {props.index + 1}
+                        </span>
+                        <span className="text-sm text-muted-foreground">
+                            {formatDate(props.attempt.attempted_at, { includeTime: true })}
+                        </span>
+                        <span className="text-sm text-muted-foreground">{formatDuration(props.attempt.duration)}</span>
+                        <span className="text-foreground">
+                            {props.attempt.stages?.length} stages
+                        </span>
+                    </div>
+                </div>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+                {props.attempt.stages.map((stageId: string, index: number) => {
+                    const stageData = props.stageDataMap.get(stageId);
+
+                    return (
+                        <div key={`stage-${stageId}-${index}`} className="w-full bg-secondary/50 rounded-md p-3 mb-2">
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm text-foreground font-light">
+                                    {stageData
+                                        ? stageData.related_info_text?.text_en_uk.title || stageData.stage.id
+                                        : "Loading..."}
+                                </span>
+                            </div>
+                        </div>
+                    );
+                })}
+            </CollapsibleContent>
+        </Collapsible>
+    )
+}
 
 function ActivityAttemptsModal(props: any) {
+    const [stageDataMap, setStageDataMap] = useState<Map<string, StageWithInfoText>>(new Map());
+    const [hasLoaded, setHasLoaded] = useState(false);
+
+    useEffect(() => {
+        if (!props.isOpen) {
+            setStageDataMap(new Map());
+            setHasLoaded(false);
+        }
+
+        const loadStages = async () => {
+            const stageIds = props.activity?.attempts
+                ?.flatMap((attempt: any) => attempt.stages || [])
+                ?.filter(Boolean);
+
+            if (!stageIds?.length) return;
+            // TODO: change the supabase cllient dependant on user
+            const result = await fetchStagesWithInfoTexts(supabaseTest, stageIds);
+
+            if (Array.isArray(result)) {
+                const map = new Map<string, StageWithInfoText>();
+                result.forEach((item) => {
+                    map.set(item.stage.id, item);
+                });
+
+                setStageDataMap(map);
+                console.log(map);
+                setHasLoaded(true);
+            }
+        };
+
+        loadStages();
+    }, [props.isOpen]);
+
     return (
         <Dialog open={props.isOpen} onOpenChange={props.setIsOpen}>
             <DialogContent className="w-[80vw] !max-w-[80vw] sm:!max-w-[80vw] max-h-[80vh] overflow-y-auto p-0">
@@ -20,17 +101,16 @@ function ActivityAttemptsModal(props: any) {
                             Attempts
                         </DialogTitle>
                         <DialogDescription className="flex items-center gap-3 text-base">
-                            {props.userProf?.Email} attempts for {props.activity?.external_title}
+                            {props.userProf?.Email}'s attempts for {props.activity?.external_title}
                         </DialogDescription>
                         </DialogHeader>
                         <div className="mt-6">
-                            {props.activity?.attempts?.map((attempt: any, index: number) => (
-                                <div key={`attempt-${attempt.id}`} className="bg-secondary/50 rounded-md p-3 mb-3">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <span className="text-sm text-foreground">Attempt {index + 1} </span>
-                                        <span className="text-sm text-muted-foreground">Attempted on {attempt.attempted_at}</span>
-                                    </div>
-                                </div>
+                            {props.activity?.attempts?.map((attempt: any, index: number) => (                                
+                                <AttemptedStagesCollapsible 
+                                    key={`attempt-${attempt.id}`}
+                                    attempt={attempt}
+                                    index={index} 
+                                    stageDataMap={stageDataMap} />
                             ))}
                         </div>
                     </div>

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { fetchStagesWithInfoTexts, updateInfoText } from '../../general/utils';
+import { fetchStagesWithInfoTextsByBatchId, updateInfoText } from '../../general/utils';
 import { PostgrestError } from '@supabase/supabase-js';
 import { supabaseTest } from '@/lib/supabase';
 
@@ -22,7 +22,7 @@ export default function InfoTextEditor() {
     });
 
     const searchClicked = async () => {
-        const stagesWithInfoText = await fetchStagesWithInfoTexts(supabaseTest, searchTerm);
+        const stagesWithInfoText = await fetchStagesWithInfoTextsByBatchId(supabaseTest, searchTerm);
         //const output = await fetchInfoTextByBatchId(searchTerm);
 
         if ('message' in stagesWithInfoText) {
