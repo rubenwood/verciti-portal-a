@@ -6,6 +6,8 @@ import { PlatformAccessTable } from "./tables/platform-acc-table";
 import { TrainingProviderTable } from "./tables/training-prov-table";
 import { Separator } from "@/components/ui/separator";
 
+//https://youtu.be/OnktX6QjsOc
+
 export default function SubscribeLandingPage(){
     return (
         <div className="dark grid items-center justify-items-center min-h-screen p-8 pb-20">
@@ -37,6 +39,18 @@ export default function SubscribeLandingPage(){
                     onClick={()=> window.open("https://apps.apple.com/us/app/verciti-skills-training/id6753941306")}
                 />
             </div>
+            <br/>
+            <Separator className="w-full max-w-6xl my-8" />
+            <iframe 
+                width={1905/2}
+                height={822/2}
+                src="https://www.youtube.com/embed/OnktX6QjsOc"
+                title="Verciti AI | The Platform Powering the Net Zero Workforce"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowFullScreen
+                className="rounded-lg shadow-lg"
+                >
+            </iframe>
             <br/>
             <Separator className="w-full max-w-6xl" />
             <div className="mt-8 w-full max-w-6xl">
