@@ -5,7 +5,7 @@ import { checkUser } from "../db/general/get-user";
 
 import { SupabaseClient } from "@supabase/supabase-js";
 import { supabaseMain, supabaseTest } from "@/lib/supabase";
-import { getUsersProfilesByVisibility, getUserAttempts } from "@/app/db/user/user-prog-analytics";
+import { getUsersProfilesByOrgId, getUserAttempts } from "@/app/db/user/user-prog-analytics";
 import { getUsersQuizAttempts } from "@/app/db/user/user-quiz-analytics";
 
 import { Button } from "@/components/ui/button";
@@ -68,25 +68,11 @@ export default function AnalyticsLandingPage(){
     const [user, setUser] = useState<User | null>(null);
     const [role, setRole] = useState<string>("");
 
-    const [dbBranch, setDbBranch] = useState<string>("test");
-    const [clientToUse, setClientToUse] = useState<SupabaseClient>(supabaseTest);
-
-    const [cohortName, setCohortName] = useState<string>("Verciti");
-
     const [totalsData, setTotalsData] = useState<any>();
     const [userProgressData, setUserProgressData] = useState<any[]>();
     const [userAttemptsData, setUserAttemptsData] = useState<any[]>();
     const [userQuizAttemptsData, setUserQuizAttemptsData] = useState<any[]>();
     const [userProfsWithAttempts, setUserProfsWithAttempts] = useState<UserProfileWithAttempts[]>();
-
-    const setClient = (branch: string) => {
-        setDbBranch(branch);
-        if(branch === "test"){
-            setClientToUse(supabaseTest);
-        } else {
-            setClientToUse(supabaseMain);
-        }
-    }
 
 
     const getAttemptsForId = (userProfAttempt: UserProfileWithAttempts, attemptData: any[], type: string) => {
@@ -101,11 +87,8 @@ export default function AnalyticsLandingPage(){
         }        
     }
 
-    const getAllData = async () => {
-        if(!cohortName || cohortName.trim() === "") {
-            alert("Please enter a cohort name.");
-            return;
-        }
+    const getAllData = async (orgId: string, dbBranch: string, clientToUse: SupabaseClient) => {
+        console.log("Getting all data for org:", orgId);
 
         const resp = await fetch(`/api/analytics/get-totals/${dbBranch}`, {
             method:'POST',
@@ -113,14 +96,14 @@ export default function AnalyticsLandingPage(){
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                orgName:cohortName
+                orgId:orgId
             })
         });
         const totalsData = await resp.json();
         console.log(totalsData);
         setTotalsData(totalsData);
 
-        const profileData = await getUsersProfilesByVisibility(clientToUse, cohortName);
+        const profileData = await getUsersProfilesByOrgId(clientToUse, orgId);
         setUserProgressData(profileData);
 
         let userAttempts: UserProfileWithAttempts[] = [];
@@ -169,19 +152,36 @@ export default function AnalyticsLandingPage(){
     useEffect(() => {
         const init = async () => {
             const users = await checkUser();
-            if (users) {                 
+
+            let userRole = "";
+            let organisationId = "";
+            let supabaseClientToUse = supabaseTest;
+            let databaseBranch = "test";
+
+            if (users) {               
                 if(users.testUser){ // prefer test user
                     setUser(users.testUser);
                     const profile = await getUserProfile(supabaseTest, users.testUser);
-                    setRole(profile?.data?.role || null);
+                    userRole = profile?.data?.role || null;
+                    organisationId = profile?.org_id || "";
+                    supabaseClientToUse = supabaseTest;
+                    databaseBranch = "test";
                 }else if(users.liveUser){
                     setUser(users.liveUser);
                     const profile = await getUserProfile(supabaseMain, users.liveUser);
-                    setRole(profile?.data?.role || null);
-                }                
+                    userRole = profile?.data?.role || null;
+                    organisationId = profile?.org_id || "";
+                    supabaseClientToUse = supabaseMain;
+                    databaseBranch = "live";
+                }
             }
+
+            setRole(userRole);
+
+            getAllData(organisationId, databaseBranch, supabaseClientToUse);
         };
         init();
+
     }, []);
 
     const isLoaded = userProgressData && userAttemptsData && userQuizAttemptsData;
@@ -190,16 +190,6 @@ export default function AnalyticsLandingPage(){
 
     return (
         <div className="dark bg-background text-foreground">
-            <BeginComp 
-                dbBranch={dbBranch}
-                setClient={setClient}
-                cohortName={cohortName}
-                setCohortName={setCohortName}
-                getAllData={getAllData}
-                userProgressData={userProgressData}
-                userAttemptsData={userAttemptsData}
-                userQuizData={userQuizAttemptsData}
-            />
             {isLoaded ? 
             <>
                 <TopRibbon /><br/>

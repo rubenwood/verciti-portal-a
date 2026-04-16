@@ -39,8 +39,8 @@ export function TopRibbon() {
             <GraduationCap className="h-5 w-5 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-lg font-semibold">Verciti Analytics</h1>
-            <p className="text-xs text-muted-foreground">Dashboard Overview</p>
+            <h1 className="text-lg font-semibold">Verciti Trace</h1>
+            <p className="text-xs text-muted-foreground">Workforce Readiness & Analytics</p>
           </div>
         </div>
 

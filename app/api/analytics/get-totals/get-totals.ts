@@ -1,9 +1,9 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 
-export async function getTotals(client: SupabaseClient, orgName:string){
+export async function getTotals(client: SupabaseClient, orgId:string){
     const { data, error } = await client.from(process.env.ORG_DATA_TABLE_NAME!)
         .select('*')
-        .eq('id',orgName.toLowerCase())
+        .eq('id',orgId.toLowerCase())
         .single();
 
     if (error) {

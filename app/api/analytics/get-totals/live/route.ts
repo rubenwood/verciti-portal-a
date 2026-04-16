@@ -16,9 +16,9 @@ export async function POST(req: Request) {
         process.env.SUPABASE_SEC_LIVE_KEY!,
     )
     const reqJson = await req.json();
-    const orgName = reqJson.orgName;
+    const orgId = reqJson.orgId;
 
-    const output = await getTotals(supabaseLiveService, orgName);
+    const output = await getTotals(supabaseLiveService, orgId);
 
     return NextResponse.json(output);
 }

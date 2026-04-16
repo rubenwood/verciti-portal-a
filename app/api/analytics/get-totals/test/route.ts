@@ -16,9 +16,9 @@ export async function POST(req: Request) {
         process.env.SUPABASE_SEC_TEST_KEY!,
     )
     const reqJson = await req.json();
-    const orgName = reqJson.orgName;
+    const orgId = reqJson.orgId;
 
-    const output = await getTotals(supabaseTestService, orgName);
+    const output = await getTotals(supabaseTestService, orgId);
 
     return NextResponse.json(output);
 }
