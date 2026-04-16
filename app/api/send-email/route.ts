@@ -5,7 +5,8 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 
 const allowedOrigins = [
   "http://localhost:3000",
-    process.env.VERCEL_URL
+    process.env.VERCEL_URL,
+    process.env.VERCEL_APP_URL
 ].filter(Boolean) as string[]
 
 type RateRecord = {
