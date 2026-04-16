@@ -100,8 +100,8 @@ export function AnalyticsDashboard(props: any) {
                 : null}
             </div>
             <br/>
+            {/* Upper Cards */}
             <div className="grid grid-cols-2 gap-4">
-
                 <PopularModulesCard 
                     mostPlayed={calcMostPlayed(props.userProgressData)}
                     mostPlayedByUserCount={calcMostPopularByUserCount(props.userProgressData)}

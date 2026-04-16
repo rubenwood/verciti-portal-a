@@ -13,19 +13,18 @@ function ActivitiesSection(props: any) {
 
   return (
     <>
-    {props.userProf.ActivityAttempts != null ?
-            
+    {props.userProf.GroupedActivityAttempts != null ?            
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
             <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
                 {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                <span className="text-foreground">{props.userProf.ActivityAttempts.length} modules</span>
+                <span className="text-foreground">{props.userProf.GroupedActivityAttempts.length} modules</span>
             </CollapsibleTrigger>
             <CollapsibleContent>
                 <div className="mt-3 space-y-3 pl-6">
-                {props.userProf.ActivityAttempts.map((attempt: any) => (
-                    <div key={`prog-${attempt?.id}-${attempt?.activity_id}`} className="bg-secondary/50 rounded-md p-3">
+                {props.userProf.GroupedActivityAttempts.map((activity: any) => (
+                    <div key={`activity-${activity?.id}`} className="bg-secondary/50 rounded-md p-3">
                         <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm text-foreground">{attempt?.external_title}</span>
+                            <span className="text-sm text-foreground">{activity?.external_title}</span>
                         </div>
                         {/* <AttemptsSection attempts={activity.attempts} /> */}
                     </div>

@@ -8,51 +8,24 @@ import { supabaseMain, supabaseTest } from "@/lib/supabase";
 import { getUsersProfilesByOrgId, getUserAttempts } from "@/app/db/user/user-prog-analytics";
 import { getUsersQuizAttempts } from "@/app/db/user/user-quiz-analytics";
 
-import { Button } from "@/components/ui/button";
-
 import { TopRibbon } from "./components/general/ribbon";
 import { AnalyticsDashboard } from "./components/analytics-dashboard"
 import { getUserProfile } from "../db/general/utils";
 
 
-// This component is just for dev purposes and will be removed eventually
-export function BeginComp(props :any){
-    const begin = async () => { 
-        await props.getAllData(); 
-    }
-
-    if(!props.userProgressData || !props.userAttemptsData || !props.userQuizData){
-        return (
-            <>
-                <select onChange={(e) => { props.setClient(e.target.value); }} value={props.dbBranch}>
-                    <option value="test">test</option>
-                    <option value="main">main</option>
-                </select>
-                <br/>
-                <input type="text" placeholder="cohort name" onChange={(e) => props.setCohortName(e.target.value)} />
-                <Button onClick={begin}>Begin</Button>
-                <br/>
-            </>
-        )
-    }
-
-    return (
-        <>
-            <input type="text" placeholder="cohort name" onChange={(e) => props.setCohortName(e.target.value)} />
-            <br/>
-            <Button onClick={begin}>Begin</Button>
-            <br/>
-            Timefame
-            <br/>
-            start:
-            <input type="date" />
-            end:
-            <input type="date" />
-        </>
-    )
-
-}
-
+type GroupedAttempts = {
+    id: string;
+    external_title: string;
+    attempts: any[];
+};
+type GroupedQuiz = {
+    stage_id: string;
+    attempts: any[];
+};
+type GroupedQuizActivity = {
+    caj_id: string;
+    quizzes: GroupedQuiz[];
+};
 
 type UserProfileWithAttempts = {
     Id: string,
@@ -61,7 +34,9 @@ type UserProfileWithAttempts = {
     TotalUsageTime:number,
     PreviousLogins: any[],
     ActivityAttempts: any[],
-    QuizAttempts: any[]
+    QuizAttempts: any[],
+    GroupedActivityAttempts?: GroupedAttempts[],
+    GroupedQuizAttempts?: GroupedQuizActivity[],
 }
 
 export default function AnalyticsLandingPage(){
@@ -86,6 +61,52 @@ export default function AnalyticsLandingPage(){
                 break;
         }        
     }
+    const groupAttemptsByKey = (attempts: any[], key: string) => {
+        const grouped: Record<string, any[]> = {};
+
+        for (const attempt of attempts) {
+            const groupKey = attempt[key];
+
+            if (!grouped[groupKey]) {
+                grouped[groupKey] = [];
+            }
+
+            grouped[groupKey].push(attempt);
+        }
+
+        return Object.entries(grouped).map(([id, attempts]) => ({
+            id,
+            external_title: attempts[0].external_title,
+            attempts
+        }));
+    };
+    const groupQuizAttempts = (attempts: any[]) => {
+        const grouped: Record<string, Record<string, any[]>> = {};
+
+        for (const attempt of attempts) {
+            const activityId = attempt.caj_id;
+            const quizId = attempt.stage_id;
+
+            if (!grouped[activityId]) {
+                grouped[activityId] = {};
+            }
+
+            if (!grouped[activityId][quizId]) {
+                grouped[activityId][quizId] = [];
+            }
+
+            grouped[activityId][quizId].push(attempt);
+        }
+
+        // convert to array structure for UI
+        return Object.entries(grouped).map(([caj_id, quizzes]) => ({
+            caj_id,
+            quizzes: Object.entries(quizzes).map(([stage_id, attempts]) => ({
+                stage_id,
+                attempts
+            }))
+        }));
+    };
 
     const getAllData = async (orgId: string, dbBranch: string, clientToUse: SupabaseClient) => {
         console.log("Getting all data for org:", orgId);
@@ -106,7 +127,7 @@ export default function AnalyticsLandingPage(){
         const profileData = await getUsersProfilesByOrgId(clientToUse, orgId);
         setUserProgressData(profileData);
 
-        let userAttempts: UserProfileWithAttempts[] = [];
+        let userProfsWithAttempts: UserProfileWithAttempts[] = [];
         for(const user of profileData){
             let userAttempt: UserProfileWithAttempts = {
                 Id: user.id,
@@ -117,7 +138,7 @@ export default function AnalyticsLandingPage(){
                 ActivityAttempts:[],
                 QuizAttempts:[]
             }
-            userAttempts.push(userAttempt);
+            userProfsWithAttempts.push(userAttempt);
         }
 
         //TODO: use a list of promises to fetch all pages in parallel
@@ -127,25 +148,24 @@ export default function AnalyticsLandingPage(){
             attempts.data = attempts.data.concat(moreAttempts.data);
         }
         setUserAttemptsData(attempts.data);
-        //console.log("User Attempts Data:", attempts);
 
         const quizData = await getUsersQuizAttempts(clientToUse, profileData.map((user) => user.id));
         for(let i = 0; i < quizData.pageCount-1; i++){
             const moreQuizData = await getUsersQuizAttempts(clientToUse, profileData.map((user) => user.id), i+1, 1000);
             quizData.data = quizData.data.concat(moreQuizData.data);
         }
-        //console.log(quizData.data);
         setUserQuizAttemptsData(quizData.data);
-        //console.log("User Quiz Data:", quizData);
 
-        for(const user of userAttempts){
+        for(const user of userProfsWithAttempts){
             getAttemptsForId(user, attempts.data, "activity");
             getAttemptsForId(user, quizData.data, "quiz");
+            user.GroupedActivityAttempts = groupAttemptsByKey(user.ActivityAttempts, "activity_id");
+            user.GroupedQuizAttempts = groupQuizAttempts(user.QuizAttempts);
         }
 
         console.log("USER ATT");
-        console.log(userAttempts);
-        setUserProfsWithAttempts(userAttempts);
+        console.log(userProfsWithAttempts);
+        setUserProfsWithAttempts(userProfsWithAttempts);
     }
 
     
