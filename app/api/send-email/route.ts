@@ -77,9 +77,9 @@ export async function POST(req: Request) {
 
     const resendResponse = await resend.emails.send({
       from: "developer@verciti.com", 
-      to: "ruben.wood@theblairproject.org",
+      to: "sales@verciti.com",
       replyTo: email,
-      subject: "New Verciti Sales / Organisation Submission",
+      subject: `New Verciti Sales Enquiry from ${email} - ${orgName}`,
       html: `
         <h2>New Organisation Details</h2>
         <p><strong>Email:</strong> ${email}</p>
