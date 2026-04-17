@@ -10,7 +10,7 @@ import { getUsersQuizAttempts } from "@/app/db/user/user-quiz-analytics";
 
 import { TopRibbon } from "./components/general/ribbon";
 import { AnalyticsDashboard } from "./components/analytics-dashboard"
-import { getUserProfile } from "../db/general/utils";
+import { getUserProfile, fetchActivitiesByVisibility, fetchCoursesByVisibility, fetchCourseActivityByVisibility } from "../db/general/utils";
 
 
 type GroupedAttempts = {
@@ -44,6 +44,7 @@ export default function AnalyticsLandingPage(){
     const [role, setRole] = useState<string>("");
 
     const [totalsData, setTotalsData] = useState<any>();
+    const [orgCoursesActivities, setOrgCoursesActivities] = useState<any[] | null>();
     const [userProgressData, setUserProgressData] = useState<any[]>();
     const [userAttemptsData, setUserAttemptsData] = useState<any[]>();
     const [userQuizAttemptsData, setUserQuizAttemptsData] = useState<any[]>();
@@ -108,7 +109,7 @@ export default function AnalyticsLandingPage(){
         }));
     };
 
-    const getAllData = async (orgId: string, dbBranch: string, clientToUse: SupabaseClient) => {
+    const getAllData = async (orgId: string, contentTags: string[], dbBranch: string, clientToUse: SupabaseClient) => {
         console.log("Getting all data for org:", orgId);
 
         const resp = await fetch(`/api/analytics/get-totals/${dbBranch}`, {
@@ -123,6 +124,13 @@ export default function AnalyticsLandingPage(){
         const totalsData = await resp.json();
         console.log(totalsData);
         setTotalsData(totalsData);
+
+
+        const courseActivitiesForOrg = await fetchCourseActivityByVisibility(clientToUse, contentTags);
+        console.log("Course activities for org:", courseActivitiesForOrg);
+        if(courseActivitiesForOrg?.data && !('code' in courseActivitiesForOrg?.data)){
+            setOrgCoursesActivities(courseActivitiesForOrg.data);
+        }
 
         const profileData = await getUsersProfilesByOrgId(clientToUse, orgId);
         setUserProgressData(profileData);
@@ -175,6 +183,7 @@ export default function AnalyticsLandingPage(){
 
             let userRole = "";
             let organisationId = "";
+            let contentTags: string[] = [];
             let supabaseClientToUse = supabaseTest;
             let databaseBranch = "test";
 
@@ -182,23 +191,27 @@ export default function AnalyticsLandingPage(){
                 if(users.testUser){ // prefer test user
                     setUser(users.testUser);
                     const profile = await getUserProfile(supabaseTest, users.testUser);
+                    console.log(profile);
                     userRole = profile?.data?.role || null;
                     organisationId = profile?.org_id || "";
+                    contentTags = profile?.org_access?.content_tags || [];
                     supabaseClientToUse = supabaseTest;
                     databaseBranch = "test";
                 }else if(users.liveUser){
                     setUser(users.liveUser);
                     const profile = await getUserProfile(supabaseMain, users.liveUser);
                     userRole = profile?.data?.role || null;
-                    organisationId = profile?.org_id || "";
+                    organisationId = profile?.org_id || ""; 
+                    contentTags = profile?.org_access?.content_tags || [];
                     supabaseClientToUse = supabaseMain;
                     databaseBranch = "live";
                 }
             }
+            
 
             setRole(userRole);
 
-            getAllData(organisationId, databaseBranch, supabaseClientToUse);
+            getAllData(organisationId, contentTags, databaseBranch, supabaseClientToUse);
         };
         init();
 
@@ -216,6 +229,7 @@ export default function AnalyticsLandingPage(){
                 <AnalyticsDashboard 
                     role={role}
                     totals={totalsData}
+                    orgCoursesActivities={orgCoursesActivities}
                     userProfilesWithAttempts={userProfsWithAttempts}
                     userProgressData={userProgressData}
                     userAttemptsData={userAttemptsData}

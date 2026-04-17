@@ -1,10 +1,10 @@
 "use client"
-import React, { ReactNode, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ReactNode, useState } from "react";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDuration } from "@/app/db/general/utils";
 import { ChevronDown, ChevronRight, Clock, Play, User } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
 interface MostPopularRowProps {
     title: ReactNode | string;
@@ -15,13 +15,13 @@ interface MostPopularRowProps {
 function MostPopularRow(props: MostPopularRowProps) {
     return (
         <TableRow className="border-1">
-            <TableCell>
-                {props.title}{/*Most Played <Play className="size-4" />*/}
+            <TableCell className="flex items-center gap-2">
+                {props.title}
             </TableCell>
-            <TableCell>
+            <TableCell className="border-1">
                 {props?.value || ""}
             </TableCell>
-            <TableCell>
+            <TableCell className="border-1">
                 {props?.count || 0} 
             </TableCell>
         </TableRow>);
@@ -45,9 +45,9 @@ export function PopularModulesCard(props: any) {
                     )}
                 </CardHeader>
             </CollapsibleTrigger>
-            <CollapsibleContent>
-                    <Table className="w-full border-1 p-2">
-                        <TableBody className="border-1">
+            <CollapsibleContent >
+                    <Table className="w-full border-1">
+                        <TableBody>
                             <MostPopularRow 
                                 title={<>Most Played<Play className="size-4" /></>}
                                 value={props.mostPlayed?.moduleTitle} 
@@ -63,7 +63,7 @@ export function PopularModulesCard(props: any) {
                                 count={props.mostPlayedByUserCount?.userCount} />
                             <MostPopularRow 
                                 title={<>Longest Played <Clock className="size-4" /></>}
-                                value={props.mostPlayed?.moduleTitle} 
+                                value={props.mostPlayedTime?.moduleTitle} 
                                 count={formatDuration(props.mostPlayedTime?.playTime)} 
                             />
                         </TableBody>

@@ -8,7 +8,11 @@ import crypto from "crypto";
 export async function getUserProfile(client: SupabaseClient, user: User) {
     const { data, error } = await client
         .from('user_profiles')
-        .select('*')
+        .select(`*, 
+            org_access (
+                content_tags
+            )
+        `)
         .eq('id', user.id);
 
     if (error) {
@@ -454,6 +458,18 @@ export async function fetchActivities(client: SupabaseClient) {
 
     return data as Activity[];
 }
+export async function fetchActivitiesByVisibility(client: SupabaseClient, visibility: string[]) {
+    const { data, error } = await client.from('activities')
+    .select('*')
+    .contains('visibility', [visibility]);
+
+    if (error) {
+        console.error('Error fetching activities by visibility:', error);
+        return error;
+    }
+
+    return data as Activity[];
+}
 export async function fetchActivityById(client: SupabaseClient, activityId: string) {
     const { data, error } = await client.from('activities').select('*').eq('id', activityId).single();
     if (error) {
@@ -483,6 +499,27 @@ export async function fetchCourses(client: SupabaseClient) {
     }
 
     return data as Course[];
+}
+export async function fetchCoursesByVisibility(client: SupabaseClient, visibility: string[]) {
+    const { data, error } = await client.from('courses').select('*').contains('visibility', [visibility]);
+
+    if (error) {
+        console.error('Error fetching courses by visibility:', error);
+        return error;
+    }
+
+    return data as Course[];
+}
+export function fetchCourseActivityByVisibility(client: SupabaseClient, visibility: string[]) {
+    return client.from('courses_activities_join').select(`
+            id,
+            activity_id,
+            course_id,
+            "order",
+            activity:activities!inner (*),
+            course:courses (*)
+        `)
+        .overlaps('activities.visibility', visibility);
 }
 
 // copies data from a table in one Supabase client to another (assuming identical schemas and table names)

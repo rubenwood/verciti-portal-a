@@ -35,11 +35,10 @@ import { BookIcon, BrainIcon, ClockIcon, TrendingUp, TrophyIcon, UsersIcon, Key 
 import { formatDuration } from "@/app/db/general/utils";
 import { UserQuizTable } from "./tables/user-quiz-table";
 import { PlatformTotalsTable } from "./tables/platform-totals-table";
+import { ActivityProgressTable } from "./tables/activity-prog-table";
 
 
 export function AnalyticsDashboard(props: any) {
-    const [userQuizData, setUserQuizData] = useState<any[]>();
-
     // Stats
     const stats = useMemo(() => {
         if (!props.totals) return null;
@@ -101,7 +100,7 @@ export function AnalyticsDashboard(props: any) {
             </div>
             <br/>
             {/* Upper Cards */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4 mb-4">
                 <PopularModulesCard 
                     mostPlayed={calcMostPlayed(props.userProgressData)}
                     mostPlayedByUserCount={calcMostPopularByUserCount(props.userProgressData)}
@@ -114,6 +113,10 @@ export function AnalyticsDashboard(props: any) {
                     totalQuizDuration={calcTotalQuizDuration(props.userQuizData)} 
                 />
             </div>
+            <ActivityProgressTable 
+                orgCoursesActivities={props.orgCoursesActivities}
+                userProfilesWithAttempts={props.userProfilesWithAttempts} 
+            />
             <br/>
             <UserProgressTable 
                 userProfilesWithAttempts={props.userProfilesWithAttempts} 

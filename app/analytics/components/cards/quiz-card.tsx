@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDuration } from "@/app/db/general/utils";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export function QuizCard(props: any){
     const [isOpen, setIsOpen] = useState(false);
@@ -16,7 +17,7 @@ export function QuizCard(props: any){
                 <CollapsibleTrigger asChild>
                     <CardHeader className="cursor-pointer flex flex-row items-center justify-between p-4">
                         <CardTitle className="text-lg font-semibold">
-                            Quiz Stats
+                            Assessment Stats
                         </CardTitle>
                         {isOpen ? (
                             <ChevronDown className="h-4 w-4" />
@@ -24,21 +25,28 @@ export function QuizCard(props: any){
                             <ChevronRight className="h-4 w-4" />
                         )}
                     </CardHeader>
-                </CollapsibleTrigger>
-                    
+                </CollapsibleTrigger>                    
                 <CollapsibleContent>
-                    <CardContent className="flex flex-col items-center justify-center">
-                        <span className="grid grid-cols-2 rounded-sm w-full">
-                            <p className="border-1 p-2">Total Quizzes attempted</p>
-                            <p className="border-1 p-2">{props.totalQuizzes}</p>
-                            <p className="border-1 p-2">Total Quiz attempts</p>
-                            <p className="border-1 p-2">{props.totalQuizAttempts}</p>
-                            <p className="border-1 p-2">Total Quizzes completed</p>
-                            <p className="border-1 p-2">{props.completedQuizzes.length}</p>
-                            <p className="border-1 p-2">Total Time spent</p>
-                            <p className="border-1 p-2">{formatDuration(props.totalQuizDuration)}</p>
-                        </span>          
-                    </CardContent>
+                        <Table className="w-full border-1">
+                            <TableBody>
+                                <TableRow className="border-1">
+                                    <TableCell className="border-1">Total Assessments attempted</TableCell>
+                                    <TableCell className="border-1">{props.totalQuizzes}</TableCell>
+                                </TableRow>
+                                <TableRow className="border-1">
+                                    <TableCell className="border-1">Total Assessment attempts</TableCell>
+                                    <TableCell className="border-1">{props.totalQuizAttempts}</TableCell>
+                                </TableRow>
+                                <TableRow className="border-1">
+                                    <TableCell className="border-1">Total Assessments completed</TableCell>
+                                    <TableCell className="border-1">{props.completedQuizzes.length}</TableCell>
+                                </TableRow>
+                                <TableRow className="border-1">
+                                    <TableCell className="border-1">Total Time spent</TableCell>
+                                    <TableCell className="border-1">{formatDuration(props.totalQuizDuration)}</TableCell>
+                                </TableRow>
+                            </TableBody>        
+                        </Table>        
                 </CollapsibleContent>
             </Card>
         </Collapsible>
