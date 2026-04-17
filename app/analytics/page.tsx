@@ -122,7 +122,7 @@ export default function AnalyticsLandingPage(){
             })
         });
         const totalsData = await resp.json();
-        console.log(totalsData);
+        //console.log(totalsData);
         setTotalsData(totalsData);
 
 
@@ -171,8 +171,8 @@ export default function AnalyticsLandingPage(){
             user.GroupedQuizAttempts = groupQuizAttempts(user.QuizAttempts);
         }
 
-        console.log("USER ATT");
-        console.log(userProfsWithAttempts);
+        //console.log("USER ATT");
+        //console.log(userProfsWithAttempts);
         setUserProfsWithAttempts(userProfsWithAttempts);
     }
 

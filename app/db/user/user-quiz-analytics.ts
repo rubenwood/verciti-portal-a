@@ -98,7 +98,7 @@ export function calcCompletedQuizzes(quizAttemptsData: any[]){
             completedQuizAttempts.push(attempt);
         }
     }
-    console.log("Completed Quiz Attempts:", completedQuizAttempts);
+    //console.log("Completed Quiz Attempts:", completedQuizAttempts);
     return completedQuizAttempts;
 }
 

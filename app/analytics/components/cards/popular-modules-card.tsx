@@ -55,10 +55,10 @@ export function PopularModulesCard(props: any) {
                             />
                             <MostPopularRow 
                                 title={<>Most Users <User className="size-4" /></>} 
-                                value={props.mostPlayedByUserCount?.moduleTitles?.map((title: string) => (
-                                    <>
-                                        <span key={`most-played--${title}`}>{title}</span><br/><br/>
-                                    </>
+                                value={props.mostPlayedByUserCount?.moduleTitles?.map((title: string, index: number) => (
+                                    <div key={`most-played-${title}-${index}`}>
+                                        <span>{title}</span><br/><br/>
+                                    </div>
                                 ))} 
                                 count={props.mostPlayedByUserCount?.userCount} />
                             <MostPopularRow 

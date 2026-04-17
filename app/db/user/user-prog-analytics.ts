@@ -1,6 +1,4 @@
-import { PostgrestError, SupabaseClient, User } from '@supabase/supabase-js';
-import confetti from 'canvas-confetti';
-import type { RefObject } from 'react';
+import { SupabaseClient} from '@supabase/supabase-js';
 
 export async function getUsersProgress(client: SupabaseClient, user_ids: string[]){
     const { data, error } = await client
@@ -117,7 +115,7 @@ export function calcTotalModulesCompleted(userProgressData: any[]): number {
     return totalCompleted;
 }
 export function calcTotalUniqueModulesCompleted(userProgressData: any[]): number {
-    console.log("Calculating total modules completed from user progress data:", userProgressData);
+    //console.log("Calculating total modules completed from user progress data:", userProgressData);
 
     const completedModules = new Set<string>();
 
@@ -160,7 +158,7 @@ export function calcMostPopularByUserCount(userProgressData: any[]): {moduleTitl
         const firstEntry = activityUserMap[activityId].values().next().value;
         mostPlayedActivityTitles.push(firstEntry.activity.external_title);
     }
-    console.log("Most played activity titles:", mostPlayedActivityTitles);
+    //console.log("Most played activity titles:", mostPlayedActivityTitles);
     
     return {
         moduleTitles: mostPlayedActivityTitles,
