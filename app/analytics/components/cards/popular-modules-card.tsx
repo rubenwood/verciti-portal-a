@@ -25,28 +25,28 @@ export function PopularModulesCard(props: any) {
         </CollapsibleTrigger>
         <CollapsibleContent>
             <CardContent className="pt-0">
-                <div className="grid grid-cols-3 border-y w-full text-sm">                    
-                    <p className="px-4 py-6 flex items-center gap-1">
+                <div className="grid grid-cols-3 border rounded-sm w-full text-sm">                    
+                    <p className="border-1 p-2 flex items-center gap-1">
                         Most Played <Play className="size-4" />
                     </p>
-                    <p className="px-4 py-6">{props.mostPlayed?.moduleTitle}</p>
-                    <p className="px-4 py-6">{props.mostPlayed?.playCount}</p>
+                    <p className="border-1 p-2">{props.mostPlayed?.moduleTitle}</p>
+                    <p className="border-1 p-2">{props.mostPlayed?.playCount}</p>
 
-                    <p className="px-4 py-6 flex items-center gap-1">
+                    <p className="border-1 p-2 flex items-center gap-1">
                         Most Users <User className="size-4" />
                     </p>
-                    <p className="px-4 py-6">
+                    <p className="border-1 p-2">
                         {props.mostPlayedByUserCount?.moduleTitles?.join(", ")}
                     </p>
-                    <p className="px-4 py-6">
+                    <p className="p-2">
                     {props.mostPlayedByUserCount?.userCount}
                     </p>
 
-                    <p className="px-4 py-6 flex items-center gap-1">
+                    <p className="border-1 p-2 flex items-center gap-1">
                         Longest Played <Clock className="size-4" />
                     </p>
-                    <p className="px-4 py-6">{props.mostPlayedTime?.moduleTitle}</p>
-                    <p className="px-4 py-6">
+                    <p className="border-1 p-2">{props.mostPlayedTime?.moduleTitle}</p>
+                    <p className="border-1 p-2">
                         {formatDuration(props.mostPlayedTime?.playTime)}
                     </p>
                 </div>

@@ -28,15 +28,15 @@ export function QuizCard(props: any){
                     
                 <CollapsibleContent>
                     <CardContent className="flex flex-col items-center justify-center">
-                        <span className="grid grid-cols-2 border-b-2 border-t-2 w-full">
-                            <p className="border-1 p-1">Total Quizzes attempted</p>
-                            <p className="border-1 p-1">{props.totalQuizzes}</p>
-                            <p className="border-1 p-1">Total Quiz attempts</p>
-                            <p className="border-1 p-1">{props.totalQuizAttempts}</p>
-                            <p className="border-1 p-1">Total Quizzes completed</p>
-                            <p className="border-1 p-1">{props.completedQuizzes.length}</p>
-                            <p className="border-1 p-1">Total Time spent</p>
-                            <p className="border-1 p-1">{formatDuration(props.totalQuizDuration)}</p>
+                        <span className="grid grid-cols-2 rounded-sm w-full">
+                            <p className="border-1 p-2">Total Quizzes attempted</p>
+                            <p className="border-1 p-2">{props.totalQuizzes}</p>
+                            <p className="border-1 p-2">Total Quiz attempts</p>
+                            <p className="border-1 p-2">{props.totalQuizAttempts}</p>
+                            <p className="border-1 p-2">Total Quizzes completed</p>
+                            <p className="border-1 p-2">{props.completedQuizzes.length}</p>
+                            <p className="border-1 p-2">Total Time spent</p>
+                            <p className="border-1 p-2">{formatDuration(props.totalQuizDuration)}</p>
                         </span>          
                     </CardContent>
                 </CollapsibleContent>

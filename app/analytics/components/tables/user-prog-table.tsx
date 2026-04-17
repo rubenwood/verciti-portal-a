@@ -1,5 +1,4 @@
 "use client"
-
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,7 +10,6 @@ import { JSX, useEffect, useState } from "react";
 import { fetchStagesWithInfoTexts, formatDuration, formatDate } from "@/app/db/general/utils";
 
 import { supabaseMain, supabaseTest } from "@/lib/supabase";
-import { Stage } from "@react-three/drei";
 
 
 function StageElement(props: any) {
@@ -86,7 +84,7 @@ function ActivityAttemptsModal(props: any) {
                 ?.filter(Boolean);
 
             if (!stageIds?.length) return;
-            // TODO: change the supabase cllient dependant on user
+            // TODO: change the supabase client dependant on user
             const result = await fetchStagesWithInfoTexts(supabaseTest, stageIds);
 
             if (Array.isArray(result)) {
