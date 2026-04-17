@@ -11,7 +11,20 @@ import { JSX, useEffect, useState } from "react";
 import { fetchStagesWithInfoTexts, formatDuration, formatDate } from "@/app/db/general/utils";
 
 import { supabaseMain, supabaseTest } from "@/lib/supabase";
+import { Stage } from "@react-three/drei";
 
+
+function StageElement(props: any) {
+    return (
+        <>
+            {props.stageData?.stage?.type == "quiz" ?
+                props.stageData?.stage?.params?.title
+            :
+                props.stageData.related_info_text?.text_en_uk?.title || props.stage.id}
+        </>
+    
+    );
+}
 
 // TODO: when we open this modal, start pulling in the stage data for each stage in each attempt
 function AttemptedStagesCollapsible(props: any) {
@@ -45,7 +58,7 @@ function AttemptedStagesCollapsible(props: any) {
                             <div className="flex items-center justify-between mb-2">
                                 <span className="text-sm text-foreground font-light">
                                     {stageData
-                                        ? stageData.related_info_text?.text_en_uk.title || stageData.stage.id
+                                        ? <StageElement stageData={stageData} />
                                         : "Loading..."}
                                 </span>
                             </div>

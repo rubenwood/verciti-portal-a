@@ -37,7 +37,7 @@ type UserProfileWithAttempts = {
     QuizAttempts: any[],
     GroupedActivityAttempts?: GroupedAttempts[],
     GroupedQuizAttempts?: GroupedQuizActivity[],
-}
+};
 
 export default function AnalyticsLandingPage(){
     const [user, setUser] = useState<User | null>(null);
