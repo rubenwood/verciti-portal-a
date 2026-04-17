@@ -1,28 +1,51 @@
 "use client"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { JSX, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Dialog,  DialogContent,  DialogHeader,  DialogTitle,  DialogDescription } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge, Bell, Book, ChevronDown, ChevronRight, Clock, Layers, User } from "lucide-react";
-import { JSX, useEffect, useState } from "react";
 import { fetchStagesWithInfoTexts, formatDuration, formatDate } from "@/app/db/general/utils";
 
 
 export function ActivityProgressTable(props: any){
+    useEffect(() => {
+        console.log("Profiles changed:", props.userProfilesWithAttempts);
+    }, [props.userProfilesWithAttempts]);
+
+    const attemptsByActivityId = useMemo(() => {
+        const map: Record<string, number> = {};
+
+        if (!props.userProfilesWithAttempts){ return map; }
+
+        for (const user of props.userProfilesWithAttempts) {
+            const attempts = user.ActivityAttempts ?? [];
+
+            for (const attempt of attempts) {
+                const activityId = attempt.activity_id;
+                map[activityId] = (map[activityId] ?? 0) + 1;
+            }
+        }
+
+        return map;
+    }, [props.userProfilesWithAttempts]);
+
     const populateRows = () => {
         const rows: JSX.Element[] = [];
         if (props.userProfilesWithAttempts == null || props.orgCoursesActivities == null) { return rows; }
 
-        {/* need to calculate the user count and attempts per activity */}
         for (const activity of props.orgCoursesActivities) {
+            {/* need to calculate the user count and attempts per activity */}
+            //const totalUsersPerActivity = activity.user_count ?? 0;
+            const totalAttemptsPerActivity = attemptsByActivityId[activity.activity_id] ?? 0;
+
             rows.push(
                 <TableRow key={`caj-${activity.id}`} className="border-border hover:bg-transparent">
                     <TableCell>{activity?.course?.external_title}</TableCell>
                     <TableCell>{activity?.activity?.external_title}</TableCell>
                     <TableCell>{activity?.user_count || 0}</TableCell> 
-                    <TableCell>{activity?.attempts || 0}</TableCell>
+                    <TableCell>{totalAttemptsPerActivity || 0}</TableCell>
                     <TableCell>
                         <Button variant="ghost" size="sm">
                             <ChevronRight size={16} />

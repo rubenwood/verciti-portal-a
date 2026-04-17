@@ -10,7 +10,7 @@ import { getUsersQuizAttempts } from "@/app/db/user/user-quiz-analytics";
 
 import { TopRibbon } from "./components/general/ribbon";
 import { AnalyticsDashboard } from "./components/analytics-dashboard"
-import { getUserProfile, fetchActivitiesByVisibility, fetchCoursesByVisibility, fetchCourseActivityByVisibility } from "../db/general/utils";
+import { getUserProfile, fetchCourseActivityByVisibility } from "../db/general/utils";
 
 
 type GroupedAttempts = {
@@ -43,12 +43,7 @@ export default function AnalyticsLandingPage(){
     const [user, setUser] = useState<User | null>(null);
     const [role, setRole] = useState<string>("");
 
-    const [totalsData, setTotalsData] = useState<any>();
-    const [orgCoursesActivities, setOrgCoursesActivities] = useState<any[] | null>();
-    const [userProgressData, setUserProgressData] = useState<any[]>();
-    const [userAttemptsData, setUserAttemptsData] = useState<any[]>();
-    const [userQuizAttemptsData, setUserQuizAttemptsData] = useState<any[]>();
-    const [userProfsWithAttempts, setUserProfsWithAttempts] = useState<UserProfileWithAttempts[]>();
+    const [allData, setAllData] = useState<any>(null);
 
 
     const getAttemptsForId = (userProfAttempt: UserProfileWithAttempts, attemptData: any[], type: string) => {
@@ -122,18 +117,12 @@ export default function AnalyticsLandingPage(){
             })
         });
         const totalsData = await resp.json();
-        //console.log(totalsData);
-        setTotalsData(totalsData);
 
 
         const courseActivitiesForOrg = await fetchCourseActivityByVisibility(clientToUse, contentTags);
         console.log("Course activities for org:", courseActivitiesForOrg);
-        if(courseActivitiesForOrg?.data && !('code' in courseActivitiesForOrg?.data)){
-            setOrgCoursesActivities(courseActivitiesForOrg.data);
-        }
 
         const profileData = await getUsersProfilesByOrgId(clientToUse, orgId);
-        setUserProgressData(profileData);
 
         let userProfsWithAttempts: UserProfileWithAttempts[] = [];
         for(const user of profileData){
@@ -155,14 +144,12 @@ export default function AnalyticsLandingPage(){
             const moreAttempts = await getUserAttempts(clientToUse, profileData.map((user) => user.id), i+1, 1000);
             attempts.data = attempts.data.concat(moreAttempts.data);
         }
-        setUserAttemptsData(attempts.data);
 
         const quizData = await getUsersQuizAttempts(clientToUse, profileData.map((user) => user.id));
         for(let i = 0; i < quizData.pageCount-1; i++){
             const moreQuizData = await getUsersQuizAttempts(clientToUse, profileData.map((user) => user.id), i+1, 1000);
             quizData.data = quizData.data.concat(moreQuizData.data);
         }
-        setUserQuizAttemptsData(quizData.data);
 
         for(const user of userProfsWithAttempts){
             getAttemptsForId(user, attempts.data, "activity");
@@ -171,11 +158,15 @@ export default function AnalyticsLandingPage(){
             user.GroupedQuizAttempts = groupQuizAttempts(user.QuizAttempts);
         }
 
-        //console.log("USER ATT");
-        //console.log(userProfsWithAttempts);
-        setUserProfsWithAttempts(userProfsWithAttempts);
+        return {
+            totalsData: totalsData,
+            orgCoursesActivities: courseActivitiesForOrg.data,
+            userProgressData: profileData,
+            userAttemptsData: attempts.data,
+            userQuizAttemptsData: quizData.data,
+            userProfsWithAttempts: userProfsWithAttempts
+        }
     }
-
     
     useEffect(() => {
         const init = async () => {
@@ -206,18 +197,28 @@ export default function AnalyticsLandingPage(){
                     supabaseClientToUse = supabaseMain;
                     databaseBranch = "live";
                 }
-            }
-            
+            }            
 
             setRole(userRole);
 
-            getAllData(organisationId, contentTags, databaseBranch, supabaseClientToUse);
+            const output = await getAllData(organisationId, contentTags, databaseBranch, supabaseClientToUse);
+            console.log("Data fetched in init:", output);
+            const result = {
+                totalsData: output.totalsData,
+                orgCoursesActivities: output.orgCoursesActivities,
+                userProgressData: output.userProgressData,
+                userAttemptsData: output.userAttemptsData,
+                userQuizAttemptsData: output.userQuizAttemptsData,
+                userProfsWithAttempts: output.userProfsWithAttempts
+            };
+            console.log("All data fetched:", result);
+            setAllData(result);
         };
         init();
 
     }, []);
 
-    const isLoaded = userProgressData && userAttemptsData && userQuizAttemptsData;
+    const isLoaded = allData != null;
 
     if(!user){ return(<p>Not logged in</p>) }
 
@@ -228,12 +229,12 @@ export default function AnalyticsLandingPage(){
                 <TopRibbon /><br/>
                 <AnalyticsDashboard 
                     role={role}
-                    totals={totalsData}
-                    orgCoursesActivities={orgCoursesActivities}
-                    userProfilesWithAttempts={userProfsWithAttempts}
-                    userProgressData={userProgressData}
-                    userAttemptsData={userAttemptsData}
-                    userQuizData={userQuizAttemptsData}
+                    totals={allData.totalsData}
+                    orgCoursesActivities={allData.orgCoursesActivities}
+                    userProfilesWithAttempts={allData.userProfsWithAttempts}
+                    userProgressData={allData.userProgressData}
+                    userAttemptsData={allData.userAttemptsData}
+                    userQuizData={allData.userQuizAttemptsData}
                 />
             </>
             : null }            
