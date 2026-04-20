@@ -12,6 +12,7 @@ import { fetchStagesWithInfoTexts, formatDuration, formatDate } from "@/app/db/g
 export function ActivityProgressTable(props: any){
     useEffect(() => {
         console.log("Profiles changed:", props.userProfilesWithAttempts);
+        //console.log("Activities changed:", props.orgCoursesActivities);
     }, [props.userProfilesWithAttempts]);
 
     const attemptsByActivityId = useMemo(() => {
@@ -31,20 +32,37 @@ export function ActivityProgressTable(props: any){
         return map;
     }, [props.userProfilesWithAttempts]);
 
+    const usersByActivity = useMemo(() => {
+        const map: Record<string, number> = {};
+
+        if (!props.userProfilesWithAttempts) return map;
+
+        for (const user of props.userProfilesWithAttempts) {
+            const groupedActivities = user.GroupedActivityAttempts ?? [];
+
+            for (const group of groupedActivities) {
+                const activityId = group.id;
+                map[activityId] = (map[activityId] ?? 0) + 1;
+            }
+        }
+
+        return map;
+    }, [props.userProfilesWithAttempts]);
+
     const populateRows = () => {
         const rows: JSX.Element[] = [];
         if (props.userProfilesWithAttempts == null || props.orgCoursesActivities == null) { return rows; }
 
         for (const activity of props.orgCoursesActivities) {
             {/* need to calculate the user count and attempts per activity */}
-            //const totalUsersPerActivity = activity.user_count ?? 0;
             const totalAttemptsPerActivity = attemptsByActivityId[activity.activity_id] ?? 0;
+            const totalUsersPerActivity = usersByActivity[activity.activity_id] ?? 0;
 
             rows.push(
                 <TableRow key={`caj-${activity.id}`} className="border-border hover:bg-transparent">
                     <TableCell>{activity?.course?.external_title}</TableCell>
                     <TableCell>{activity?.activity?.external_title}</TableCell>
-                    <TableCell>{activity?.user_count || 0}</TableCell> 
+                    <TableCell>{totalUsersPerActivity || 0}</TableCell> 
                     <TableCell>{totalAttemptsPerActivity || 0}</TableCell>
                     <TableCell>
                         <Button variant="ghost" size="sm">
