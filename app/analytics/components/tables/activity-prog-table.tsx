@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Dialog,  DialogContent,  DialogHeader,  DialogTitle,  DialogDescription } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge, Bell, Book, ChevronDown, ChevronRight, Clock, Layers, User } from "lucide-react";
+import { Badge, Bell, Book, ChevronDown, ChevronRight, Clock, Layers, User, Play } from "lucide-react";
 import { fetchStagesWithInfoTexts, formatDuration, formatDate } from "@/app/db/general/utils";
 
 
@@ -101,7 +101,11 @@ export function ActivityProgressTable(props: any){
                                     Users <User size={16}/>
                                 </div>
                             </TableHead>
-                            <TableHead className="text-muted-foreground">Attempts</TableHead>
+                            <TableHead className="text-muted-foreground">
+                                <div className="items-center gap-2 flex">
+                                    Attempts <Play size={16} />
+                                </div>
+                            </TableHead>
                             <TableHead className="text-muted-foreground w-[80px]">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
