@@ -116,6 +116,7 @@ export function AnalyticsDashboard(props: any) {
             <ActivityProgressTable 
                 orgCoursesActivities={props.orgCoursesActivities}
                 userProfilesWithAttempts={props.userProfilesWithAttempts} 
+                supabaseClient={props.supabaseClient}
             />
             <br/>
             <UserProgressTable 

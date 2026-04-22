@@ -5,14 +5,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Dialog,  DialogContent,  DialogHeader,  DialogTitle,  DialogDescription } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge, Bell, Book, ChevronDown, ChevronRight, Clock, Layers, User, Play } from "lucide-react";
+import { Badge, Bell, Book, ChevronDown, ChevronRight, Clock, Layers, User, Play, Award } from "lucide-react";
 import { fetchStagesWithInfoTexts, formatDuration, formatDate } from "@/app/db/general/utils";
+import { getMasteredActivities } from "@/app/db/user/user-prog-analytics";
 
 
 export function ActivityProgressTable(props: any){
-    useEffect(() => {
+    const [masteryByUser, setMasteryByUser] = useState<Record<string, { masteredCajIds: string[]; masteredStageIds: string[] }>>({});
+
+
+     useEffect(() => {
         console.log("Profiles changed:", props.userProfilesWithAttempts);
-        //console.log("Activities changed:", props.orgCoursesActivities);
+        console.log(props);
+        if (!props.userProfilesWithAttempts?.length || !props.supabaseClient) return;
+
+        const userIds = props.userProfilesWithAttempts.map((u: any) => u.Id);
+        console.log(userIds);
+        getMasteredActivities(props.supabaseClient, userIds).then(setMasteryByUser);
     }, [props.userProfilesWithAttempts]);
 
     const attemptsByActivityId = useMemo(() => {
@@ -49,6 +58,19 @@ export function ActivityProgressTable(props: any){
         return map;
     }, [props.userProfilesWithAttempts]);
 
+    const masteredCountByCajId = useMemo(() => {
+        const map: Record<string, number> = {};
+
+        for (const { masteredCajIds } of Object.values(masteryByUser)) {
+            for (const cajId of masteredCajIds) {
+                map[cajId] = (map[cajId] ?? 0) + 1;
+            }
+        }
+
+        return map;
+        }, [masteryByUser]);
+
+
     const populateRows = () => {
         const rows: JSX.Element[] = [];
         if (props.userProfilesWithAttempts == null || props.orgCoursesActivities == null) { return rows; }
@@ -57,6 +79,7 @@ export function ActivityProgressTable(props: any){
             {/* need to calculate the user count and attempts per activity */}
             const totalAttemptsPerActivity = attemptsByActivityId[activity.activity_id] ?? 0;
             const totalUsersPerActivity = usersByActivity[activity.activity_id] ?? 0;
+            const totalMasteredPerActivity = masteredCountByCajId[activity.id] ?? 0;
 
             rows.push(
                 <TableRow key={`caj-${activity.id}`} className="border-border hover:bg-transparent">
@@ -64,6 +87,7 @@ export function ActivityProgressTable(props: any){
                     <TableCell>{activity?.activity?.external_title}</TableCell>
                     <TableCell>{totalUsersPerActivity || 0}</TableCell> 
                     <TableCell>{totalAttemptsPerActivity || 0}</TableCell>
+                    <TableCell>{totalMasteredPerActivity || 0}</TableCell>
                     <TableCell>
                         <Button variant="ghost" size="sm">
                             <ChevronRight size={16} />
@@ -104,6 +128,11 @@ export function ActivityProgressTable(props: any){
                             <TableHead className="text-muted-foreground">
                                 <div className="items-center gap-2 flex">
                                     Attempts <Play size={16} />
+                                </div>
+                            </TableHead>
+                            <TableHead className="text-muted-foreground">
+                                <div className="items-center gap-2 flex">
+                                    Mastered <Award size={16} />
                                 </div>
                             </TableHead>
                             <TableHead className="text-muted-foreground w-[80px]">Actions</TableHead>

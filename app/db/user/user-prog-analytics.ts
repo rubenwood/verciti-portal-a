@@ -102,6 +102,89 @@ export async function getUserAttempts(client: SupabaseClient, user_ids: string[]
 }
 
 
+export async function getMasteredActivities(client: SupabaseClient, userIds: string[], page: number = 0, pageSize: number = 1000) {
+
+    if (!userIds.length) return {};
+
+    // Get all 100% quiz attempts for the given users (paginated)
+    const { data: attempts100, error: attemptsError } = await client
+        .from("quiz_attempts")
+        .select("user_id, activity_attempt_id, caj_id, stage_id, score")
+        .in("user_id", userIds)
+        .eq("score", 1)
+        .range(page * pageSize, (page + 1) * pageSize - 1);
+
+    if (attemptsError) throw new Error(`Failed to fetch quiz attempts: ${attemptsError.message}`);
+    if (!attempts100?.length) return Object.fromEntries(userIds.map(id => [id, { masteredCajIds: [], masteredStageIds: [] }]));
+
+    // Group attempts by user -> session (activity_attempt_id) -> stages
+    const sessionsByUser: Record<string, { activityAttemptId: string; cajId: string; masteredStageIds: Set<string> }[]> = {};
+
+    for (const attempt of attempts100) {
+    if (!sessionsByUser[attempt.user_id]) sessionsByUser[attempt.user_id] = [];
+
+    const existing = sessionsByUser[attempt.user_id].find(s => s.activityAttemptId === attempt.activity_attempt_id);
+    if (existing) {
+        existing.masteredStageIds.add(attempt.stage_id);
+    } else {
+        sessionsByUser[attempt.user_id].push({
+            activityAttemptId: attempt.activity_attempt_id,
+            cajId: attempt.caj_id,
+            masteredStageIds: new Set([attempt.stage_id]),
+        });
+    }
+    }
+
+    // Fetch required quiz stages for all attempted CAJs across all users
+    const allCajIds = [...new Set(attempts100.map(a => a.caj_id))];
+
+    const { data: quizStageMappings, error: mappingsError } = await client
+        .from("stage_activity_join")
+        .select("caj_id, stage_id, stages!inner(type)")
+        .eq("stages.type", "quiz")
+        .in("caj_id", allCajIds);
+
+    if (mappingsError) throw new Error(`Failed to fetch stage mappings: ${mappingsError.message}`);
+    if (!quizStageMappings?.length) return Object.fromEntries(userIds.map(id => [id, { masteredCajIds: [], masteredStageIds: [] }]));
+
+    // Build required stages per CAJ
+    const requiredStagesPerCaj: Record<string, Set<string>> = {};
+    for (const mapping of quizStageMappings) {
+        if (!requiredStagesPerCaj[mapping.caj_id]) requiredStagesPerCaj[mapping.caj_id] = new Set();
+        requiredStagesPerCaj[mapping.caj_id].add(mapping.stage_id);
+    }
+
+    // For each user, check which CAJs are mastered in a single session
+    const results: Record<string, { masteredCajIds: string[]; masteredStageIds: string[] }> = {};
+
+    for (const userId of userIds) {
+        const sessions = sessionsByUser[userId] ?? [];
+        const masteredCajIds: string[] = [];
+        const masteredStageIds = new Set<string>();
+
+        for (const [cajId, requiredStages] of Object.entries(requiredStagesPerCaj)) {
+            // Find a single session that covers all required stages for this CAJ
+            const masteringSession = sessions.find(
+            s => s.cajId === cajId && [...requiredStages].every(id => s.masteredStageIds.has(id))
+            );
+
+            if (masteringSession) {
+            masteredCajIds.push(cajId);
+            masteringSession.masteredStageIds.forEach(id => masteredStageIds.add(id));
+            }
+        }
+
+        results[userId] = {
+            masteredCajIds,
+            masteredStageIds: [...masteredStageIds],
+        };
+    }
+
+    console.log("RES: ");
+    console.log(results);
+    return results;
+}
+
 // =============== Metrics Calculations ===============
 export function calcTotalModulesCompleted(userProgressData: any[]): number {
     let totalCompleted = 0;
