@@ -7,7 +7,7 @@ import { Dialog,  DialogContent,  DialogHeader,  DialogTitle,  DialogDescription
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge, Bell, Book, ChevronDown, ChevronRight, Clock, Layers, User, Play, Award } from "lucide-react";
 import { fetchStagesWithInfoTexts, formatDuration, formatDate } from "@/app/db/general/utils";
-import { getMasteredActivities } from "@/app/db/user/user-prog-analytics";
+import { getMasteredActivities } from "@/app/db/user/user-prog-analytics"; // TODO: improve this
 
 
 export function ActivityProgressTable(props: any){
