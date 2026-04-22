@@ -557,6 +557,123 @@ export async function copyDataBetweenTables(fromClient: SupabaseClient, toClient
     }
 }
 
+// populates the stage activity join table, takes in a caj, gets the stages (from activity params)
+export async function populateStageActivityJoin(client: SupabaseClient, cajIds: string[]): Promise<void> {
+    if (cajIds.length === 0) {
+        console.warn("No CAJ IDs provided, skipping.");
+        return;
+    }
+
+    const { data: cajRows, error: cajError } = await client
+        .from("courses_activities_join")
+        .select("id, activity_id")
+        .in("id", cajIds);
+
+    if (cajError || !cajRows?.length) {
+        throw new Error(`Failed to fetch CAJ rows: ${cajError?.message}`);
+    }
+
+    // 2. Fetch all related activities in one query
+    const activityIds = cajRows.map((caj) => caj.activity_id);
+
+    const { data: activities, error: activitiesError } = await client
+        .from("activities")
+        .select("id, internal_title, params")
+        .in("id", activityIds);
+
+    if (activitiesError || !activities?.length) {
+        throw new Error(`Failed to fetch activities: ${activitiesError?.message}`);
+    }
+
+    const activityParamsMap = new Map(
+        activities.map((a) => {
+            const params = a.params as { stage_ids?: string[] } | null;
+            return [a.id, { title: a.internal_title, stageIds: params?.stage_ids ?? [] }];
+        })
+    );
+
+    const rows = cajRows.flatMap((caj) => {
+    const activity = activityParamsMap.get(caj.activity_id);
+
+    if (!activity?.stageIds.length) {
+        console.warn(
+        `[CAJ: ${caj.id}] Activity "${activity?.title ?? caj.activity_id}" has no stage_ids in params — skipping.`
+        );
+        return [];
+    }
+
+    return activity.stageIds.map((stageId, index) => ({
+            stage_id: stageId,
+            activity_id: caj.activity_id,
+            activity_title: activity.title, // carried for logging only, not inserted
+            stage_index: index,
+            stage_type: null,
+            caj_id: caj.id,
+        }));
+    });
+
+    if (rows.length === 0) {
+        console.warn("No rows to insert after processing all CAJ IDs.");
+        return;
+    }
+
+    const allStageIds = rows.map((r) => r.stage_id);
+
+    const { data: existingStages, error: stagesError } = await client
+        .from("stages")
+        .select("id")
+        .in("id", allStageIds);
+
+    if (stagesError) {
+        throw new Error(`Failed to validate stage IDs: ${stagesError.message}`);
+    }
+
+    const existingStageIds = new Set(existingStages?.map((s) => s.id));
+
+    // Group missing stage_ids by activity for clear logging
+    const missingByActivity = rows
+        .filter((r) => !existingStageIds.has(r.stage_id))
+        .reduce((acc, r) => {
+            const key = `"${r.activity_title}" (${r.activity_id})`;
+            if (!acc[key]) acc[key] = [];
+            acc[key].push(r.stage_id);
+            return acc;
+        }, {} as Record<string, string[]>);
+
+    if (Object.keys(missingByActivity).length > 0) {
+        console.warn("The following stage_ids are missing from the stages table:");
+        for (const [activity, stageIds] of Object.entries(missingByActivity)) {
+            console.warn(`  Activity ${activity}: ${stageIds.length} missing stage(s)`);
+            stageIds.forEach((id) => console.warn(`    - ${id}`));
+        }
+    }
+
+    // Strip the logging-only field before inserting
+    const validRows = rows
+        .filter((r) => existingStageIds.has(r.stage_id))
+        .map(({ activity_title, ...row }) => row);
+
+    if (validRows.length === 0) {
+        console.warn("No valid rows to insert after stage validation.");
+        return;
+    }
+
+    const { error: insertError } = await client
+        .from("stage_activity_join")
+        .upsert(validRows);
+
+    if (insertError) {
+        throw new Error(`Failed to insert rows: ${insertError.message}`);
+    }
+
+    const skippedCount = rows.length - validRows.length;
+    console.log(
+        `Successfully inserted ${validRows.length} rows across ${cajRows.length} CAJ entries.` +
+        (skippedCount > 0 ? ` (${skippedCount} skipped due to missing stages — see warnings above)` : "")
+    );
+}
+
+
 async function getLatestDBChangeNum(client: SupabaseClient, versionTable: string) {
     const { data, error } = await client
         .from(versionTable)
