@@ -13,7 +13,6 @@ import { getMasteredActivities } from "@/app/db/user/user-prog-analytics"; // TO
 export function ActivityProgressTable(props: any){
     const [masteryByUser, setMasteryByUser] = useState<Record<string, { masteredCajIds: string[]; masteredStageIds: string[] }>>({});
 
-
      useEffect(() => {
         console.log("Profiles changed:", props.userProfilesWithAttempts);
         console.log(props);
@@ -33,7 +32,7 @@ export function ActivityProgressTable(props: any){
             const attempts = user.ActivityAttempts ?? [];
 
             for (const attempt of attempts) {
-                const activityId = attempt.activity_id;
+                const activityId = attempt.caj_id;
                 map[activityId] = (map[activityId] ?? 0) + 1;
             }
         }
@@ -48,7 +47,6 @@ export function ActivityProgressTable(props: any){
 
         for (const user of props.userProfilesWithAttempts) {
             const groupedActivities = user.GroupedActivityAttempts ?? [];
-
             for (const group of groupedActivities) {
                 const activityId = group.id;
                 map[activityId] = (map[activityId] ?? 0) + 1;
@@ -57,6 +55,23 @@ export function ActivityProgressTable(props: any){
 
         return map;
     }, [props.userProfilesWithAttempts]);
+
+    const completedCountByCajId = useMemo(() => {
+        const map: Record<string, number> = {};
+        if (!props.userProgressData) return map;
+
+        for (const user of props.userProgressData) {
+            for(const prog of user?.generic_activity_progress){
+                if (prog.completion >= 1) {
+                    const activityId = prog.caj_id;
+                    map[activityId] = (map[activityId] ?? 0) + 1;
+                }
+            }
+        }
+
+        return map;
+
+    }, [props.userProgressData])
 
     const masteredCountByCajId = useMemo(() => {
         const map: Record<string, number> = {};
@@ -68,7 +83,7 @@ export function ActivityProgressTable(props: any){
         }
 
         return map;
-        }, [masteryByUser]);
+    }, [masteryByUser]);
 
 
     const populateRows = () => {
@@ -76,9 +91,10 @@ export function ActivityProgressTable(props: any){
         if (props.userProfilesWithAttempts == null || props.orgCoursesActivities == null) { return rows; }
 
         for (const activity of props.orgCoursesActivities) {
-            {/* need to calculate the user count and attempts per activity */}
-            const totalAttemptsPerActivity = attemptsByActivityId[activity.activity_id] ?? 0;
-            const totalUsersPerActivity = usersByActivity[activity.activity_id] ?? 0;
+            {/* activity.id here is actually a caj id, since props.orgCoursesActivities is results from the caj table */}
+            const totalUsersPerActivity = usersByActivity[activity.id] ?? 0;
+            const totalAttemptsPerActivity = attemptsByActivityId[activity.id] ?? 0;  
+            const totalCompletionsPerActivity = completedCountByCajId[activity.id] ?? 0;
             const totalMasteredPerActivity = masteredCountByCajId[activity.id] ?? 0;
 
             rows.push(
@@ -87,6 +103,7 @@ export function ActivityProgressTable(props: any){
                     <TableCell>{activity?.activity?.external_title}</TableCell>
                     <TableCell>{totalUsersPerActivity || 0}</TableCell> 
                     <TableCell>{totalAttemptsPerActivity || 0}</TableCell>
+                    <TableCell>{totalCompletionsPerActivity || 0}</TableCell>
                     <TableCell>{totalMasteredPerActivity || 0}</TableCell>
                     <TableCell>
                         <Button variant="ghost" size="sm">
@@ -128,6 +145,11 @@ export function ActivityProgressTable(props: any){
                             <TableHead className="text-muted-foreground">
                                 <div className="items-center gap-2 flex">
                                     Attempts <Play size={16} />
+                                </div>
+                            </TableHead>
+                            <TableHead className="text-muted-foreground">
+                                <div className="items-center gap-2 flex">
+                                    Completed <Award size={16} />
                                 </div>
                             </TableHead>
                             <TableHead className="text-muted-foreground">

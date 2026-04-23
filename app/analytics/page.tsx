@@ -181,7 +181,7 @@ export default function AnalyticsLandingPage(){
         for(const user of userProfsWithAttempts){
             getAttemptsForId(user, attempts.data, "activity");
             getAttemptsForId(user, quizData.data, "quiz");
-            user.GroupedActivityAttempts = groupAttemptsByKey(user.ActivityAttempts, "activity_id");
+            user.GroupedActivityAttempts = groupAttemptsByKey(user.ActivityAttempts, "caj_id");
             user.GroupedQuizAttempts = groupQuizAttempts(user.QuizAttempts);
         }
 

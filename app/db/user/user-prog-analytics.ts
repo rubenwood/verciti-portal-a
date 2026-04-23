@@ -101,7 +101,6 @@ export async function getUserAttempts(client: SupabaseClient, user_ids: string[]
     };
 }
 
-
 export async function getMasteredActivities(client: SupabaseClient, userIds: string[], page: number = 0, pageSize: number = 1000) {
 
     if (!userIds.length) return {};
@@ -197,6 +196,7 @@ export function calcTotalModulesCompleted(userProgressData: any[]): number {
     }
     return totalCompleted;
 }
+
 export function calcTotalUniqueModulesCompleted(userProgressData: any[]): number {
     //console.log("Calculating total modules completed from user progress data:", userProgressData);
 
