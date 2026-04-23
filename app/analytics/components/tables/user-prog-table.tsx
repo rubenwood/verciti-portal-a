@@ -220,8 +220,6 @@ export function UserProgressTable(props: any) {
         if (props.userProfilesWithAttempts == null) { return rows; }
 
         for (const userProf of props.userProfilesWithAttempts) {
-            console.log(userProf);
-            const totalUsageTime = userProf
             rows.push(
                 <TableRow key={`userprog-${userProf.Id}`}>
                     <TableCell>
@@ -249,8 +247,7 @@ export function UserProgressTable(props: any) {
                         </Button>
                     </TableCell>
                 </TableRow>
-            );
-            
+            );            
         }
         return rows;
     }
