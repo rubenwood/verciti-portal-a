@@ -220,6 +220,15 @@ export function UserProgressTable(props: any) {
         if (props.userProfilesWithAttempts == null) { return rows; }
 
         for (const userProf of props.userProfilesWithAttempts) {
+            console.log(userProf);
+            userProf?.PreviousLogins?.sort().reverse();// TODO: make sure they're sorted at source
+            const sortedAttempts = userProf?.ActivityAttempts
+            ? [...userProf.ActivityAttempts].sort(
+                    (a, b) => b.attempted_at.localeCompare(a.attempted_at)
+                )
+            : [];
+            console.log(sortedAttempts);
+
             rows.push(
                 <TableRow key={`userprog-${userProf.Id}`}>
                     <TableCell>
@@ -237,8 +246,18 @@ export function UserProgressTable(props: any) {
                     <TableCell>
                         <LoginsSection userProf={userProf} />
                     </TableCell>
-                    <TableCell >
+                    <TableCell>
+                        {userProf.PreviousLogins != null ?
+                            formatDate(userProf.PreviousLogins[0])
+                        : `No logins`}
+                    </TableCell>
+                    <TableCell>
                         <ActivitiesSection userProf={userProf} />
+                    </TableCell>
+                    <TableCell>
+                        {sortedAttempts[0]?.attempted_at != null ? 
+                            formatDate(sortedAttempts[0]?.attempted_at)
+                        : `No attempts`}
                     </TableCell>
                     <TableCell>
                         {formatDuration(userProf.TotalUsageTime)}
@@ -249,7 +268,7 @@ export function UserProgressTable(props: any) {
                         </Button>
                     </TableCell>
                 </TableRow>
-            );            
+            );
         }
         return rows;
     }
@@ -274,11 +293,22 @@ export function UserProgressTable(props: any) {
                                     Logins
                                 </div>
                             </TableHead>
+                            <TableHead>
+                                <div className="items-center gap-2 flex">
+                                    Last Login
+                                </div>
+                            </TableHead>
                             <TableHead className="text-muted-foreground items-center">
                                 <div className="items-center gap-2 flex">
                                     Activity <Play size={16} />
                                 </div>
                             </TableHead>
+                            <TableHead>
+                                <div className="items-center gap-2 flex">
+                                    Last Attempt
+                                </div>
+                            </TableHead>
+
                             <TableHead className="text-muted-foreground">
                                 <div className="items-center gap-2 flex">
                                     Total Usage Time <Clock size={16} />
