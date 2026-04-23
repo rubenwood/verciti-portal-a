@@ -210,7 +210,7 @@ export function calcTotalUniqueModulesCompleted(userProgressData: any[]): number
     return completedModules.size;
 }
 
-export function calcTotalUsageTime(userProgressData: any[]): number {
+export function calcTotalUsageTimeForUserProg(userProgressData: any[]): number {
     let totalUsageTime = 0;
     for(let user of userProgressData) {
         totalUsageTime += user.total_usage_time;

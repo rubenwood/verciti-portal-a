@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Dialog,  DialogContent,  DialogHeader,  DialogTitle,  DialogDescription } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge, Bell, ChevronDown, ChevronRight, Clock } from "lucide-react";
+import { Badge, Bell, ChevronDown, ChevronRight, Clock, Play } from "lucide-react";
 import { JSX, useEffect, useState } from "react";
 import { fetchStagesWithInfoTexts, formatDuration, formatDate } from "@/app/db/general/utils";
 
@@ -116,7 +116,7 @@ function ActivityAttemptsModal(props: any) {
                         </DialogDescription>
                         </DialogHeader>
                         <div className="mt-6">
-                            {props.activity?.attempts?.map((attempt: any, index: number) => (                                
+                            {props.activity?.attempts?.map((attempt: any, index: number) => (
                                 <AttemptedStagesCollapsible 
                                     key={`attempt-${attempt.id}`}
                                     attempt={attempt}
@@ -145,30 +145,30 @@ function ActivitiesSection(props: any) {
     <>
     {props.userProf.GroupedActivityAttempts != null ?
         <>            
-        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-            <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-                {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                <span className="text-foreground">{props.userProf.GroupedActivityAttempts.length} modules</span>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-                <div className="mt-3 space-y-3 pl-6">
-                {props.userProf.GroupedActivityAttempts.map((activity: any) => (
-                    <div onClick={() => openModalWithAttempts(activity)} key={`activity-${activity?.id}`} className="bg-secondary/50 rounded-md p-3">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm text-foreground">{activity?.external_title}</span>
-                            <span className="text-sm text-muted-foreground font-light">{activity?.attempts?.length || 0} attempts</span>
-                        </div>                        
+            <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+                <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                    <span className="text-foreground">{props.userProf.GroupedActivityAttempts.length} modules</span>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                    <div className="mt-3 space-y-3 pl-6">
+                    {props.userProf.GroupedActivityAttempts.map((activity: any) => (
+                        <div onClick={() => openModalWithAttempts(activity)} key={`activity-${activity?.id}`} className="bg-secondary/50 rounded-md p-3">
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm text-foreground">{activity?.external_title}</span>
+                                <span className="text-sm text-muted-foreground font-light">{activity?.attempts?.length || 0} attempts</span>
+                            </div>                        
+                        </div>
+                    ))}
                     </div>
-                ))}
-                </div>
-            </CollapsibleContent>
-        </Collapsible> 
-        <ActivityAttemptsModal 
-            isOpen={isModalOpen}
-            setIsOpen={setIsModalOpen}
-            userProf={props.userProf}
-            activity={selectedActivity}
-        />
+                </CollapsibleContent>
+            </Collapsible> 
+            <ActivityAttemptsModal 
+                isOpen={isModalOpen}
+                setIsOpen={setIsModalOpen}
+                userProf={props.userProf}
+                activity={selectedActivity}
+            />
         </>
     : null}
     </>
@@ -220,6 +220,8 @@ export function UserProgressTable(props: any) {
         if (props.userProfilesWithAttempts == null) { return rows; }
 
         for (const userProf of props.userProfilesWithAttempts) {
+            console.log(userProf);
+            const totalUsageTime = userProf
             rows.push(
                 <TableRow key={`userprog-${userProf.Id}`}>
                     <TableCell>
@@ -237,6 +239,9 @@ export function UserProgressTable(props: any) {
                     </TableCell>
                     <TableCell >
                         <ActivitiesSection userProf={userProf} />
+                    </TableCell>
+                    <TableCell>
+                        {formatDuration(userProf.TotalUsageTime)}
                     </TableCell>
                     <TableCell>
                         <Button variant="ghost" className="text-muted-foreground hover:text-primary">
@@ -260,9 +265,26 @@ export function UserProgressTable(props: any) {
                 <Table>
                     <TableHeader>
                         <TableRow className="border-border hover:bg-transparent">
-                            <TableHead className="text-muted-foreground">User</TableHead>
-                            <TableHead className="text-muted-foreground">Logins</TableHead>
-                            <TableHead className="text-muted-foreground">Activity</TableHead>
+                            <TableHead className="text-muted-foreground">
+                                <div className="items-center gap-2 flex">
+                                    User
+                                </div>
+                            </TableHead>
+                            <TableHead className="text-muted-foreground">
+                                <div className="items-center gap-2 flex">
+                                    Logins
+                                </div>
+                            </TableHead>
+                            <TableHead className="text-muted-foreground items-center">
+                                <div className="items-center gap-2 flex">
+                                    Activity <Play size={16} />
+                                </div>
+                            </TableHead>
+                            <TableHead className="text-muted-foreground">
+                                <div className="items-center gap-2 flex">
+                                    Total Usage Time <Clock size={16} />
+                                </div>
+                            </TableHead>
                             <TableHead className="text-muted-foreground w-[80px]">Actions</TableHead>
                         </TableRow>
                     </TableHeader>

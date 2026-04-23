@@ -9,7 +9,34 @@ import { Badge, Bell, Book, ChevronDown, ChevronRight, Clock, Layers, User, Play
 import { getMasteredActivities } from "@/app/db/user/user-prog-analytics"; // TODO: improve this
 
 
+
+function ActivityProgressModal(props: any){
+    return (
+        <Dialog open={props.isOpen} onOpenChange={props.setIsOpen}>
+            <DialogContent className="w-[80vw] !max-w-[80vw] sm:!max-w-[80vw] max-h-[80vh] overflow-y-auto p-0">
+                <div className="inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+                    <div className="bottom-0 left-0 right-0 p-6">
+                        <DialogHeader>
+                        <DialogTitle className="text-3xl font-bold text-foreground">
+                            Modules
+                        </DialogTitle>
+                        <DialogDescription className="flex items-center gap-3 text-base">
+                            Module breakdown for {props.selectedActivity?.activity?.external_title}
+                        </DialogDescription>
+                        </DialogHeader>
+                        <div className="mt-6">
+                            
+                        </div>
+                    </div>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+
 export function ActivityProgressTable(props: any){
+    const [detailsModalOpen, setDetailsModalOpen] = useState<boolean>(false);
+    const [selectedActivity, setSelectedActivity] = useState<any>(null);
     const [masteryByUser, setMasteryByUser] = useState<Record<string, { masteredCajIds: string[]; masteredStageIds: string[] }>>({});
 
      useEffect(() => {
@@ -83,6 +110,10 @@ export function ActivityProgressTable(props: any){
         return map;
     }, [masteryByUser]);
 
+    const openDetailsModal = (activity: any) => {
+        setDetailsModalOpen(true);
+        setSelectedActivity(activity);
+    }
 
     const populateRows = () => {
         const rows: JSX.Element[] = [];
@@ -96,7 +127,11 @@ export function ActivityProgressTable(props: any){
             const totalMasteredPerActivity = masteredCountByCajId[activity.id] ?? 0;
 
             rows.push(
-                <TableRow key={`caj-${activity.id}`} className="border-border hover:bg-transparent">
+                <TableRow 
+                    onClick={(e) => openDetailsModal(activity)} 
+                    key={`caj-${activity.id}`} 
+                    className="border-border hover:bg-transparent"
+                >
                     <TableCell>{activity?.course?.external_title}</TableCell>
                     <TableCell>{activity?.activity?.external_title}</TableCell>
                     <TableCell>{totalUsersPerActivity || 0}</TableCell> 
@@ -116,53 +151,60 @@ export function ActivityProgressTable(props: any){
     }
 
     return (
-        <Card className="bg-card border-border">
-            <CardHeader>
-                <CardTitle className="text-foreground">Modules</CardTitle>
-                <CardDescription>Displays stats for each module</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Table>
-                    <TableHeader>
-                        <TableRow className="border-border hover:bg-transparent">
-                            <TableHead className="text-muted-foreground">
-                                <div className="items-center gap-2 flex">
-                                    Course <Layers size={16}/>
-                                </div>
-                            </TableHead>
-                            <TableHead className="items-center gap-2 text-muted-foreground">
-                                <div className="items-center gap-2 flex">
-                                    Module <Book size={16}/>
-                                </div>
-                            </TableHead>
-                            <TableHead className="items-center gap-2 text-muted-foreground">
-                                <div className="items-center gap-2 flex">
-                                    Users <User size={16}/>
-                                </div>
-                            </TableHead>
-                            <TableHead className="text-muted-foreground">
-                                <div className="items-center gap-2 flex">
-                                    Attempts <Play size={16} />
-                                </div>
-                            </TableHead>
-                            <TableHead className="text-muted-foreground">
-                                <div className="items-center gap-2 flex">
-                                    Completed <Award size={16} />
-                                </div>
-                            </TableHead>
-                            <TableHead className="text-muted-foreground">
-                                <div className="items-center gap-2 flex">
-                                    Mastered <Trophy size={16} />
-                                </div>
-                            </TableHead>
-                            <TableHead className="text-muted-foreground w-[80px]">Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {populateRows()}
-                    </TableBody>
-                </Table>
-            </CardContent>
-        </Card>
+        <>
+            <Card className="bg-card border-border">
+                <CardHeader>
+                    <CardTitle className="text-foreground">Modules</CardTitle>
+                    <CardDescription>Displays stats for each module</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableHeader>
+                            <TableRow className="border-border hover:bg-transparent">
+                                <TableHead className="text-muted-foreground">
+                                    <div className="items-center gap-2 flex">
+                                        Course <Layers size={16}/>
+                                    </div>
+                                </TableHead>
+                                <TableHead className="items-center gap-2 text-muted-foreground">
+                                    <div className="items-center gap-2 flex">
+                                        Module <Book size={16}/>
+                                    </div>
+                                </TableHead>
+                                <TableHead className="items-center gap-2 text-muted-foreground">
+                                    <div className="items-center gap-2 flex">
+                                        Users <User size={16}/>
+                                    </div>
+                                </TableHead>
+                                <TableHead className="text-muted-foreground">
+                                    <div className="items-center gap-2 flex">
+                                        Attempts <Play size={16} />
+                                    </div>
+                                </TableHead>
+                                <TableHead className="text-muted-foreground">
+                                    <div className="items-center gap-2 flex">
+                                        Completed <Award size={16} />
+                                    </div>
+                                </TableHead>
+                                <TableHead className="text-muted-foreground">
+                                    <div className="items-center gap-2 flex">
+                                        Mastered <Trophy size={16} />
+                                    </div>
+                                </TableHead>
+                                <TableHead className="text-muted-foreground w-[80px]">Details</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {populateRows()}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+            <ActivityProgressModal
+                isOpen={detailsModalOpen}
+                setIsOpen={setDetailsModalOpen}
+                selectedActivity={selectedActivity}
+            />
+        </>
     )
 }

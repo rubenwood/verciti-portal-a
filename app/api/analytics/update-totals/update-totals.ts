@@ -2,7 +2,7 @@ import {
     getUsersProfilesByVisibility,
     getUsersProfilesByOrgId,
     getUserAttempts,
-    calcTotalUsageTime,
+    calcTotalUsageTimeForUserProg,
     calcTotalModulesCompleted 
 } from '@/app/db/user/user-prog-analytics';
 import { calcAverageQuizScore } from '@/app/db/user/user-quiz-analytics';
@@ -45,7 +45,7 @@ async function updateForOrg(client: SupabaseClient, orgId:string){
         error:null,
         orgId:orgId.toLowerCase(),
         TotalUsers:profileData.length,
-        TotalUsageTime:calcTotalUsageTime(profileData),
+        TotalUsageTime:calcTotalUsageTimeForUserProg(profileData),
         ActivitiesCompleted:calcTotalModulesCompleted(profileData),
         QuizAttempts:quizData.data.length,
         AverageScore:calcAverageQuizScore(quizData.data)

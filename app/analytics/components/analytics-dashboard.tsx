@@ -7,7 +7,7 @@ import { getUsersProgress,
     getUserAttempts,
     calcTotalUniqueModulesCompleted,
     calcTotalModulesCompleted,
-    calcTotalUsageTime,
+    calcTotalUsageTimeForUserProg,
     calcMostPopularByUserCount,
     calcMostPlayed,
     calcMostPlayedTime } from "@/app/db/user/user-prog-analytics";
