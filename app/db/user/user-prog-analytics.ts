@@ -178,9 +178,6 @@ export async function getMasteredActivities(client: SupabaseClient, userIds: str
             masteredStageIds: [...masteredStageIds],
         };
     }
-
-    console.log("RES: ");
-    console.log(results);
     return results;
 }
 

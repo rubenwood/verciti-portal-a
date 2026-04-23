@@ -229,7 +229,6 @@ export default function AnalyticsLandingPage(){
             setRole(userRole);
 
             const output = await getAllData(organisationId, contentTags, databaseBranch, supabaseClientToUse);
-            console.log("Data fetched in init:", output);
             const result = {
                 totalsData: output.totalsData,
                 client: supabaseClientToUse,

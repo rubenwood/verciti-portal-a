@@ -5,8 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Dialog,  DialogContent,  DialogHeader,  DialogTitle,  DialogDescription } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge, Bell, Book, ChevronDown, ChevronRight, Clock, Layers, User, Play, Award } from "lucide-react";
-import { fetchStagesWithInfoTexts, formatDuration, formatDate } from "@/app/db/general/utils";
+import { Badge, Bell, Book, ChevronDown, ChevronRight, Clock, Layers, User, Play, Award, Trophy } from "lucide-react";
 import { getMasteredActivities } from "@/app/db/user/user-prog-analytics"; // TODO: improve this
 
 
@@ -153,7 +152,7 @@ export function ActivityProgressTable(props: any){
                             </TableHead>
                             <TableHead className="text-muted-foreground">
                                 <div className="items-center gap-2 flex">
-                                    Mastered <Award size={16} />
+                                    Mastered <Trophy size={16} />
                                 </div>
                             </TableHead>
                             <TableHead className="text-muted-foreground w-[80px]">Actions</TableHead>
