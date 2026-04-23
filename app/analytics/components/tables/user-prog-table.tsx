@@ -220,14 +220,14 @@ export function UserProgressTable(props: any) {
         if (props.userProfilesWithAttempts == null) { return rows; }
 
         for (const userProf of props.userProfilesWithAttempts) {
-            console.log(userProf);
+            //console.log(userProf);
             userProf?.PreviousLogins?.sort().reverse();// TODO: make sure they're sorted at source
             const sortedAttempts = userProf?.ActivityAttempts
             ? [...userProf.ActivityAttempts].sort(
                     (a, b) => b.attempted_at.localeCompare(a.attempted_at)
                 )
             : [];
-            console.log(sortedAttempts);
+            //console.log(sortedAttempts);
 
             rows.push(
                 <TableRow key={`userprog-${userProf.Id}`}>
