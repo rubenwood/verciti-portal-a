@@ -31,7 +31,9 @@ export function UserQuizTable(props: any) {
                     <TableCell>
                         <div className="flex items-center gap-3">
                             <Avatar className="h-8 w-8">
-                                <AvatarFallback className="bg-primary/20 text-foreground text-xs font-medium">AV</AvatarFallback>
+                                <AvatarFallback className="bg-primary/20 text-foreground text-xs font-medium">
+                                    {profile.Email.split('@')[0].substring(0,2)}
+                                </AvatarFallback>
                             </Avatar>
                             <div className="flex flex-col">
                                 <span className="text-foreground">{profile?.Email}</span>
