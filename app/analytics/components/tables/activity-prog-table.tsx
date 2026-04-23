@@ -14,15 +14,14 @@ export function ActivityProgressTable(props: any){
     const [masteryByUser, setMasteryByUser] = useState<Record<string, { masteredCajIds: string[]; masteredStageIds: string[] }>>({});
 
      useEffect(() => {
-        console.log("Profiles changed:", props.userProfilesWithAttempts);
-        console.log(props);
         if (!props.userProfilesWithAttempts?.length || !props.supabaseClient) return;
 
         const userIds = props.userProfilesWithAttempts.map((u: any) => u.Id);
-        console.log(userIds);
         getMasteredActivities(props.supabaseClient, userIds).then(setMasteryByUser);
     }, [props.userProfilesWithAttempts]);
 
+
+    // TODO: improve these, would be better that they are passed in
     const attemptsByActivityId = useMemo(() => {
         const map: Record<string, number> = {};
 
