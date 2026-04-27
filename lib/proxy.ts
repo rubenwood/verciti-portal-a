@@ -41,7 +41,8 @@ export async function updateSession(request: NextRequest) {
     '/reset-password',
     '/update-password',
     '/subscribe',
-    '/feedback'
+    '/feedback',
+    '/analytics/feature-roadmap'
   ]
 
   const isPublicRoute =
