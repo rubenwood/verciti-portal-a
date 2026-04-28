@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { checkUser } from "../general/get-user";
 import { CopyTablesTool } from "./copy-tables/copy-tables";
+import { StageActivityJoiner } from "./stage-activity-joiner/stage-activity-joiner"
 import { getUserProfile } from "../general/utils";
 import { supabaseTest } from "@/lib/supabase";
 import Link from "next/link";
@@ -44,6 +45,8 @@ export default function ToolsPage(){
             <br/>
             <CopyTablesTool />
             <br />
+            <StageActivityJoiner />
+            <br/>
         </div>
         </>
     )
