@@ -18,12 +18,12 @@ import {
 } from "@/app/db/user/user-gen-analytics";
 
 import { Button } from "@/components/ui/button";
-import { UserProgressTable } from "./tables/user-prog-table";
+import { UserProgressTable } from "../tables/user-prog-table";
 
-import { StatCard } from "./general/stat-card";
-import { PopularModulesCard } from "./cards/popular-modules-card";
-import { QuizCard } from "./cards/quiz-card";
-import { MonthlyTable, MonthlyTotalUserTable } from "./tables/monthly-table";
+import { StatCard } from "../general/stat-card";
+import { PopularModulesCard } from "../cards/popular-modules-card";
+import { QuizCard } from "../cards/quiz-card";
+import { MonthlyTable, MonthlyTotalUserTable } from "../tables/monthly-table";
 import { 
     calcAverageQuizScore, 
     calcCompletedQuizzes,
@@ -33,9 +33,9 @@ import {
 } from "@/app/db/user/user-quiz-analytics";
 import { BookIcon, BrainIcon, ClockIcon, TrendingUp, TrophyIcon, UsersIcon, Key } from "lucide-react";
 import { formatDuration } from "@/app/db/general/utils";
-import { UserQuizTable } from "./tables/user-quiz-table";
-import { PlatformTotalsTable } from "./tables/platform-totals-table";
-import { ActivityProgressTable } from "./tables/activity-prog-table";
+import { UserQuizTable } from "../tables/user-quiz-table";
+import { PlatformTotalsTable } from "../tables/platform-totals-table";
+import { ActivityProgressTable } from "../tables/activity-prog-table";
 
 
 export function AnalyticsDashboard(props: any) {

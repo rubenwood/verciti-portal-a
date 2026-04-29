@@ -9,8 +9,12 @@ import { getUsersProfilesByOrgId, getUserAttempts } from "@/app/db/user/user-pro
 import { getUsersQuizAttempts } from "@/app/db/user/user-quiz-analytics";
 
 import { TopRibbon } from "./components/general/ribbon";
-import { AnalyticsDashboard } from "./components/analytics-dashboard"
+import { TopTabs } from "./components/general/tabs";
+import { AnalyticsDashboard } from "./components/dashboards/analytics-dashboard"
+import { WorkforceDashboard } from "./components/dashboards/workforce-dashboard"
+import { SkillsMap } from "./components/skills-map/skills-map";
 import { getUserProfile, fetchCourseActivityByVisibility } from "../db/general/utils";
+
 
 
 type GroupedAttempts = {
@@ -40,6 +44,8 @@ type UserProfileWithAttempts = {
 };
 
 export default function AnalyticsLandingPage(){
+    const [activeTab, setActiveTab] = useState<"analytics" | "workforce" | "skills-map">("analytics");
+
     const [user, setUser] = useState<User | null>(null);
     const [role, setRole] = useState<string>("");
     const [allData, setAllData] = useState<any>(null);
@@ -227,16 +233,24 @@ export default function AnalyticsLandingPage(){
             {isLoaded ? 
             <>
                 <TopRibbon /><br/>
-                <AnalyticsDashboard 
-                    role={role}
-                    totals={allData.totalsData}
-                    supabaseClient={allData.client}
-                    orgCoursesActivities={allData.orgCoursesActivities}
-                    userProfilesWithAttempts={allData.userProfsWithAttempts}
-                    userProgressData={allData.userProgressData}
-                    userAttemptsData={allData.userAttemptsData}
-                    userQuizData={allData.userQuizAttemptsData}
-                />
+                <TopTabs activeTab={activeTab} onTabChange={setActiveTab} /><br/>
+                {activeTab == "analytics" && (
+                    <AnalyticsDashboard 
+                        role={role}
+                        totals={allData.totalsData}
+                        supabaseClient={allData.client}
+                        orgCoursesActivities={allData.orgCoursesActivities}
+                        userProfilesWithAttempts={allData.userProfsWithAttempts}
+                        userProgressData={allData.userProgressData}
+                        userAttemptsData={allData.userAttemptsData}
+                        userQuizData={allData.userQuizAttemptsData}
+                    />)}
+                {activeTab == "workforce" && (
+                    <WorkforceDashboard />
+                )}
+                {activeTab == "skills-map" && (
+                    <SkillsMap />
+                )}
             </>
             : null }            
         </div>
