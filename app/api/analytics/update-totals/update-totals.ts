@@ -4,9 +4,9 @@ import {
     getUserAttempts,
     calcTotalUsageTimeForUserProg,
     calcTotalModulesCompleted 
-} from '@/app/db/user/user-prog-analytics';
-import { calcAverageQuizScore } from '@/app/db/user/user-quiz-analytics';
-import { getUsersQuizAttempts } from "@/app/db/user/user-quiz-analytics";
+} from '@/app/db/analytics/user/user-prog-analytics';
+import { calcAverageQuizScore } from '@/app/db/analytics/user/user-quiz-analytics';
+import { getUsersQuizAttempts } from "@/app/db/analytics/user/user-quiz-analytics";
 import { SupabaseClient } from '@supabase/supabase-js';
 
 export async function updateOrgTotals(client: SupabaseClient){

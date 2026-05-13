@@ -10,12 +10,12 @@ import { getUsersProgress,
     calcTotalUsageTimeForUserProg,
     calcMostPopularByUserCount,
     calcMostPlayed,
-    calcMostPlayedTime } from "@/app/db/user/user-prog-analytics";
+    calcMostPlayedTime } from "@/app/db/analytics/user/user-prog-analytics";
 
 import {
     getUsersCreatedInTimePeriod,
     getUsersLoggedInTimePeriod
-} from "@/app/db/user/user-gen-analytics";
+} from "@/app/db/analytics/user/user-gen-analytics";
 
 import { Button } from "@/components/ui/button";
 import { UserProgressTable } from "../tables/user-prog-table";
@@ -30,7 +30,7 @@ import {
     calcTotalQuizDuration, 
     calcTotalQuizStages,
     getUsersQuizAttempts
-} from "@/app/db/user/user-quiz-analytics";
+} from "@/app/db/analytics/user/user-quiz-analytics";
 import { BookIcon, BrainIcon, ClockIcon, TrendingUp, TrophyIcon, UsersIcon, Key } from "lucide-react";
 import { formatDuration } from "@/app/db/general/utils";
 import { UserQuizTable } from "../tables/user-quiz-table";

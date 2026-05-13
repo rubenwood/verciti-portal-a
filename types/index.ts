@@ -129,6 +129,23 @@ type SynthesiaPayload = {
   nextOffset?: number;
 };
 
+
+type Workplace = {
+    id:string,
+    created_at:any,
+    name:string,
+    type:string,
+    coords:{ lat:number, long:number },
+    staff_assigned:number,
+    staff_required:number,
+    skills:any,
+    org_id:string,
+}
+type TalentSource = {
+
+}
+
+
 type FormVariant = {
     
 }

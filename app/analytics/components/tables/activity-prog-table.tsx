@@ -6,7 +6,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Dialog,  DialogContent,  DialogHeader,  DialogTitle,  DialogDescription } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge, Bell, Book, ChevronDown, ChevronRight, Clock, Layers, User, Play, Award, Trophy } from "lucide-react";
-import { getMasteredActivities } from "@/app/db/user/user-prog-analytics"; // TODO: improve this
+import { getMasteredActivities } from "@/app/db/analytics/user/user-prog-analytics"; // TODO: improve this
 
 
 

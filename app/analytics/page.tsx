@@ -5,8 +5,8 @@ import { checkUser } from "../db/general/get-user";
 
 import { SupabaseClient } from "@supabase/supabase-js";
 import { supabaseMain, supabaseTest } from "@/lib/supabase";
-import { getUsersProfilesByOrgId, getUserAttempts } from "@/app/db/user/user-prog-analytics";
-import { getUsersQuizAttempts } from "@/app/db/user/user-quiz-analytics";
+import { getUsersProfilesByOrgId, getUserAttempts } from "@/app/db/analytics/user/user-prog-analytics";
+import { getUsersQuizAttempts } from "@/app/db/analytics/user/user-quiz-analytics";
 
 import { TopRibbon } from "./components/general/ribbon";
 import { TopTabs } from "./components/general/tabs";
