@@ -144,7 +144,7 @@ export default function InfoTextEditor() {
                 <div className="mt-4 border p-4 rounded shadow">
                     <h2 className="font-bold mb-2">InfoTexts:</h2>
                     <table className="w-full text-sm border border-gray-200">
-                        <thead className="bg-gray-100">
+                        <thead className="bg-black-100 border border-gray-200">
                             <tr>
                                 <th className="pr-4 text-left">
                                     Stage ID
