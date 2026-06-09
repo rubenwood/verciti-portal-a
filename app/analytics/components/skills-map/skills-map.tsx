@@ -57,6 +57,12 @@ function MapRightClickHandler({ onRightClick }: { onRightClick: (lat: number, ln
   return null;
 }
 
+function calcColour(current: number, required: number){
+  const percentage = (current / required) * 100;
+
+
+}
+
 export function SkillsMap(){
   const [workplaces, setWorkplaces] = useState<Workplace[] | null>(null);
   const [selectedWorkplace, setSelectedWorkplace] = useState<Workplace | null>(null);
@@ -128,7 +134,7 @@ export function SkillsMap(){
             <CircleMarker
               key={workplace.id}
               center={[workplace.coords.lat, workplace.coords.long]}
-              radius={10}
+              radius={8}
               pathOptions={{
                 fillColor: "#3b82f6",
                 color: "#ffffff",

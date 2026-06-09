@@ -86,7 +86,6 @@ async function setupData(supabaseService: SupabaseClient, userId: string, orgId:
     const mergedTags = Array.from(new Set([
         ...(existingUser?.content_visibility ?? []),
         "Free",
-        "Premium",
         ...tagsFromOrg
     ]));
 
