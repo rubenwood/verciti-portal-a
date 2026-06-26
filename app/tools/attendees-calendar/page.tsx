@@ -20,6 +20,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { supabaseTest } from "@/lib/supabase";
 
 type Attendee = {
   id: string;
@@ -34,11 +35,6 @@ type Attendee = {
   stripe_payment_id: string | null;
   payment_date: string | null;
 };
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_TEST_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_TEST_ANON_KEY!
-);
 
 export default function AttendeesPage() {
   const [attendees, setAttendees] = useState<Attendee[]>([]);
@@ -61,7 +57,7 @@ export default function AttendeesPage() {
 
   async function fetchAttendees() {
     setLoading(true);
-    const { data, error } = await supabase
+    const { data, error } = await supabaseTest
       .from("training_course_attendees")
       .select("*")
       .order("payment_date", { ascending: false });
