@@ -169,7 +169,7 @@ export default function AttendeesPage() {
                   <TableHead>Name</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Course</TableHead>
-                  <TableHead>Date</TableHead>
+                  <TableHead>Date Attending</TableHead>
                   <TableHead>Days</TableHead>
                   <TableHead>Paid</TableHead>
                   <TableHead>Booked on</TableHead>
