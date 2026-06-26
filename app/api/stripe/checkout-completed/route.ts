@@ -7,8 +7,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2026-06-24.dahlia",
 });
 
-
-
 export async function POST(req: NextRequest) {
   const rawBody = await req.text();
   const signature = req.headers.get("stripe-signature");
@@ -38,26 +36,21 @@ export async function POST(req: NextRequest) {
   const session = event.data.object as Stripe.Checkout.Session;
 
   // Parse the client_reference_id we set on the frontend
-  // Format: "carbon_2day_23rd-&-24th-july-2026" or "carbon_1day_23rd-july-2026"
+  // Format: "carbon__1day__20th-August-2026" or "carbon__2day__23rd-24th-July-2026"
   const clientRef = session.client_reference_id ?? "";
-  const refParts = clientRef.split("_");
-  const course = refParts[0] ?? null;          // "carbon" or "electrical"
-  const daysStr = refParts[1] ?? null;          // "1day" or "2day"
+  const refParts = clientRef.split("__");        // split on double underscore
+  const course = refParts[0] ?? null;            // "carbon" or "electrical"
+  const daysStr = refParts[1] ?? null;           // "1day" or "2day"
   const days = daysStr ? parseInt(daysStr) : null;
+  const dateRaw = refParts[2] ?? null;           // "20th-August-2026"
 
   const courseLabels: Record<string, string> = {
     carbon: "Carbon Awareness, Carbon Capture & Carbon Footprint Reporting",
     electrical: "Electrical Safety & Hazardous Voltage Awareness",
   };
 
-  // Reconstruct the date string from the remainder of the ref
-  // e.g. ["23rd", "&", "24th", "july", "2026"] -> "23rd & 24th July 2026"
-  const dateParts = refParts.slice(2);
-  const dateStr = dateParts
-    .join(" ")
-    .replace(/-/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase())
-    .replace(" & ", " & ");
+  // Reconstruct human-readable date: "20th-August-2026" -> "20th August 2026"
+  const dateStr = dateRaw ? dateRaw.replace(/-/g, " ") : null;
 
   // Get customer details from the session
   const customerName = session.customer_details?.name ?? null;
