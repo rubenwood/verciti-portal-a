@@ -37,7 +37,7 @@ type Attendee = {
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_TEST_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_TEST_ANON_KEY!
 );
 
 export default function AttendeesPage() {
@@ -72,6 +72,8 @@ export default function AttendeesPage() {
       const uniqueDates = Array.from(new Set(data.map((a) => a.date).filter(Boolean))) as string[];
       setDates(uniqueDates.sort());
     }
+
+    console.log("Fetched attendees:", data, "Error:", error);
     setLoading(false);
   }
 
