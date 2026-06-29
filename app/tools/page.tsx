@@ -35,6 +35,7 @@ export default function ToolsDashboard(){
             <h1 className="header">Here you will find various tools</h1>
             <br/>
             <div className="center-col">
+                <Link className="link" href="/tools/attendees-calendar">Course Attendees</Link>
                 <Link className="link" href="/db/tools">you can find db tools here.</Link>
                 <br/>
                 <S3Invalidator user={testUser} />
