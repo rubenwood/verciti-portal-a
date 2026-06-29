@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
 import {
   Table,
   TableBody,
@@ -31,6 +30,7 @@ type Attendee = {
   course_label: string | null;
   date: string | null;
   days: number | null;
+  quantity: number | null;
   amount_paid: number | null;
   stripe_payment_id: string | null;
   payment_date: string | null;
@@ -74,6 +74,7 @@ export default function AttendeesPage() {
   }
 
   const totalRevenue = filtered.reduce((sum, a) => sum + (a.amount_paid ?? 0), 0);
+  const totalSeats = filtered.reduce((sum, a) => sum + (a.quantity ?? 1), 0);
   const hasFilters = courseFilter !== "all" || dateFilter !== "all";
 
   return (
@@ -86,7 +87,7 @@ export default function AttendeesPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-1">
             <CardTitle className="text-xs text-muted-foreground uppercase tracking-widest font-medium">
@@ -95,6 +96,16 @@ export default function AttendeesPage() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{filtered.length}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-1">
+            <CardTitle className="text-xs text-muted-foreground uppercase tracking-widest font-medium">
+              Total seats
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">{totalSeats}</div>
           </CardContent>
         </Card>
         <Card>
@@ -171,6 +182,7 @@ export default function AttendeesPage() {
                   <TableHead>Course</TableHead>
                   <TableHead>Date Attending</TableHead>
                   <TableHead>Days</TableHead>
+                  <TableHead>Seats</TableHead>
                   <TableHead>Paid</TableHead>
                   <TableHead>Booked on</TableHead>
                 </TableRow>
@@ -195,6 +207,9 @@ export default function AttendeesPage() {
                     <TableCell>{a.date ?? "—"}</TableCell>
                     <TableCell className="text-muted-foreground">
                       {a.days} {a.days === 1 ? "day" : "days"}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {a.quantity ?? 1}
                     </TableCell>
                     <TableCell className="font-semibold">
                       £{((a.amount_paid ?? 0) / 100).toFixed(2)}
