@@ -13,6 +13,7 @@ import { checkUser } from "../db/general/get-user"
 import ActivityEditor from "../db/activities/editor/activity-editor-component"
 import BatchDelete from "../db/activities/editor/batch-delete-component"
 import BatchSynthesia from "../db/synthesia/synthesia-component"
+import SynthesiaVideoProcessor from "../db/synthesia/synthesia-video-processor"
 import InfoTextEditor from "../db/activities/info-text/info-text-editor-component"
 import QuizUploader from "../db/activities/quiz/quiz-upload-component"
 import QuizEditor from "../db/activities/quiz/quiz-editor-component"
@@ -69,6 +70,8 @@ export default function LMSDashboard(){
                 <BatchDelete />
                 <br/>
                 <BatchSynthesia />
+                <br/>
+                <SynthesiaVideoProcessor />
                 <br/>
                 <QuizUploader />
                 </> : null
