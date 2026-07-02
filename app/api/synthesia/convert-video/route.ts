@@ -11,7 +11,7 @@ import type { Readable } from "stream";
 ffmpeg.setFfmpegPath(ffmpegPath.path);
 
 // Adjust based on your plan — see caveats below
-export const maxDuration = 300;
+export const maxDuration = 60;
 
 const s3 = new S3Client({ region: process.env.AWS_REGION });
 const BUCKET = process.env.AWS_S3_BUCKET!;
