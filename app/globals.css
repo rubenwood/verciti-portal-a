@@ -94,6 +94,10 @@ body {
   @apply text-2xl font-bold text-center p-4;
 }
 
+.subheader {
+  @apply text-xl font-bold pt-4 pb-2;
+}
+
 .center-col {
   @apply flex flex-col items-center justify-center w-full max-w-xl mx-auto p-8 space-y-4;
 }

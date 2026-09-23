@@ -36,6 +36,7 @@ export default function S3Invalidator(props: any) {
 
     return (
         <div>
+            <h2 className="subheader">S3 File Invalidator</h2>
             <p>Enter a path to a folder you wish to invalidate.</p>
             <p>Path must begin with "/", for example; /dev/public, will invalidate (refresh) all files in that folder.</p>
             <br/>
